@@ -54,11 +54,6 @@ food-delivery-app/
 │   │       ├── checkout.html         # Checkout form
 │   │       ├── confirmation.html     # Order confirmation
 │   │       └── history.html          # Order history
-│   │
-│   └── utils/                        # Utility functions
-│       ├── __init__.py
-│       ├── helpers.py                # Common helper functions
-│       └── validators.py             # Custom form validators
 │
 ├── config.py                         # Configuration settings
 ├── requirements.txt                  # Project dependencies
