@@ -1,5 +1,9 @@
 from flask import current_app, g
 from flask_mysqldb import MySQL
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import List, Optional
+from enum import Enum
 
 class Database:
     @staticmethod
@@ -10,51 +14,86 @@ class Database:
             g.cursor = g.db.cursor()
         return g.db, g.cursor
 
+@dataclass
 class UserInfo:
-    def __init__(self, id=None, email=None, password=None):
-        self.id = id
-        self.name = name
-        self.email = email
-        self.password = password
+    id: Optional[int] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+    
+    @staticmethod
+    def get_by_id(user_id):
+        # Implementation needed
+        pass
+        
+    @staticmethod
+    def get_by_email(email):
+        # Implementation needed
+        pass
+        
+    def save(self):
+        # Implementation needed
+        pass
+        
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email
+        }
 
+@dataclass
 class ProductInfo:
-    def __init__(self, id=None, description=None, price=None, image_url=None):
-        self.id = id
-        self.name = name
-        self.description = description
-        self.image_url = image_url
+    id: Optional[int] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    image_url: Optional[str] = None
 
+@dataclass
 class BasketInfo:
-    def __init__(self, id=None, product_id=None, quantity=None):
-        self.id = id
-        self.user_id = user_id
-        self.product_id = product_id
-        self.quantity = quantity
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    product_id: Optional[int] = None
+    quantity: int = 1
 
-    def add_item():
+    @staticmethod
+    def add_item(user_id, product_id, quantity=1):
         pass
 
+    @staticmethod
     def remove_item(basket_id):
         pass
 
+    @staticmethod
     def clear(user_id):
+        pass
+        
+    @staticmethod
+    def get_by_user(user_id):
+        # Implementation needed
         pass
 
     def save(self):
         pass
 
-
+@dataclass
 class OrderInfo:
-    def __init__(self, id=None, product_id=None, quantity=None):
-        self.id = id
-        self.user_id = user_id
-        self.status = status
-        self.address = address
-        self.payment_method = payment_method
-        self.created_at = created_at
-        self.driver_id = driver_id
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    status: Optional[str] = None
+    address: Optional[str] = None
+    payment_method: Optional[str] = None
+    created_at: Optional[datetime] = None
+    driver_id: Optional[int] = None
 
+    @staticmethod
     def create_from_cart(user_id, address, payment_method):
+        pass
+        
+    @staticmethod
+    def get_by_user(user_id):
+        # Implementation needed
         pass
 
     def get_items(self):
@@ -63,36 +102,53 @@ class OrderInfo:
     def update_status(self, status):
         pass
 
-    def to_dict(self): #Convert order to dictionary
+    def to_dict(self):
         return {
-            'id': self.user_id
+            'id': self.id,
+            'user_id': self.user_id,
+            'status': self.status,
+            'address': self.address,
+            'payment_method': self.payment_method,
+            'created_at': self.created_at,
+            'driver_id': self.driver_id
         }
-    
-class DriverInfo:
-    def __init__(self, id=None, phone=None, status=None):
-        self.id = id
-        self.name = name
-        self.phone = phone
-        self.status = status
 
+@dataclass
+class DriverInfo:
+    id: Optional[int] = None
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    status: Optional[str] = None
+
+    @staticmethod
     def get_all(): 
         pass
 
-    def assign_to_order(self, order_id): #Assign this driver to an order
+    def assign_to_order(self, order_id):
         pass
     
     def save(self):
         pass
 
+@dataclass
 class Menu:
-    def __init__(self, id=None, product_id=None, category=None):
-        self.id = id
-        self.product_id = product_id
-        self.category = category
+    id: Optional[int] = None
+    product_id: Optional[int] = None
+    category: Optional[str] = None
+    
+    @staticmethod
+    def get_categories():
+        # Implementation needed
+        pass
+        
+    @staticmethod
+    def get_by_category(category):
+        # Implementation needed
+        pass
 
+@dataclass
 class StoreInfo:
-    def __init__(self, id=None, name=None, address=None, phone=None):
-        self.id = id
-        self.name = name
-        self.address = address
-        self.phone = phone
+    id: Optional[int] = None
+    name: Optional[str] = None
+    address: Optional[str] = None
+    phone: Optional[str] = None
