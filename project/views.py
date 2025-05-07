@@ -1,26 +1,25 @@
 # views.py
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from models import UserInfo, OrderInfo, BasketInfo, ProductInfo, Menu, DriverInfo, StoreInfo
 from forms import UserForm, LoginForm, CartForm, OrderForm, ProductForm, ReviewForm, SearchForm, ContactForm, DriverForm
-from flask_mysqldb import MySQL
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
+bp = Blueprint('main', __name__)
 
-# Configure MySQL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'username'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'database_name'
-
-# Initialize MySQL
-mysql = MySQL(app)
+# Create blueprints for different sections of the application
+main_bp = Blueprint('main', __name__)
+user_bp = Blueprint('user', __name__, url_prefix='/user')
+auth_bp = Blueprint('auth', __name__)
+cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
+menu_bp = Blueprint('menu', __name__, url_prefix='/menu')
+order_bp = Blueprint('order', __name__, url_prefix='/orders')
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 
 ###################
 # Main Routes
 ###################
 
-@app.route('/')
+@main_bp.route('/')
 def index():
     """Homepage route."""
     return render_template('index.html')
@@ -29,22 +28,22 @@ def index():
 # User Routes
 ###################
 
-@app.route('/profile', methods=['GET', 'POST'])
+@user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
     """View and edit user profile on the same page."""
     if 'user_id' not in session:
         flash('Please log in to view your profile')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
         
     user_id = session.get('user_id')
-    user = User.get_by_id(user_id)
+    user = UserInfo.get_by_id(user_id)
     
     if not user:
         flash('User not found')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
     
     # Get user's recent orders
-    orders = Order.get_by_user(user_id)
+    orders = OrderInfo.get_by_user(user_id)
     
     form = UserForm()
     
@@ -54,7 +53,7 @@ def profile():
         user.save()
         
         flash('Profile updated successfully!')
-        return redirect(url_for('profile'))
+        return redirect(url_for('user.profile'))
     elif request.method == 'GET':
         # Populate form with user data
         form.name.data = user.name
@@ -69,7 +68,7 @@ def profile():
 # Authentication Routes
 ###################
 
-@app.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """User login route."""
     form = LoginForm()
@@ -79,126 +78,66 @@ def login():
         username = form.username.data
         password = form.password.data
         
-        user = User.get_by_email(username)
+        user = UserInfo.get_by_email(username)
         if user and user.password == password:  # In production, use proper password hashing!
             session['user_id'] = user.id
             flash('Login successful!')
-            return redirect(url_for('profile'))
+            return redirect(url_for('user.profile'))
         else:
             flash('Invalid username or password')
     
     return render_template('login.html', form=form)
 
-@app.route('/logout')
+@auth_bp.route('/logout')
 def logout():
     """User logout route."""
     session.pop('user_id', None)
     flash('You have been logged out')
-    return redirect(url_for('index'))
+    return redirect(url_for('main.index'))
 
 ###################
 # Cart Routes
 ###################
 
-@app.route('/cart')
+@cart_bp.route('/')
 def view_cart():
     """View cart contents."""
     if 'user_id' not in session:
         flash('Please log in to view your cart')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
         
     user_id = session.get('user_id')
-    cart_items = Cart.get_by_user(user_id)
+    cart_items = BasketInfo.get_by_user(user_id)
     
     return render_template('cart.html', cart_items=cart_items)
 
-@app.route('/cart/add/<int:product_id>', methods=['POST'])
+@cart_bp.route('/add/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     """Add item to cart."""
     if 'user_id' not in session:
         flash('Please log in to add items to your cart')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
         
     user_id = session.get('user_id')
     quantity = int(request.form.get('quantity', 1))
     
-    Cart.add_item(user_id, product_id, quantity)
+    BasketInfo.add_item(user_id, product_id, quantity)
     flash('Item added to cart')
     
-    return redirect(url_for('view_cart'))
+    return redirect(url_for('cart.view_cart'))
 
 ###################
 # Menu Routes
 ###################
 
-@app.route('/menu')
+@menu_bp.route('/')
 def view_menu():
     """Display menu categories."""
     categories = Menu.get_categories()
     return render_template('menu.html', categories=categories)
 
-@app.route('/menu/<category>')
+@menu_bp.route('/<category>')
 def menu_category(category):
     """Display menu items for a category."""
     items = Menu.get_by_category(category)
     return render_template('menu_category.html', items=items, category=category)
-
-###################
-# Order Routes
-###################
-
-@app.route('/orders')
-def view_orders():
-    """View user's orders."""
-    if 'user_id' not in session:
-        flash('Please log in to view your orders')
-        return redirect(url_for('login'))
-        
-    user_id = session.get('user_id')
-    orders = Order.get_by_user(user_id)
-    
-    return render_template('orders.html', orders=orders)
-
-@app.route('/orders/create', methods=['GET', 'POST'])
-def create_order():
-    """Create a new order."""
-    if 'user_id' not in session:
-        flash('Please log in to place an order')
-        return redirect(url_for('login'))
-        
-    user_id = session.get('user_id')
-    form = OrderForm()
-    
-    if form.validate_on_submit():
-        address = form.address.data
-        payment_method = form.payment_method.data if hasattr(form, 'payment_method') else 'cash'
-        
-        order = Order.create_from_cart(user_id, address, payment_method)
-        if order:
-            flash('Order placed successfully!')
-            return redirect(url_for('view_orders'))
-        else:
-            flash('Error placing order')
-    
-    cart_items = Cart.get_by_user(user_id)
-    return render_template('create_order.html', form=form, cart_items=cart_items)
-
-###################
-# Admin Routes
-###################
-
-@app.route('/admin')
-def admin_dashboard():
-    """Admin dashboard."""
-    # Add admin authentication check here
-    return render_template('admin/dashboard.html')
-
-###################
-# Driver Routes
-###################
-
-@app.route('/drivers')
-def view_drivers():
-    """View all drivers."""
-    drivers = Driver.get_all()
-    return render_template('drivers.html', drivers=drivers)

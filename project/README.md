@@ -18,3 +18,5 @@ The application follows a modular architecture using Flask blueprints, with clea
     ├── run.py
     ├── database.sql (pre-populated)
     └── README.txt (brief setup instructions)
+
+    
