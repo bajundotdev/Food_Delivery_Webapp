@@ -1,13 +1,14 @@
 from flask import current_app, g
-from flask_mysqldb import MYSQL
+from flask_mysqldb import MySQL
 
 class Database:
     @staticmethod
-    """Get database connection."""
-    if 'db' not in g:
-        g.db = current_app.extensions['mysql'].connection
-        g.cursor = g.db.cursor()
-    return g.db, g.cursor
+    def get_connection():
+        """Get database connection."""
+        if 'db' not in g:
+            g.db = current_app.extensions['mysql'].connection
+            g.cursor = g.db.cursor()
+        return g.db, g.cursor
 
 class UserInfo:
     def __init__(self, id=None, email=None, password=None):
@@ -31,9 +32,16 @@ class BasketInfo:
         self.quantity = quantity
 
     def add_item():
+        pass
+
     def remove_item(basket_id):
+        pass
+
     def clear(user_id):
+        pass
+
     def save(self):
+        pass
 
 
 class OrderInfo:
@@ -47,8 +55,14 @@ class OrderInfo:
         self.driver_id = driver_id
 
     def create_from_cart(user_id, address, payment_method):
+        pass
+
     def get_items(self):
+        pass
+
     def update_status(self, status):
+        pass
+
     def to_dict(self): #Convert order to dictionary
         return {
             'id': self.user_id
@@ -60,11 +74,15 @@ class DriverInfo:
         self.name = name
         self.phone = phone
         self.status = status
+
     def get_all(): 
-    
+        pass
+
     def assign_to_order(self, order_id): #Assign this driver to an order
+        pass
     
-    def save(self)
+    def save(self):
+        pass
 
 class Menu:
     def __init__(self, id=None, product_id=None, category=None):
