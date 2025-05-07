@@ -1,6 +1,6 @@
 # views.py
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from models import User, Order, Cart, Product, Menu, Driver, Store
+from models import UserInfo, OrderInfo, BasketInfo, ProductInfo, Menu, DriverInfo, StoreInfo
 from forms import UserForm, LoginForm, CartForm, OrderForm, ProductForm, ReviewForm, SearchForm, ContactForm, DriverForm
 from flask_mysqldb import MySQL
 
