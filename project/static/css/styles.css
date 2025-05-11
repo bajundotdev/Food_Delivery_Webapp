@@ -16,7 +16,7 @@ footer h4.brand-color {
 }
 
 .hero-section {
-    background-image: url('/img/pexels-ella-olsson-herosection.jpg'); 
+    background-image: url('/static/img/pexels-ella-olsson-herosection.jpg'); 
     background-size: cover; 
     background-position: center;
     position: relative;

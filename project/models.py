@@ -29,7 +29,7 @@ class DriverStatus(Enum):
     UNAVAILABLE = "Unavailable"
 
 class ProductCategory(Enum):
-    ####
+    MAIN_COURSE = "Main"
 
 ###################
 # User Models
@@ -115,9 +115,9 @@ class Restaurant:
     name: str
     address: str
     phone: str
-    email: str = ""
-    website: str = ""
-    description: str = ""
+    email: str
+    website: str
+    description: str
     image_url: str = ""
     
     def get_url(self):
@@ -132,14 +132,15 @@ class Product:
     id: str
     name: str
     description: str
-    price: float
+    category: ProductCategory.MAIN_COURSE
+    restaurant_id: str
+    price: float = 0.00
     image_url: str = ""
-    category: ProductCategory = ProductCategory.MAIN_COURSE
-    restaurant_id: str = ""
     
     def get_url(self):
         """Return URL to product detail page."""
         return f"/product/{self.id}"
+
 
 ###################
 # Cart Models
@@ -148,7 +149,7 @@ class Product:
 class CartItem:
     id: str
     product_id: str
-    product: Product
+    products: List[Product] = field(default_factory=list)
     quantity: int = 1
     
     def get_subtotal(self):
@@ -203,7 +204,7 @@ class Cart:
 class OrderItem:
     id: str
     product_id: str
-    product: Product
+    products: List[Product] = field(default_factory=list)
     quantity: int = 1
     price: float = 0.0  # Store the price at the time of order
     

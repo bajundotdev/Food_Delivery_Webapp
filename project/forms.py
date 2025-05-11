@@ -25,7 +25,7 @@ class RegistrationForm(FlaskForm):
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    phone = StringField('Phone' validators=[DataRequired(), Length(min=10, max=15)])
+    phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
     password = PasswordField('Password', validators=[Optional(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[EqualTo('password')])
     submit = SubmitField('Update Profile')
