@@ -23,7 +23,7 @@ mysql = MySQL(app)
 @app.route('/')
 def index():
     """Homepage route."""
-    return render_template('index.html')
+    return render_template('base.html')
 
 ###################
 # User Routes
