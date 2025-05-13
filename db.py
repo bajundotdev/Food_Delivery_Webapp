@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant
+from project.models import Product, ProductCategory, Restaurant, DriverVehicle
 from datetime import datetime
 from typing import List
 from enum import Enum
@@ -16,6 +16,18 @@ from enum import Enum
 ################## 
 class ProductCategory(Enum):
     MAIN_COURSE = "Main Course"
+
+
+
+# DriverVehicle
+driver_vehicles = [
+    DriverVehicle(1, "vehicle 1", "JB2345"),
+    DriverVehicle(2, "vehicle 2", "AD6789"),
+    DriverVehicle(3, "vehicle 3", "NJ4123")
+]
+
+def get_all_vehicles():
+    return driver_vehicles
 
 products = [
     Product("1", "Pizza", "Delicious cheese pizza", ProductCategory.MAIN_COURSE, "101", 12.99, "https://example.com/pizza.jpg"),
