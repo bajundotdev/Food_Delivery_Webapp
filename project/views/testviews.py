@@ -1,18 +1,16 @@
 # views.py
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from .models import User, UserAddress, Order, OrderItem, Cart, CartItem, Product, Driver, Restaurant, Search, ProductCategory
-from .forms import LoginForm, RegistrationForm, UserForm, UserAddressForm, ContactForm, ReviewForm, SearchForm, CartForm, OrderForm, AdminUserForm, AdminSearchForm, ProductForm, RestaurantForm, DriverForm
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, session, flash
+from models import (
+    User, UserAddress, Order, OrderItem, Cart, CartItem, 
+    Product, Driver, Restaurant, Search, ProductCategory
+)
+from forms import LoginForm, RegistrationForm, UserForm, UserAddressForm, ContactForm, ReviewForm, SearchForm, CartForm, OrderForm, AdminUserForm, AdminSearchForm, ProductForm, RestaurantForm, DriverForm
 from dataclasses import dataclass
-
-
-# Import dummy database db.py
-from db import get_all_products, get_all_restaurants
-
-
+from flask_mysqldb import MySQL
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 user_bp = Blueprint('user', __name__, url_prefix='/user')
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 product_bp = Blueprint('product', __name__, url_prefix='/products') 
 order_bp = Blueprint('order', __name__, url_prefix='/orders')
@@ -65,12 +63,10 @@ def get_user_cart():
 def index():
     """Homepage route."""
     # Get featured products and restaurants
-    # featured_products = Product.get_all()[:4]  # Get first 4 products
-    featured_products = get_all_products()[:4]  # Get first 4 products
-    # featured_restaurants = Restaurant.get_all()[:3]  # Get first 3 restaurants
-    featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
+    featured_products = Product.get_all()[:4]  # Get first 4 products
+    featured_restaurants = Restaurant.get_all()[:3]  # Get first 3 restaurants
     
-    return render_template('landing_page.html', 
+    return render_template('index.html', 
                           products=featured_products,
                           restaurants=featured_restaurants)
 

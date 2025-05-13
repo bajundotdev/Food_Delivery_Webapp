@@ -117,6 +117,7 @@ class RestaurantForm(FlaskForm):
     website = StringField('Website', validators=[Optional(), Length(max=100)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
     image = FileField('Restaurant Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
+    role = HiddenField('Role', default='restaurant_manager') 
     submit = SubmitField('Save Restaurant')
 
 ###################
@@ -126,4 +127,5 @@ class DriverForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
     phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
     status = SelectField('Status', choices=[('available', 'Available'), ('unavailable', 'Unavailable')])
+    role = HiddenField('Role', default='driver') 
     submit = SubmitField('Submit')

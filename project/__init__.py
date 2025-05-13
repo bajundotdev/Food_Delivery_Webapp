@@ -1,27 +1,31 @@
-# __init__.py
 from flask import Flask
 from flask_mysqldb import MySQL
+from flask_bootstrap import Bootstrap5
+from datetime import timedelta
 
 mysql = MySQL()
+bootstrap = Bootstrap5()
 
-#create a function that creates a web application
-# a web server will run this web application
+
 def create_app():
     app = Flask(__name__)
-    app.debug = True
     app.secret_key = 'BetterSecretNeeded123'
+    mysql.init_app(app) 
+    bootstrap.init_app(app)
 
-    ### Change to the actual database name once saved in the folder
-    app.config['MYSQL_HOST'] = 'localhost'        # Database host (usually localhost)
-    app.config['MYSQL_USER'] = 'username'         # Your MySQL username
-    app.config['MYSQL_PASSWORD'] = 'password'     # Your MySQL password
-    app.config['MYSQL_DB'] = 'database_name'      # Name of the database you created. Change the file name to match your database name.
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'username'
+    app.config['MYSQL_PASSWORD'] = 'password'
+    app.config['MYSQL_DB'] = 'database_name'
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
     
-     # Initialize MySQL
-    mysql.init_app(app)
+    # Import views and blueprints here to avoid circular import issues
+    from .views import (
+        main_bp, user_bp, auth_bp, cart_bp, product_bp,
+        order_bp, admin_bp, driver_bp, restaurant_bp
+    )
 
-    # Register all blueprints
-    from . import views
+    # Register blueprints
     app.register_blueprint(views.main_bp)
     app.register_blueprint(views.user_bp)
     app.register_blueprint(views.auth_bp)
@@ -31,5 +35,5 @@ def create_app():
     app.register_blueprint(views.admin_bp)
     app.register_blueprint(views.driver_bp)
     app.register_blueprint(views.restaurant_bp)
-    
+
     return app
