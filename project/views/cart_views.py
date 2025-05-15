@@ -1,45 +1,50 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-from models import Product
-from forms.cart_forms import AddToCartForm
-from utils import is_logged_in, get_user_cart, save_cart_to_session
+from flask import Blueprint, render_template, redirect, url_for
+from models import Product, Cart, Order 
+from forms import ConfirmOrderForm 
+from views import Decorators 
 
+product_bp = Blueprint('product', __name__, url_prefix='/product')
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 
-@cart_bp.route('/add/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    form = AddToCartForm()
-    
-    # Check if user is logged in
-    if not is_logged_in():
-        flash('Please log in to add items to your cart', 'warning')
-        return redirect(url_for('auth.login'))
-
-    # Validate form submission
-    if not form.validate_on_submit():
-        flash('Invalid quantity', 'danger')
-        return redirect(url_for('products.view_product', product_id=product_id))
-
-    # Fetch the product from the database
-    product = Product.get_by_id(product_id)
-    if not product:
-        flash('Product not found', 'danger')
-        return redirect(url_for('products.list_products'))
-
-    # Get the user's cart
-    cart = get_user_cart(session['user_id'])
-
-    # Add the product to the cart
-    cart.add_item(product, form.quantity.data)
-
-    # Save the updated cart in the session
-    save_cart_to_session(cart)
-
-    # Notify the user
-    flash(f'Added {form.quantity.data} of {product.name} to your cart.', 'success')
-    return redirect(url_for('cart.view_cart'))
-
-# Cart view to display the user's cart
-@cart_bp.route('/view')
+@cart_bp.route('/')
 def view_cart():
-    cart = get_user_cart(session.get('user_id'))
-    return render_template('cart/view_cart.html', cart=cart)
+    return render_template('cart.html')
+
+# Product Listings View
+@product_cart_bp.route('/products')
+def products():
+    products = Product.query.all()  # Fetch all products
+    return render_template('products.html', products=products)
+
+# Product Detail View
+@product_bp.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)  # Fetch product by ID
+    return render_template('product_detail.html', product=product)
+
+# Cart View
+@cart_bp.route('/cart')
+@login_required
+def cart():
+    cart_items = Cart.query.filter_by(user_id=current_user.id).all()  # Get user's cart items
+    total_price = sum(item.product.price * item.quantity for item in cart_items)  # Calculate total price
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+
+# Checkout View
+@product_cart_bp.route('/checkout', methods=['GET', 'POST'])
+@login_required
+def checkout():
+    form = ConfirmOrderForm()
+    if form.validate_on_submit():
+        # Process order (create order, reduce cart items, etc.)
+        new_order = Order(user_id=current_user.id, delivery_address=form.delivery_address.data)
+        # Add items to order, handle payment, etc.
+        return redirect(url_for('product_cart.order_confirmation', order_id=new_order.id))
+    return render_template('checkout.html', form=form)
+
+# Order Confirmation View
+@product_cart_bp.route('/order/<int:order_id>/confirmation')
+@login_required
+def order_confirmation(order_id):
+    order = Order.query.get_or_404(order_id)  # Fetch order by ID
+    return render_template('order_confirmation.html', order=order)

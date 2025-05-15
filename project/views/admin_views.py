@@ -11,38 +11,52 @@ def admin_dashboard():
     # Only authenticated admins can access this
     return render_template('admin/dashboard.html')
 
-@admin_bp.route('/restaurants')
+@admin_bp.route('/products')
 @login_required
 @admin_required
-def list_restaurants():
-    """Display all restaurants for admin."""
+def products():
+    """Admin view to manage all products."""
     cursor = MySQL.connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users WHERE role = 'restaurant_manager'")
-    restaurants = cursor.fetchall()
-    cursor.close()
-    
-    return render_template('admin/restaurants.html', restaurants=restaurants)
 
-@admin_bp.route('/restaurants/<int:restaurant_id>')
-@login_required
-@admin_required
-def restaurant_detail(restaurant_id):
-    """Display restaurant details and menu for admin."""
-    # Get restaurant details
-    cursor = MySQL.connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users WHERE id = %s AND role = 'restaurant_manager'", 
-                  (restaurant_id,))
-    restaurant = cursor.fetchone()
-    
-    if not restaurant:
-        print('Restaurant not found', 'danger')
-        return redirect(url_for('admin.list_restaurants'))
-    
-    # Get restaurant's menu items
-    cursor.execute("SELECT * FROM products WHERE restaurant_id = %s", (restaurant_id,))
+    # Get all products
+    cursor.execute("SELECT * FROM products")
     product_items = cursor.fetchall()
     cursor.close()
-    
-    return render_template('admin/restaurant_detail.html', 
-                          restaurant=restaurant,
-                          product_items=product_items)
+
+    return render_template('admin/products.html', product_items=product_items)
+
+
+@admin_bp.route('/orders/assign/<int:order_id>', methods=['GET'])
+@login_required
+@admin_required
+def assign_driver_form(order_id):
+    cursor = MySQL.connection.cursor(dictionary=True)
+
+    # Get the order details
+    cursor.execute("SELECT * FROM orders WHERE id = %s", (order_id,))
+    order = cursor.fetchone()
+
+    if not order:
+        flash('Order not found.', 'danger')
+        return redirect(url_for('admin.dashboard'))
+
+    # Get list of all available drivers
+    cursor.execute
+
+@admin_bp.route('/orders/assign/<int:order_id>', methods=['POST'])
+@login_required
+@admin_required
+def assign_driver(order_id):
+    driver_id = request.form.get('driver_id')
+
+    if not driver_id:
+        flash('Please select a driver.', 'warning')
+        return redirect(url_for('admin.assign_driver_form', order_id=order_id))
+
+    cursor = MySQL.connection.cursor()
+    cursor.execute("UPDATE orders SET driver_id = %s WHERE id = %s", (driver_id, order_id))
+    MySQL.connection.commit()
+    cursor.close()
+
+    flash('Driver assigned successfully.', 'success')
+    return redirect(url_for('admin.view_order', order_id=order_id))  # Adjust route name if needed

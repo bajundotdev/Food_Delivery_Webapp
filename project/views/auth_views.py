@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, RegistrationForm
-from models import UserRole, User
+from models import User
 from utils import is_logged_in
+from decorators import admin_required, login_required
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():

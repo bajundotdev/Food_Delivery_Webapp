@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models import Product, Restaurant
+from models import User, cart_order_product
 from forms import AddToCartForm
 from utils import get_user_cart, save_cart, is_logged_in, get_user_id
 
@@ -10,7 +10,7 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     """Homepage route."""
-    # Get featured products and restaurants
+    # Get featured products
     featured_products = Product.get_all()[:4]  # Get the first 4 products
     featured_restaurants = Restaurant.get_all()[:3]  # Get the first 3 restaurants
     

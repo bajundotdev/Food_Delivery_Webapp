@@ -16,7 +16,6 @@ product_bp = Blueprint('product', __name__, url_prefix='/products')
 order_bp = Blueprint('order', __name__, url_prefix='/orders')
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
-restaurant_bp = Blueprint('restaurant', __name__, url_prefix='/restaurants')
 
 ###################
 # Session Management
