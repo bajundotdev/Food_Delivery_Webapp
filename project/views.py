@@ -70,7 +70,7 @@ def index():
     # featured_restaurants = Restaurant.get_all()[:3]  # Get first 3 restaurants
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
     
-    return render_template('landing_page.html', 
+    return render_template('index.html', 
                           products=featured_products,
                           restaurants=featured_restaurants)
 
@@ -156,9 +156,9 @@ def logout():
 @cart_bp.route('/')
 def view_cart():
     """View cart contents."""
-    if not is_logged_in():
-        flash('Please log in to view your cart')
-        return redirect(url_for('auth.login'))
+    # if not is_logged_in():
+    #     flash('Please log in to view your cart')
+    #     return redirect(url_for('auth.login'))
         
     cart = get_user_cart()
     if not cart:
@@ -225,8 +225,9 @@ def remove_from_cart(product_id):
 @product_bp.route('/')
 def list_products():
     """Display all products."""
-    products = Product.get_all()
-    return render_template('products/list.html', products=products)
+    # products = Product.get_all()
+    products = get_all_products()
+    return render_template('products/product_list.html', products=products)
 
 @product_bp.route('/category/<category>')
 def list_by_category(category):
