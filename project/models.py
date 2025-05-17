@@ -39,8 +39,8 @@ class ProductCategory(Enum):
 class User:
     id: str
     name: str
-    phone: str
     email: str
+    phone: str
     password: str
     profile_picture_url: str = ""
     role: UserRole = UserRole.CUSTOMER
@@ -122,8 +122,11 @@ class Driver:
 @dataclass
 class Restaurant:
     id: str
+    owner_id: str
     name: str
+    is_indigenous: bool
     address: str
+    is_active: bool
     phone: str
     email: str
     website: str
@@ -143,10 +146,12 @@ class Product:
     name: str
     description: str
     category: ProductCategory.MAIN_COURSE
-    restaurant_id: str
     price: float = 0.00
+    food_rating: float = 0.00
+    prep_time: int = 5
     image_url: str = ""
-    
+    is_active: bool = False
+    restaurant_id: str = ""
     def get_url(self):
         """Return URL to product detail page."""
         return f"/product/{self.id}"
