@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <!-- This is the head block where additional head content can be added -->
-    <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
-        <strong class="pe-4">Do you need a business account?</strong>
-        <button type="button" class="btn btn-outline-danger">Sign up now</button>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid">
@@ -34,12 +27,15 @@
 
 {% block main %}
     <!-- Hero Section -->
+    <section>
+        {{ vehicles }}
+    </section>
     <section class="hero-section bg-light py-5">
         <div class="container"></div>
             <div class="row align-items-center">
                 <div class="col-1 col-lg-2 col-xl-3"></div>
                 <div class="col-10 col-lg-8 col-xl-6">
-                    <h1 class="text-white">Sign up for free delivery on your first order</h1>
+                    <h1 class="text-white" >Sign up for free delivery on your first order</h1>
                     <p class="text-white">Support local businesses while enjoying fresh meals</p>
                     <div class="my-4">
                         <div class="card p-3">
@@ -57,6 +53,22 @@
             </div>
         </div>
     </section>
+
+    <!-- List of links here -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h5>This will be removed upon finalization</h5>
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="{{ url_for('main.index') }}">Home route: ('main.index') </a></li>
+                    <li class="list-group-item"><a href="{{ url_for('product.list_products') }}">Menu or products route: ('product.list_products')</a></li>
+                    <li class="list-group-item"><a href="{{ url_for('product.product_detail', product_id=1) }}">For specific product route: ('product.product_detail', product_id=product.id)</a></li>
+                    <li class="list-group-item"><a href="#">Cart route: ('cart.view_cart')</a></li>
+                    <li class="list-group-item"><a href="#">Driver route: ('driver.list_drivers')</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <!-- Filter Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
@@ -121,9 +133,6 @@
 
     <!-- Main container -->
     <main class="container my-4">
-
-        {{ products }}
-        
         <!-- Featured Food Menu Section -->
         <section>
             <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
@@ -136,15 +145,13 @@
                                 <h5 class="card-title mt-2">{{ product.name }}</h5>
                                 <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
                                 <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></small></p>
-                                <a href="product_details.html" class="btn btn-danger">View Menu</a>
+                                <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-danger">View Menu</a>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </section>
-
-        {{ restaurants }}
 
         <!-- Food Categories Section -->
         <section class="mb-5">
