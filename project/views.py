@@ -6,11 +6,7 @@ from dataclasses import dataclass
 
 
 # Import dummy database db.py
-<<<<<<< HEAD
-from db import get_all_products, get_all_restaurants, get_all_vehicles
-=======
 from db import get_all_products, get_all_restaurants, check_user, add_user
->>>>>>> origin/main
 
 
 # Create blueprints for different sections of the application
@@ -71,21 +67,11 @@ def index():
     # Get featured products and restaurants
     featured_products = get_all_products()[:4]  # Get first 4 products
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
-<<<<<<< HEAD
-    vehicles = get_all_vehicles()
-    return render_template('landing_page.html', 
-                          products=featured_products,
-                          restaurants=featured_restaurants,
-                          vehicles=vehicles)
-
-
-=======
 
     return render_template('index.html',
                           products=featured_products,
                           restaurants=featured_restaurants)
  
->>>>>>> origin/main
 ###################
 # User Routes
 ###################
@@ -300,12 +286,11 @@ def restaurant_detail(restaurant_id):
 # Driver Routes
 ###################
 
-@driver_bp.route('/vehicles')
+@driver_bp.route('/')
 def list_drivers():
     """Display all drivers."""
-    # drivers = Driver.get_all()
-    # return render_template('drivers/list.html', drivers=drivers)
-    return render_template('drivers/vehicle.html', vehicles=get_all_vehicles())
+    drivers = Driver.get_all()
+    return render_template('drivers/list.html', drivers=drivers)
 
 ###################
 # Order Routes
