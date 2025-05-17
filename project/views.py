@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 
 # Import dummy database db.py
-from db import get_all_products, get_all_restaurants
+from db import get_all_products, get_all_restaurants, check_user, add_user
 
 
 # Create blueprints for different sections of the application
@@ -20,9 +20,9 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 restaurant_bp = Blueprint('restaurant', __name__, url_prefix='/restaurants')
 
-###################
+##########################
 # Session Management
-###################
+##########################
 
 def is_logged_in():
     """Check if user is logged in."""
@@ -65,14 +65,17 @@ def get_user_cart():
 def index():
     """Homepage route."""
     # Get featured products and restaurants
-    # featured_products = Product.get_all()[:4]  # Get first 4 products
     featured_products = get_all_products()[:4]  # Get first 4 products
-    # featured_restaurants = Restaurant.get_all()[:3]  # Get first 3 restaurants
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
-    
-    return render_template('index.html', 
+
+    return render_template('index.html',
                           products=featured_products,
                           restaurants=featured_restaurants)
+ 
+
+    
+    
+    
 
 ###################
 # User Routes
@@ -81,9 +84,9 @@ def index():
 @user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
     """View and edit user profile on the same page."""
-    # if not is_logged_in():
-    #     flash('Please log in to view your profile')
-    #     return redirect(url_for('auth.login'))
+    if not is_logged_in():
+        flash('Please log in to view your profile')
+        return redirect(url_for('auth.login'))
         
     user_id = get_user_id()
     user = User.get_by_id(user_id)
@@ -117,6 +120,8 @@ def profile():
                           addresses=addresses,
                           form=form)
 
+
+
 ###################
 # Authentication Routes
 ###################
@@ -125,22 +130,29 @@ def profile():
 def login():
     """User login route."""
     form = LoginForm()
-    
-    if form.validate_on_submit():
-        # Example login logic
-        username = form.username.data
-        password = form.password.data
-        
-        user = User.get_by_email(username)
-        if user and user.password == password:  
-            session['user_id'] = user.id
-            session['user_role'] = user.role.value 
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # Example login logic
+            user = check_user(form.username.data, form.password.data)
+
+            if not user:
+                flash('Invalid username or password', 'error')
+                return redirect(url_for('main.login'))
+
+            # Store full user info in session
+            session['user'] = {
+                'user_id': user.info.id,
+                'firstname': user.info.name,
+                'phone': user.info.phone,
+                'email': user.info.email,
+                'role': user.info.role,
+
+            }
+            session['logged_in'] = True
             flash('Login successful!')
-            return redirect(url_for('user.profile'))
-        else:
-            flash('Invalid username or password')
-    
-    return render_template('login.html', form=form)
+            return redirect(url_for('main.profile'))
+        
+        return render_template('login.html', form=form)
 
 @auth_bp.route('/logout')
 def logout():
@@ -156,9 +168,9 @@ def logout():
 @cart_bp.route('/')
 def view_cart():
     """View cart contents."""
-    # if not is_logged_in():
-    #     flash('Please log in to view your cart')
-    #     return redirect(url_for('auth.login'))
+    if not is_logged_in():
+        flash('Please log in to view your cart')
+        return redirect(url_for('auth.login'))
         
     cart = get_user_cart()
     if not cart:
@@ -225,7 +237,6 @@ def remove_from_cart(product_id):
 @product_bp.route('/')
 def list_products():
     """Display all products."""
-    # products = Product.get_all()
     products = get_all_products()
     return render_template('products/product_list.html', products=products)
 
