@@ -68,15 +68,10 @@ def index():
     featured_products = get_all_products()[:4]  # Get first 4 products
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
 
-    return render_template('landing_page.html',
+    return render_template('index.html',
                           products=featured_products,
                           restaurants=featured_restaurants)
  
-
-    
-    
-    
-
 ###################
 # User Routes
 ###################
@@ -119,8 +114,6 @@ def profile():
                           orders=orders, 
                           addresses=addresses,
                           form=form)
-
-
 
 ###################
 # Authentication Routes
@@ -237,8 +230,8 @@ def remove_from_cart(product_id):
 @product_bp.route('/')
 def list_products():
     """Display all products."""
-    products = Product.get_all()
-    return render_template('products/list.html', products=products)
+    products = get_all_products()
+    return render_template('products/product_list.html', products=products)
 
 @product_bp.route('/category/<category>')
 def list_by_category(category):
