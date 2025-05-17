@@ -1,9 +1,5 @@
 # dummyDb.py
-<<<<<<< HEAD
-from project.models import Product, ProductCategory, Restaurant, DriverVehicle
-=======
 from project.models import Product, ProductCategory, Restaurant, User, UserRole
->>>>>>> origin/main
 from datetime import datetime
 from typing import List
 from enum import Enum
@@ -24,27 +20,6 @@ curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 class ProductCategory(Enum):
     MAIN_COURSE = "Main Course"
 
-<<<<<<< HEAD
-
-
-# DriverVehicle
-driver_vehicles = [
-    DriverVehicle(1, "vehicle 1", "JB2345"),
-    DriverVehicle(2, "vehicle 2", "AD6789"),
-    DriverVehicle(3, "vehicle 3", "NJ4123")
-]
-
-def get_all_vehicles():
-    return driver_vehicles
-
-products = [
-    Product("1", "Pizza", "Delicious cheese pizza", ProductCategory.MAIN_COURSE, "101", 12.99, "https://example.com/pizza.jpg"),
-    Product("2", "Burger", "Juicy beef burger", ProductCategory.MAIN_COURSE, "102", 9.99, "https://example.com/burger.jpg"),
-    Product("3", "Pizza", "Delicious cheese pizza", ProductCategory.MAIN_COURSE, "101", 12.99, "https://example.com/pizza.jpg"),
-    Product("4", "Burger", "Juicy beef burger", ProductCategory.MAIN_COURSE, "102", 9.99, "https://example.com/burger.jpg"),
-]
-=======
->>>>>>> origin/main
 
 def check_user(email, password):
     cur = mysql.connection.cursor()
