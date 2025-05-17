@@ -54,6 +54,16 @@ class User:
         return self.role == UserRole.ADMIN
 
 @dataclass
+class DriverVehicle:
+    id: int
+    name: str
+    plate_number: str
+
+    def get_url(self):
+        """Return URL to driver vehicle."""
+        return f"/driver/vehicle"
+
+@dataclass
 class UserAddress:
     id: str
     user_id: str
