@@ -81,9 +81,9 @@ def index():
 @user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
     """View and edit user profile on the same page."""
-    if not is_logged_in():
-        flash('Please log in to view your profile')
-        return redirect(url_for('auth.login'))
+    # if not is_logged_in():
+    #     flash('Please log in to view your profile')
+    #     return redirect(url_for('auth.login'))
         
     user_id = get_user_id()
     user = User.get_by_id(user_id)
