@@ -14,7 +14,7 @@ The application follows a modular architecture using Flask blueprints, with clea
 └── project/
     ├── static/
     │   ├── css/
-    │   ├── img/
+    │   └── img/
     ├── templates/
     ├── forms.py
     ├── models.py
@@ -22,3 +22,4 @@ The application follows a modular architecture using Flask blueprints, with clea
     ├── run.py
     ├── database.sql (pre-populated)
     └── README.txt (brief setup instructions)
+```
