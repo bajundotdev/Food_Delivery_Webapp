@@ -1,6 +1,3 @@
-# Dont push __init__.py
-project/__init__.py
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
