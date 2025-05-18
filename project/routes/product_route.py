@@ -1,0 +1,48 @@
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from project.models import Product, ProductCategory
+
+# Import dummy database db.py
+from db import (get_all_products, 
+                get_product_by_id,
+                get_all_restaurants, 
+                check_user, 
+                add_user)
+
+# Create blueprints for different sections of the application
+product_bp = Blueprint('product', __name__, url_prefix='/products') 
+
+#####################
+# Product Routes    #
+#####################
+
+@product_bp.route('/')
+def product_list():
+    """Display all products."""
+    products = get_all_products()
+    return render_template('products/product_list.html', products=products)
+
+@product_bp.route('/category/<category>')
+def list_by_category(category):
+    """Display products by category."""
+    try:
+        # Convert string to enum
+        category_enum = ProductCategory[category.upper()]
+        products = Product.get_by_category(category_enum)
+        return render_template('products/category.html', 
+                              products=products, 
+                              category=category_enum)
+    except KeyError:
+        flash(f'Category {category} not found')
+        return redirect(url_for('product.list_products'))
+
+@product_bp.route('/<product_id>')
+def product_detail(product_id):
+    """Display product details."""
+
+    product = get_product_by_id(product_id)
+
+    if not product:
+        flash('Product not found')
+        return redirect(url_for('product.product_list'))
+        
+    return render_template('products/product_detail.html', product=product)

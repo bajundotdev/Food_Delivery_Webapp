@@ -1,5 +1,6 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, UserRole
+from project.models.main_model import Restaurant, User, UserRole
+from project.models import Product
 from datetime import datetime
 from typing import List
 from enum import Enum
@@ -12,14 +13,6 @@ app = Flask(__name__)
 mysql = MySQL(app)  # this is the instantiation
 
 curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-
-################## 
-# ENUMS
-################## 
-class ProductCategory(Enum):
-    MAIN_COURSE = "Main Course"
-
 
 def check_user(email, password):
     cur = mysql.connection.cursor()
@@ -49,6 +42,9 @@ def add_user(form):
     mysql.connection.commit()
     cur.close()
 
+
+### Product model queries
+
 def get_all_products():
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -62,6 +58,13 @@ def get_all_products():
              row[3], float(row[4]), float(row[5]), int(row[6]),
              row[7], row[8], str(row[11])) for row in results
     ]
+
+def get_product_by_id(product_id):
+    pass
+
+###
+
+
 def get_all_restaurants():
     cur = mysql.connection.cursor()
     cur.execute("""
