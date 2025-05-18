@@ -11,16 +11,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 mysql = MySQL(app)  # this is the instantiation
 
-curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
-
-################## 
-# ENUMS
-################## 
-class ProductCategory(Enum):
-    MAIN_COURSE = "Main Course"
-
-
+##################
+#    AUTH   
+##################
 def check_user(email, password):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM user_table WHERE email = \"%s\";" % email)
@@ -28,17 +23,19 @@ def check_user(email, password):
     cur.close()
     if row:
         if check_password_hash(row[4], password):
-            if row[6] == "admin":
-                role = UserRole.ADMIN
-            elif row[6] == "user":
-                role = UserRole.CUSTOMER
-            elif row[6] == "driver":
-                role = UserRole.DRIVER
-            elif row[6] == "ownder":
-                role = UserRole.RESTAURANTOWNER
-            return User(row[0], row[1], row[2], row[3], row[4], row[5], role)
+            return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
                            
     return None
+
+##################
+#    USER QUERIES   
+##################
+
+def get_user_by_id():
+    pass
+
+def get_user_by_name():
+    pass
 
 def add_user(form):
     cur = mysql.connection.cursor()
@@ -49,6 +46,24 @@ def add_user(form):
     mysql.connection.commit()
     cur.close()
 
+#update
+#delete
+
+##################
+#    ADDRESS QUERIES   
+##################
+def get_address_by_user_id(user_id):
+    pass
+
+def add_address_by_user_id(user_id):
+    pass
+
+#update
+#delete
+
+##################
+#    PRODUCT QUERIES   
+##################
 def get_all_products():
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -57,11 +72,66 @@ def get_all_products():
     """)
     results = cur.fetchall()
     cur.close()
+
     return [
         Product(str(row[0]), row[1], row[2],
              row[3], float(row[4]), float(row[5]), int(row[6]),
              row[7], row[8], str(row[11])) for row in results
     ]
+
+def get_product_by_id(product_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM product_table
+        WHERE product_id = %d
+    """ % product_id)
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Product(str(row[0]), row[1], row[2],
+             row[3], float(row[4]), float(row[5]), int(row[6]),
+             row[7], row[8], str(row[11]))
+    ]
+
+def search_product_by_name(search_str):
+    str = "%" + str(search_str) + "%"
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM product_table
+        WHERE product_id LIKE %s
+    """ % str)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Product(str(row[0]), row[1], row[2],
+             row[3], float(row[4]), float(row[5]), int(row[6]),
+             row[7], row[8], str(row[11])) for row in results
+    ]
+
+def get_product_by_category(categ):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM product_table
+        WHERE category = %s
+    """ % categ)
+    results = cur.fetchall()
+    cur.close()
+
+    return [
+        Product(str(row[0]), row[1], row[2],
+             row[3], float(row[4]), float(row[5]), int(row[6]),
+             row[7], row[8], str(row[11])) for row in results
+    ]
+
+#add
+#update
+#delete
+##################
+#    RESTAURANT QUERIES   
+##################
 def get_all_restaurants():
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -75,3 +145,41 @@ def get_all_restaurants():
              bool(row[3]), row[4], bool(row[5]), row[6],
              row[7], row[8], row[9], row[10]) for row in results
     ]
+
+def get_restaurant_by_id():
+    pass
+
+def get_restaurant_by_name():
+    pass
+
+#add
+#update
+#delete
+
+##################
+#    DRIVER QUERIES   
+##################
+def get_driver_by_id(driver_id):
+    pass
+
+def get_all_drivers():
+    pass
+
+def get_available_driver():
+    pass
+
+#add driver
+#update driver
+#delete driver
+
+##################
+#    PAYMENT QUERIES   
+##################
+
+##################
+#    ORDER QUERIES   
+##################
+
+##################
+#    CART QUERIES   
+##################
