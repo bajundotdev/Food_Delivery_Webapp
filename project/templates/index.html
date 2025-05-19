@@ -27,9 +27,6 @@
 
 {% block main %}
     <!-- Hero Section -->
-    <section>
-        {{ vehicles }}
-    </section>
     <section class="hero-section bg-light py-5">
         <div class="container"></div>
             <div class="row align-items-center">
@@ -58,11 +55,13 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
+                <h4>Sample Links</h4>
                 <h5>This will be removed upon finalization</h5>
                 <ul class="list-group">
                     <li class="list-group-item"><a href="{{ url_for('main.index') }}">Home route: ('main.index') </a></li>
-                    <li class="list-group-item"><a href="{{ url_for('product.list_products') }}">Menu or products route: ('product.list_products')</a></li>
+                    <li class="list-group-item"><a href="{{ url_for('product.product_list') }}">Menu or products route: ('product.list_products')</a></li>
                     <li class="list-group-item"><a href="{{ url_for('product.product_detail', product_id=1) }}">For specific product route: ('product.product_detail', product_id=product.id)</a></li>
+                    <li class="list-group-item"><a href="{{ url_for('user.profile') }}">User Profile route: ('user.profile')</a></li>
                     <li class="list-group-item"><a href="#">Cart route: ('cart.view_cart')</a></li>
                     <li class="list-group-item"><a href="#">Driver route: ('driver.list_drivers')</a></li>
                 </ul>
@@ -143,6 +142,7 @@
                             <img src="{{ product.image_url }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="..." />
                             <div class="card-body">
                                 <h5 class="card-title mt-2">{{ product.name }}</h5>
+                                <p class="card-title mt-2">{{ product.description }}</p>
                                 <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
                                 <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></small></p>
                                 <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-danger">View Menu</a>

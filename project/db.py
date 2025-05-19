@@ -1,21 +1,16 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, UserRole, Driver
+from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
 from datetime import datetime
-from typing import List
-from enum import Enum
-from flask import Flask, render_template_string, request, session, redirect, url_for
+from werkzeug.security import check_password_hash
 from flask_mysqldb import MySQL
-from MySQLdb import _mysql
-from werkzeug.security import generate_password_hash, check_password_hash
-
-app = Flask(__name__)
-mysql = MySQL(app)  # this is the instantiation
 
 curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
-##################
-#    AUTH   
-##################
+mysql = MySQL()
+
+#####################
+#    AUTH           #
+#####################
 def check_user(email, password):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM user_table WHERE email = \"%s\";" % email)
@@ -27,9 +22,9 @@ def check_user(email, password):
                            
     return None
 
-##################
-#    USER QUERIES   
-##################
+#####################
+#    USER QUERIES   #
+#####################
 
 def get_user_by_id(user_id):
     cur = mysql.connection.cursor()
@@ -102,6 +97,7 @@ def get_address_by_user_id(user_id):
     ]
    
 def add_address_by_user_id(form):
+    pass
     # cur = mysql.connection.cursor()
     # cur.execute("""
     #     INSERT INTO user_address (
@@ -231,7 +227,7 @@ def get_restaurant_by_name():
 def get_driver_by_id(driver_id):
     pass
 
-def get_all_drivers():
+def get_all_driver():
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
@@ -279,7 +275,6 @@ def get_available_driver():
              row['user_table.profile_picture_url'], row['user_table.is_active']
              ) for row in results
     ]
-         
 
 #add driver
 #update driver
