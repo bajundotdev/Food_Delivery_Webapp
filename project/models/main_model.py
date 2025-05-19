@@ -31,6 +31,7 @@ class DriverStatus(Enum):
 class ProductCategory(Enum):
     MAIN_COURSE = "Main"
 
+
 ###################
 # User Models
 ###################
@@ -104,8 +105,12 @@ class UserAddress:
 class Driver:
     id: str
     user_id: str
-    phone: str
-    status: DriverStatus = DriverStatus.AVAILABLE
+    vehicle_type: str
+    license_number: str
+    vehicle_plate: str
+    is_available: bool
+    driver_rating: float
+    total_deliveries: int
     
     def get_url(self):
         """Return URL to driver detail page."""

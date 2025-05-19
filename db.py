@@ -1,6 +1,6 @@
 # dummyDb.py
-from project.models.main_model import Restaurant, User, UserRole
-from project.models import Product
+from project.models.main_model import Driver, Restaurant, User, UserRole
+from project.models import Product, Driver
 from datetime import datetime
 from typing import List
 from enum import Enum
@@ -27,7 +27,7 @@ def check_user(email, password):
                 role = UserRole.CUSTOMER
             elif row[6] == "driver":
                 role = UserRole.DRIVER
-            elif row[6] == "ownder":
+            elif row[6] == "owner":
                 role = UserRole.RESTAURANTOWNER
             return User(row[0], row[1], row[2], row[3], row[4], row[5], role)
                            
@@ -77,4 +77,20 @@ def get_all_restaurants():
         Restaurant(str(row[0]), row[1], row[2],
              bool(row[3]), row[4], bool(row[5]), row[6],
              row[7], row[8], row[9], row[10]) for row in results
+    ]
+
+### Driver model queries
+
+def get_all_driver():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM delivery_driver
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Driver(str(row[0]), row[1], row[2],
+             row[3], (row[4]), (row[5]), float(row[6]),
+             int(row[7])) for row in results
     ]
