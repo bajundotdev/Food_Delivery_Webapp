@@ -1,17 +1,19 @@
 # __init__.py
 from flask import Flask
 from flask_mysqldb import MySQL
+from .routes import all_blueprints
+from .routes.error_handlers_route import not_found_error, internal_error
 
 mysql = MySQL()
 
-#create a function that creates a web application
+# create a function that creates a web application
 # a web server will run this web application
 def create_app():
     app = Flask(__name__)
     app.debug = True
     app.secret_key = 'BetterSecretNeeded123'
-
-    ### Change to the actual database name once saved in the folder
+    # MySQL configurations
+    # Change to the actual database name once saved in the folder
     app.config['MYSQL_HOST'] = 'localhost'        # Database host (usually localhost)
     app.config['MYSQL_USER'] = 'root'         # Your MySQL username
     app.config['MYSQL_PASSWORD'] = 'n12333492'     # Your MySQL password
@@ -21,17 +23,10 @@ def create_app():
     mysql.init_app(app)
 
     # Register all blueprints
-    from .views import register_views
-    register_views(app)
+    for bp in all_blueprints:
+        app.register_blueprint(bp)
 
-    # app.register_blueprint(views.main_bp)
-    # app.register_blueprint(views.user_bp)
-    # app.register_blueprint(views.auth_bp)
-    # app.register_blueprint(views.cart_bp)
-    # app.register_blueprint(views.product_bp)
-    # app.register_blueprint(views.order_bp)
-    # app.register_blueprint(views.admin_bp)
-    # app.register_blueprint(views.driver_bp)
-    # app.register_blueprint(views.restaurant_bp)
+    app.register_error_handler(404, not_found_error)
+    app.register_error_handler(500, internal_error)
     
     return app

@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models.main_model import Driver, Restaurant, User, UserRole
+from project.models import Driver, Restaurant, User, UserRole
 from project.models import Product, Driver
 from datetime import datetime
 from typing import List

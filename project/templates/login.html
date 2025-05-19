@@ -1,0 +1,19 @@
+<div class="modal-body">
+    <p>Login or sign up to continue</p>
+    <form>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="loginEmail" placeholder="Email Address" required>
+            <label for="loginEmail">Email Address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+            <label for="loginPassword">Password</label>
+        </div>
+        <button type="submit" class="btn btn-danger w-100">Login</button>
+    </form>
+    <div class="text-center mt-3">
+        <button class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up</button>
+    </div>
+</div>
+
+{{ form.email }}

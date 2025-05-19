@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.models import Product, ProductCategory
 
 # Import dummy database db.py
-from db import (get_all_products, 
+from project.db import (get_all_products, 
                 get_product_by_id,
                 get_all_restaurants, 
                 check_user, 
@@ -35,7 +35,7 @@ def list_by_category(category):
         flash(f'Category {category} not found')
         return redirect(url_for('product.list_products'))
 
-@product_bp.route('/<product_id>')
+@product_bp.route('/<int:product_id>')
 def product_detail(product_id):
     """Display product details."""
 
