@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, UserRole
+from project.models import Product, ProductCategory, Restaurant, User, UserRole, Driver
 from datetime import datetime
 from typing import List
 from enum import Enum
@@ -234,19 +234,52 @@ def get_driver_by_id(driver_id):
 def get_all_drivers():
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
+        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
+                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
+                delivery_driver.total_deliveries,
+                user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
+                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available,
+                CASE WHEN delivery_driver.is_available = 1 THEN 'Available'
+                WHEN delivery_driver.is_available = 0 THEN 'Unavailable'
+                END AS driver_is_available
+                
         FROM delivery_driver, user_table
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1
     """)
     results = cur.fetchall()
     cur.close()
     return [
-        Restaurant(str(row[0]), row[1], row[2],
-             bool(row[3]), row[4], bool(row[5]), row[6],
-             row[7], row[8], row[9], row[10]) for row in results
+        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id,']), row['delivery_driver.vehicle_type'],
+             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
+             int(row['delivery_driver.total_deliveries']),
+             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
+             row['user_table.profile_picture_url'], row['user_table.is_active'], row['driver_is_available']
+             ) for row in results
     ]
 
 def get_available_driver():
-    pass
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
+                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
+                delivery_driver.total_deliveries,
+                user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
+                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
+                
+        FROM delivery_driver, user_table
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id,']), row['delivery_driver.vehicle_type'],
+             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
+             int(row['delivery_driver.total_deliveries']),
+             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
+             row['user_table.profile_picture_url'], row['user_table.is_active']
+             ) for row in results
+    ]
+         
 
 #add driver
 #update driver

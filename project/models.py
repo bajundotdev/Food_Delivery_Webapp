@@ -105,9 +105,20 @@ class UserAddress:
 ###################
 @dataclass
 class Driver:
+    #dtable
     id: str
     user_id: str
-    phone: str
+    vecicle_type: str
+    license_number: str
+    vecicle_plate: str
+    driver_rating: float
+    total_deliveries: int
+    #usertable
+    fullname: str
+    email: str
+    phone_number: str
+    profile_picture_url: str
+    is_active: bool
     status: DriverStatus = DriverStatus.AVAILABLE
     
     def get_url(self):
