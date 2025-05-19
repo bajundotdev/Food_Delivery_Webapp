@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.models import Driver, DriverStatus
+from project.decorators import login_required, admin_required, driver_required
 
 # Import dummy database db.py
 from project.db import (get_all_products, 
@@ -38,11 +39,13 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 #     session.pop('user_role', None)
 
 
-# ###################
-# # Driver Routes     #
-# ###################
+#####################
+# Driver Routes     #
+#####################
 
 @driver_bp.route('/profile')
+@login_required
+@driver_required
 def profile():
     """Display all drivers."""
     drivers = get_all_driver()

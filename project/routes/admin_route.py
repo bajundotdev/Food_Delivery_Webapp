@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from project.forms import ProductForm
-from project.decorators import login_required, admin_required
+from project.decorators import login_required, admin_required, driver_required
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 
