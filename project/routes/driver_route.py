@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.models import Driver, DriverStatus
 
 # Import dummy database db.py
-from db import (get_all_products, 
+from project.db import (get_all_products, 
                 get_product_by_id,
                 get_all_restaurants, 
                 check_user, 

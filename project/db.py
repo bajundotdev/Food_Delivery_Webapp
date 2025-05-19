@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, Restaurant, User
+from project.models import Product, Restaurant, User, Driver, UserRole
 from datetime import datetime
 from werkzeug.security import check_password_hash
 from flask_mysqldb import MySQL
@@ -227,18 +227,18 @@ def get_restaurant_by_name():
 def get_driver_by_id(driver_id):
     pass
 
-def get_all_drivers():
+def get_all_driver():
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
-        FROM delivery_driver, user_table
+        FROM delivery_driver
     """)
     results = cur.fetchall()
     cur.close()
     return [
-        Restaurant(str(row[0]), row[1], row[2],
-             bool(row[3]), row[4], bool(row[5]), row[6],
-             row[7], row[8], row[9], row[10]) for row in results
+        Driver(str(row[0]), row[1], row[2],
+             row[3], (row[4]), (row[5]), float(row[6]),
+             int(row[7])) for row in results
     ]
 
 def get_available_driver():
