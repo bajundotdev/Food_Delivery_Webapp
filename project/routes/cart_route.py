@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 # Import dummy database db.py
-from db import get_all_products, get_all_restaurants, check_user, add_user
-
+from project.db import get_all_products, get_all_restaurants, check_user, add_user
 from project.models import Cart, CartItem, Product
 
 # Create blueprints for different sections of the application
@@ -49,6 +48,9 @@ def get_user_cart():
 # Cart Routes     #
 ###################
 
+# Dummy data for cart items
+dummy_cart_items = []
+
 @cart_bp.route('/')
 def view_cart():
     return render_template('users/user_cart.html')
@@ -66,7 +68,7 @@ def view_cart():
     #                       cart=cart,
     #                       total=cart.total_cost())
 
-@cart_bp.route('/add/<product_id>', methods=['POST'])
+@cart_bp.route('/add/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     """Add item to cart."""
     if not is_logged_in():
@@ -114,3 +116,7 @@ def remove_from_cart(product_id):
     
     flash('Item removed from cart')
     return redirect(url_for('cart.view_cart'))
+
+@cart_bp.route('/checkout')
+def checkout_cart():
+    return render_template('users/checkout.html')

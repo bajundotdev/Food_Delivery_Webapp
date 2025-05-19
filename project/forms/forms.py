@@ -1,129 +1,122 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FloatField, IntegerField, BooleanField, HiddenField, FileField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange, Optional
-from flask_wtf.file import FileRequired, FileAllowed
+from wtforms import (
+    StringField, PasswordField, SubmitField, TextAreaField, 
+    SelectField, FloatField, IntegerField, BooleanField, 
+    HiddenField, FileField
+)
+from wtforms.validators import (
+    DataRequired, Email, EqualTo, Length, 
+    NumberRange, Optional, ValidationError
+)
+from flask_wtf.file import FileAllowed
+from project.models import User
 
-###################
-# Authentication Forms
-###################
-class LoginForm(FlaskForm):
-    username = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Log In')
-
-class RegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
-
-###################
-# Customer Forms
-###################
-class UserForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+class BaseUserForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
-    password = PasswordField('Password', validators=[Optional(), Length(min=8)])
-    confirm_password = PasswordField('Confirm Password', validators=[EqualTo('password')])
-    submit = SubmitField('Update Profile')
+    address = TextAreaField('Address', validators=[DataRequired(), Length(min=10, max=200)])
 
-class UserAddressForm(FlaskForm):
-    street = StringField('Street Address', validators=[DataRequired(), Length(min=5, max=200)])
-    city = StringField('City', validators=[DataRequired(), Length(min=2, max=100)])
-    state = StringField('State/Province', validators=[DataRequired(), Length(min=2, max=100)])
-    postal_code = StringField('Postal Code', validators=[DataRequired(), Length(min=4, max=10)])
-    country = StringField('Country', validators=[DataRequired(), Length(min=2, max=100)])
-    submit = SubmitField('Save Address')
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered')
 
-class ContactForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+class RegistrationForm(BaseUserForm):
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        Length(min=8, message='Password must be at least 8 characters')
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(), 
+        EqualTo('password', message='Passwords must match')
+    ])
+    role = SelectField('Account Type', choices=[
+        ('customer', 'Customer'),
+        ('driver', 'Driver')
+    ], validators=[DataRequired()])
+    submit = SubmitField('Register')
+
+class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    subject = StringField('Subject', validators=[DataRequired(), Length(min=2, max=100)])
-    message = TextAreaField('Message', validators=[DataRequired(), Length(min=10, max=1000)])
-    submit = SubmitField('Send Message')
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Login')
 
-class ReviewForm(FlaskForm):
-    rating = SelectField('Rating', choices=[(1, '1 Star'), (2, '2 Stars'), (3, '3 Stars'), (4, '4 Stars'), (5, '5 Stars')], coerce=int)
-    comment = TextAreaField('Comment', validators=[DataRequired(), Length(min=10, max=500)])
-    submit = SubmitField('Submit Review')
+class PasswordChangeForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[
+        DataRequired(),
+        Length(min=8, message='Password must be at least 8 characters')
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(),
+        EqualTo('new_password', message='Passwords must match')
+    ])
+    submit = SubmitField('Change Password')
 
-###################
-# Shopping Forms
-###################
+class AdminUserForm(BaseUserForm):
+    is_super_admin = BooleanField('Super Admin Privileges')
+    submit = SubmitField('Save Admin')
+
 class SearchForm(FlaskForm):
     query = StringField('Search', validators=[DataRequired(), Length(min=2, max=100)])
-    submit = SubmitField('Search')
-
-class CartForm(FlaskForm):
-    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=1, max=20)])
-    product_id = HiddenField('Product ID')
-    submit = SubmitField('Add to Cart')
-
-class OrderForm(FlaskForm):
-    address = SelectField('Delivery Address', validators=[DataRequired()])
-    payment_method = SelectField('Payment Method', 
-                               choices=[
-                                   ('cash', 'Cash on Delivery'),
-                                   ('credit_card', 'Credit Card'),
-                                   ('debit_card', 'Debit Card')
-                               ])
-    notes = TextAreaField('Order Notes', validators=[Optional(), Length(max=500)])
-    submit = SubmitField('Place Order')
-
-###################
-# Admin Forms
-###################
-class AdminUserForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    role = SelectField('Role', choices=[
-        ('customer', 'Customer'),
-        ('admin', 'Admin'),
-        ('driver', 'Delivery Driver'),
-        ('restaurant_manager', 'Restaurant Manager')
-    ])
-    submit = SubmitField('Update User')
-
-class AdminSearchForm(FlaskForm):
-    query = StringField('Search', validators=[DataRequired(), Length(min=2, max=100)])
-    entity_type = SelectField('Type', choices=[
-        ('all', 'All'),
-        ('users', 'Users'),
-        ('orders', 'Orders'),
+    search_type = SelectField('Search Type', choices=[
         ('products', 'Products'),
-        ('restaurants', 'Restaurants')
-    ])
+        ('users', 'Users'),
+        ('orders', 'Orders')
+    ], default='products')
     submit = SubmitField('Search')
 
 class ProductForm(FlaskForm):
     name = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
-    description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
-    price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0.01)])
-    category = SelectField('Category', validators=[DataRequired()])
-    restaurant_id = SelectField('Restaurant', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[
+        DataRequired(), 
+        Length(min=10, max=500)
+    ])
+    price = FloatField('Price', validators=[
+        DataRequired(),
+        NumberRange(min=0.01, message='Price must be positive')
+    ])
+    stock = IntegerField('Initial Stock', validators=[
+        DataRequired(),
+        NumberRange(min=0, message='Stock cannot be negative')
+    ])
+    category = SelectField('Category', choices=[
+        ('food', 'Food'),
+        ('beverage', 'Beverage'),
+        ('other', 'Other')
+    ], validators=[DataRequired()])
     image = FileField('Product Image', validators=[
-        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Only JPEG/PNG images allowed')
     ])
     submit = SubmitField('Save Product')
 
-class RestaurantForm(FlaskForm):
-    name = StringField('Restaurant Name', validators=[DataRequired(), Length(min=2, max=100)])
-    address = StringField('Address', validators=[DataRequired(), Length(min=5, max=200)])
-    phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    website = StringField('Website', validators=[Optional(), Length(max=100)])
-    description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
-    image = FileField('Restaurant Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
-    submit = SubmitField('Save Restaurant')
+class CartOperationForm(FlaskForm):
+    product_id = HiddenField(validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[
+        DataRequired(),
+        NumberRange(min=1, max=20, message='Quantity must be between 1-20')
+    ], default=1)
+    submit = SubmitField('Update Cart')
 
-###################
-# Driver Forms
-###################
-class DriverForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
-    phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
-    status = SelectField('Status', choices=[('available', 'Available'), ('unavailable', 'Unavailable')])
-    submit = SubmitField('Submit')
+class CheckoutForm(FlaskForm):
+    payment_method = SelectField('Payment Method', choices=[
+        ('credit_card', 'Credit Card'),
+        ('debit_card', 'Debit Card'), 
+        ('cash', 'Cash on Delivery')
+    ], validators=[DataRequired()])
+    delivery_notes = TextAreaField('Delivery Instructions', validators=[
+        Optional(),
+        Length(max=200)
+    ])
+    submit = SubmitField('Place Order')
+
+class OrderStatusForm(FlaskForm):
+    status = SelectField('Update Status', choices=[
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled')
+    ], validators=[DataRequired()])
+    driver_id = SelectField('Assign Driver', coerce=int, validators=[Optional()])
+    submit = SubmitField('Update Status')

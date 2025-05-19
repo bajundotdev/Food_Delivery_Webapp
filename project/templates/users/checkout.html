@@ -1,3 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container-fluid">
+            <div class="d-flex d-block d-sm-none">
+                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+            </div>
+
+            <a class="navbar-brand text-danger" href="{{ url_for('main.index') }}">
+                <img src="{{ url_for('static', filename='img/icon.png') }}" alt="https://www.freepik.com/icon/restaurant_10264235#fromView=search&page=1&position=38&uuid=ff7f88b7-a7ed-41c5-a0c2-59c856b934b7" height="40"> Foodah!
+            </a>
+
+            <div class="d-flex d-none d-sm-block">
+                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                <a class="btn btn-danger me-4" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up for a free delivery</a>
+                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
+            </div>
+
+            <div class="d-flex d-block d-sm-none">
+                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
     <!-- Main content: Checkout form + Order summary -->
     <main class="container my-4">
         <h1 class="mb-4">Checkout</h1>
@@ -71,3 +99,4 @@
         </div>
         </div>
     </main>
+{% endblock %}

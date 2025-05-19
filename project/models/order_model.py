@@ -7,6 +7,10 @@ from enum import Enum
 # Enums             #
 #####################
 
+class DeliveryOption(Enum):
+    FOR_DELIVERY = "For Delivery"
+    FOR_PICKUP = "For Pickup"
+
 class OrderStatus(Enum):
     PENDING = "Pending"
     IN_PROGRESS = "In Progress"
@@ -45,6 +49,7 @@ class Order:
     total: float = 0.0
     items: List[OrderItem] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
+    delivery_option: DeliveryOption = DeliveryOption.FOR_DELIVERY
     
     def get_url(self):
         """Return URL to order detail page."""

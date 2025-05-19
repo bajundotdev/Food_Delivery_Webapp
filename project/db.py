@@ -1,21 +1,16 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, UserRole
+from project.models import Product, Restaurant, User
 from datetime import datetime
-from typing import List
-from enum import Enum
-from flask import Flask, render_template_string, request, session, redirect, url_for
+from werkzeug.security import check_password_hash
 from flask_mysqldb import MySQL
-from MySQLdb import _mysql
-from werkzeug.security import generate_password_hash, check_password_hash
-
-app = Flask(__name__)
-mysql = MySQL(app)  # this is the instantiation
 
 curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
-##################
-#    AUTH   
-##################
+mysql = MySQL()
+
+#####################
+#    AUTH           #
+#####################
 def check_user(email, password):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM user_table WHERE email = \"%s\";" % email)
@@ -27,9 +22,9 @@ def check_user(email, password):
                            
     return None
 
-##################
-#    USER QUERIES   
-##################
+#####################
+#    USER QUERIES   #
+#####################
 
 def get_user_by_id(user_id):
     cur = mysql.connection.cursor()
