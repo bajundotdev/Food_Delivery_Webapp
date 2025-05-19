@@ -27,8 +27,8 @@
                 </a>
 
                 <div class="d-flex d-none d-sm-block">
-                    <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                    <a class="btn btn-danger me-4" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up for a free delivery</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-dark mx-1">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-danger me-4">Sign up for a free delivery</a>
                     <a href="{{ url_for('cart.view_cart') }}" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
                 </div>
 
@@ -38,7 +38,6 @@
             </div>
         </nav>
     </header>
-
 
     <!-- Main content -->
     {% block main %}
