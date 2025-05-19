@@ -42,7 +42,7 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 # # Driver Routes     #
 # ###################
 
-@driver_bp.route('/')
+@driver_bp.route('/profile')
 def profile():
     """Display all drivers."""
     drivers = get_all_driver()
