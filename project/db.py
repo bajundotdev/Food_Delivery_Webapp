@@ -245,11 +245,11 @@ def get_all_driver():
     results = cur.fetchall()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id,']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['user_table.is_active'], row['driver_is_available']
+        Driver(str(row[0]), str(row[1]), row[2],
+             row[3], row[4], float(row[5]),
+             int(row[6]),
+             row[8], row[9], row[10],
+             row[11], row[12], row[13]
              ) for row in results
     ]
 
@@ -268,11 +268,11 @@ def get_available_driver():
     results = cur.fetchall()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id,']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['user_table.is_active']
+        Driver(str(row[0]), str(row[1]), row[2],
+             row[3], row[4], float(row[5]),
+             int(row[6]),
+             row[8], row[9], row[10],
+             row[11], row[12]
              ) for row in results
     ]
 

@@ -14,16 +14,13 @@ class DriverStatus(Enum):
 
 @dataclass
 class Driver:
-    #dtable
     id: str
     user_id: str
-    
     vecicle_type: str
     license_number: str
     vecicle_plate: str
     driver_rating: float
     total_deliveries: int
-    #usertable
     fullname: str
     email: str
     phone_number: str

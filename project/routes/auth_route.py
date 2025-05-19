@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from project.forms import LoginForm
+from project.forms.authentication_form import LoginForm
 from project.db import check_user
 from project.routes.utils import clear_user_session
 
@@ -28,35 +28,38 @@ def register():
     
     # return render_template('register.html', form=form)
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login/', methods=('POST', 'GET'))
 def login():
-    """User login route."""
-    return render_template('login.html')
-
-    # form = LoginForm()
-    # if request.method == 'POST':
-    #     if form.validate_on_submit():
-    #         # Example login logic
-    #         user = check_user(form.username.data, form.password.data)
-
-    #         if not user:
-    #             flash('Invalid username or password', 'error')
-    #             return redirect(url_for('main.login'))
-
-    #         # Store full user info in session
-    #         session['user'] = {
-    #             'user_id': user.info.id,
-    #             'firstname': user.info.name,
-    #             'phone': user.info.phone,
-    #             'email': user.info.email,
-    #             'role': user.info.role,
-
-    #         }
-    #         session['logged_in'] = True
-    #         flash('Login successful!')
-    #         return redirect(url_for('main.profile'))
+    form = LoginForm()
+    if request.method == 'POST':
         
-    # return render_template('login.html', form=form)
+        #if form.validate_on_submit():
+            user = check_user(form.username.data, form.password.data)
+            if not user:
+                flash('Invalid username or password', 'error')
+                return redirect(url_for('auth.login'))
+
+            # Store full user info in session
+            session['user'] = {
+                'user_id': user.id,
+                'firstname': user.name,
+                'phone': user.phone,
+                'email': user.email,
+            }
+            session['logged_in'] = True
+            session['role'] = user.role
+            flash('Login successful!')
+            if session['role'] == "Admin":
+                return redirect(url_for('admin.admin_dashboard'))
+            elif session['role'] == "Customer":
+                return redirect(url_for('user.profile'))
+            elif session['role'] == "Delivery Driver":
+                return redirect(url_for('driver.profile'))
+            elif session['role'] == "Restaurant Owner":
+                return redirect(url_for('user.profile'))
+            #return redirect(url_for('main.profile'))
+        
+    return render_template('login.html', form=form)
 
 @auth_bp.route('/logout')
 def logout():

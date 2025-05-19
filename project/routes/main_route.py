@@ -9,7 +9,7 @@ main_bp = Blueprint('main', __name__)
 # Main Routes
 ###################
 
-@main_bp.route('/')
+@main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
     # Get featured products and restaurants
