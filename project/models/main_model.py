@@ -108,13 +108,13 @@ class Driver:
     vehicle_type: str
     license_number: str
     vehicle_plate: str
-    is_available: bool
+    is_available: DriverStatus
     driver_rating: float
     total_deliveries: int
     
     def get_url(self):
         """Return URL to driver detail page."""
-        return f"/driver/{self.id}"
+        return f"/drivers/{self.id}"
     
     def assign_to_order(self, order_id: str):
         """Assign driver to an order."""

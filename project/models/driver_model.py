@@ -27,3 +27,9 @@ class Driver:
         """Return URL to driver detail page."""
         return f"/drivers/{self.id}"
     
+    def assign_to_order(self, order_id: str):
+        """Assign driver to an order."""
+        # Implementation needed
+        pass
+
+    
