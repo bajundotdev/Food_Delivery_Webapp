@@ -24,50 +24,6 @@ def register_views(app):
 # driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 # restaurant_bp = Blueprint('restaurant', __name__, url_prefix='/restaurants')
 
-
-# ###################
-# # User Routes
-# ###################
-
-# @user_bp.route('/profile', methods=['GET', 'POST'])
-# def profile():
-#     """View and edit user profile on the same page."""
-#     if not is_logged_in():
-#         flash('Please log in to view your profile')
-#         return redirect(url_for('auth.login'))
-        
-#     user_id = get_user_id()
-#     user = User.get_by_id(user_id)
-    
-#     if not user:
-#         flash('User not found')
-#         return redirect(url_for('auth.login'))
-    
-#     # Get user's recent orders and addresses
-#     orders = Order.get_by_user(user_id)
-#     addresses = UserAddress.get_by_user(user_id)
-    
-#     form = UserForm()
-    
-#     if form.validate_on_submit():
-#         user.name = form.name.data
-#         user.email = form.email.data
-#         # Other fields as needed
-#         user.save()
-        
-#         flash('Profile updated successfully!')
-#         return redirect(url_for('user.profile'))
-#     elif request.method == 'GET':
-#         # Populate form with user data
-#         form.name.data = user.name
-#         form.email.data = user.email
-    
-#     return render_template('profile.html', 
-#                           user=user,
-#                           orders=orders, 
-#                           addresses=addresses,
-#                           form=form)
-
 # ###################
 # # Authentication Routes
 # ###################
@@ -107,74 +63,6 @@ def register_views(app):
 #     flash('You have been logged out')
 #     return redirect(url_for('main.index'))
 
-# ###################
-# # Cart Routes
-# ###################
-
-# @cart_bp.route('/')
-# def view_cart():
-#     """View cart contents."""
-#     if not is_logged_in():
-#         flash('Please log in to view your cart')
-#         return redirect(url_for('auth.login'))
-        
-#     cart = get_user_cart()
-#     if not cart:
-#         flash('Unable to retrieve your cart')
-#         return redirect(url_for('main.index'))
-    
-#     return render_template('cart.html', 
-#                           cart=cart,
-#                           total=cart.total_cost())
-
-# @cart_bp.route('/add/<product_id>', methods=['POST'])
-# def add_to_cart(product_id):
-#     """Add item to cart."""
-#     if not is_logged_in():
-#         flash('Please log in to add items to your cart')
-#         return redirect(url_for('auth.login'))
-        
-#     product = Product.get_by_id(product_id)
-#     if not product:
-#         flash('Product not found')
-#         return redirect(url_for('product.list_products'))
-        
-#     quantity = int(request.form.get('quantity', 1))
-    
-#     cart = get_user_cart()
-    
-#     # Create a new CartItem
-#     cart_item = CartItem(
-#         id=f"temp_{product_id}",  # Will be replaced when saved
-#         product_id=product_id,
-#         product=product,
-#         quantity=quantity
-#     )
-    
-#     # Add to cart
-#     cart.add_item(cart_item)
-    
-#     # Save to session
-#     session['cart'] = cart
-    
-#     flash('Item added to cart')
-#     return redirect(url_for('cart.view_cart'))
-
-# @cart_bp.route('/remove/<product_id>')
-# def remove_from_cart(product_id):
-#     """Remove item from cart."""
-#     if not is_logged_in():
-#         flash('Please log in to modify your cart')
-#         return redirect(url_for('auth.login'))
-        
-#     cart = get_user_cart()
-#     cart.remove_item(product_id)
-    
-#     # Save to session
-#     session['cart'] = cart
-    
-#     flash('Item removed from cart')
-#     return redirect(url_for('cart.view_cart'))
 
 # ###################
 # # Product Routes

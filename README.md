@@ -16,6 +16,29 @@ The application follows a modular architecture using Flask blueprints, with clea
     │   ├── css/
     │   └── img/
     ├── templates/
+    │   ├── admin/
+    │   │   ├── manage_products.html
+    │   │   ├── manage_category.html
+    │   │   ├── manage_orders.html
+    │   │   ├── manage_customers.html
+
+
+
+    │   ├── drivers/
+        │   ├── profile.html
+        │   ├── 
+    │   ├── errors/
+    
+        ├── login/
+
+    │   ├── products/
+
+        ├── registration/
+
+    │   ├── users/
+    │   │   ├── profile.html
+
+    
     ├── forms.py
     ├── models.py
     ├── views.py
@@ -23,3 +46,5 @@ The application follows a modular architecture using Flask blueprints, with clea
     ├── database.sql (pre-populated)
     └── README.txt (brief setup instructions)
 ```
+
+### To Do Templates

@@ -23,15 +23,5 @@ def create_app():
     # Register all blueprints
     from .views import register_views
     register_views(app)
-
-    # app.register_blueprint(views.main_bp)
-    # app.register_blueprint(views.user_bp)
-    # app.register_blueprint(views.auth_bp)
-    # app.register_blueprint(views.cart_bp)
-    # app.register_blueprint(views.product_bp)
-    # app.register_blueprint(views.order_bp)
-    # app.register_blueprint(views.admin_bp)
-    # app.register_blueprint(views.driver_bp)
-    # app.register_blueprint(views.restaurant_bp)
     
     return app

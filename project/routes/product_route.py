@@ -35,7 +35,7 @@ def list_by_category(category):
         flash(f'Category {category} not found')
         return redirect(url_for('product.list_products'))
 
-@product_bp.route('/<product_id>')
+@product_bp.route('/<int:product_id>')
 def product_detail(product_id):
     """Display product details."""
 

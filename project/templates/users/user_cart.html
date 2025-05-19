@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container-fluid">
+            <div class="d-flex d-block d-sm-none">
+                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+            </div>
+
+            <a class="navbar-brand text-danger" href="{{ url_for('main.index') }}">
+                <img src="{{ url_for('static', filename='img/icon.png') }}" alt="https://www.freepik.com/icon/restaurant_10264235#fromView=search&page=1&position=38&uuid=ff7f88b7-a7ed-41c5-a0c2-59c856b934b7" height="40"> Foodah!
+            </a>
+
+            <div class="d-flex d-none d-sm-block">
+                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                <a class="btn btn-danger me-4" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up for a free delivery</a>
+                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
+            </div>
+
+            <div class="d-flex d-block d-sm-none">
+                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <!-- Main content: Cart Delivery Summary -->
+    <main class="container my-4">
+        <h1 class="mb-4">Delivery Request Summary</h1>
+        <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Remove</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Cart item 1 -->
+            <tr>
+                <td class="align-middle">
+                <img src="img/pexels-pedrofurtadoo-31450853.jpg" alt="Margherita Pizza" class="img-thumbnail me-2" style="width: 50px;" />
+                Margherita Pizza
+                </td>
+                <td class="align-middle">$8.00</td>
+                <td class="align-middle">
+                <input type="number" class="form-control" value="2" min="1" style="width: 60px;" />
+                </td>
+                <td class="align-middle">$16.00</td>
+                <td class="align-middle">
+                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                </td>
+            </tr>
+            <!-- Cart item 2 -->
+            <tr>
+                <td class="align-middle">
+                <img src="img/chicken-red-curry-black-cup.jpg" alt="Butter Chicken Curry" class="img-thumbnail me-2" style="width: 50px;" />
+                Butter Chicken Curry
+                </td>
+                <td class="align-middle">$15.99</td>
+                <td class="align-middle">
+                <input type="number" class="form-control" value="1" min="1" style="width: 60px;" />
+                </td>
+                <td class="align-middle">$15.99</td>
+                <td class="align-middle">
+                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <!-- Total row -->
+            <tr>
+                <td colspan="3"></td>
+                <td class="text-end fw-bold">Total:</td>
+                <td class="fw-bold">$31.99</td>
+            </tr>
+            </tfoot>
+        </table>
+        </div>
+        <div class="text-end">
+        <a href="checkout.html" class="btn btn-success">Proceed to Checkout</a>
+        </div>
+    </main>
+{% endblock %}

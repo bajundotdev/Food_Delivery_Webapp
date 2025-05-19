@@ -8,7 +8,7 @@ from db import (get_all_products,
                 check_user, 
                 add_user)
 
-from project.models.main_model import Order, User, UserAddress
+from project.models import Order, User, UserAddress
 
 # Create blueprints for different sections of the application
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -45,39 +45,41 @@ def clear_user_session():
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
-    """View and edit user profile on the same page."""
-    if not is_logged_in():
-        flash('Please log in to view your profile')
-        return redirect(url_for('auth.login'))
+    return render_template('users/profile.html')
+# def profile():
+#     """View and edit user profile on the same page."""
+#     if not is_logged_in():
+#         flash('Please log in to view your profile')
+#         return redirect(url_for('auth.login'))
         
-    user_id = get_user_id()
-    user = User.get_by_id(user_id)
+#     user_id = get_user_id()
+#     user = User.get_by_id(user_id)
     
-    if not user:
-        flash('User not found')
-        return redirect(url_for('auth.login'))
+#     if not user:
+#         flash('User not found')
+#         return redirect(url_for('auth.login'))
     
-    # Get user's recent orders and addresses
-    orders = Order.get_by_user(user_id)
-    addresses = UserAddress.get_by_user(user_id)
+#     # Get user's recent orders and addresses
+#     orders = Order.get_by_user(user_id)
+#     addresses = UserAddress.get_by_user(user_id)
     
-    form = UserForm()
+#     form = UserForm()
     
-    if form.validate_on_submit():
-        user.name = form.name.data
-        user.email = form.email.data
-        # Other fields as needed
-        user.save()
+#     if form.validate_on_submit():
+#         user.name = form.name.data
+#         user.email = form.email.data
+#         # Other fields as needed
+#         user.save()
         
-        flash('Profile updated successfully!')
-        return redirect(url_for('user.profile'))
-    elif request.method == 'GET':
-        # Populate form with user data
-        form.name.data = user.name
-        form.email.data = user.email
+#         flash('Profile updated successfully!')
+#         return redirect(url_for('user.profile'))
+#     elif request.method == 'GET':
+#         # Populate form with user data
+#         form.name.data = user.name
+#         form.email.data = user.email
     
-    return render_template('profile.html', 
-                          user=user,
-                          orders=orders, 
-                          addresses=addresses,
-                          form=form)
+#     return render_template('profile.html', 
+#                           user=user,
+#                           orders=orders, 
+#                           addresses=addresses,
+#                           form=form)
