@@ -44,6 +44,8 @@ class User:
     password: str
     profile_picture_url: str = ""
     role: UserRole = UserRole.CUSTOMER
+    is_active: bool = True
+    last_login: str = ""
     
     def get_url(self):
         """Return URL to user profile."""
@@ -67,7 +69,8 @@ class DriverVehicle:
 class UserAddress:
     id: str
     user_id: str
-    street: str
+    address_line1: str
+    address_line2: str
     city: str
     state: str
     postal_code: str

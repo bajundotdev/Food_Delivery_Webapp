@@ -31,11 +31,40 @@ def check_user(email, password):
 #    USER QUERIES   
 ##################
 
-def get_user_by_id():
-    pass
+def get_user_by_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+        WHERE user_id = %s
+    """ % user_id)
+    row = cur.fetchone()
+    cur.close()
+    return [
+        User(str(row['user_id']), row['fullname'], row['phone_number'],
+             row['password_hash'], row['profile_picture_url'],
+             row['user_type'], bool(row['is_active']), row['last_login'])
+    ]
 
-def get_user_by_name():
-    pass
+def search_user_by_name(fullname):
+    search_name = "%" + str(fullname) + "%"
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+        WHERE fullname LIKE %s
+    """ % search_name)
+    row = cur.fetchone()
+    cur.close()
+    return [
+        User(str(row['user_id']), row['fullname'], row['phone_number'],
+             row['password_hash'], row['profile_picture_url'],
+             row['user_type'], bool(row['is_active']), row['last_login'])
+    ]
 
 def add_user(form):
     cur = mysql.connection.cursor()
@@ -53,10 +82,38 @@ def add_user(form):
 #    ADDRESS QUERIES   
 ##################
 def get_address_by_user_id(user_id):
-    pass
-
-def add_address_by_user_id(user_id):
-    pass
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT address_id,user_id, label,
+                address_line1, address_line2 ,city,
+                state, postal_code, country,
+                created_at, updated_at
+        FROM user_address
+        WHERE user_id = %s
+    """ % user_id)
+    row = cur.fetchone()
+    cur.close()
+    return [
+        User(str(row['address_id']), row['user_id'], row['label'],
+             row['address_line1'], row['address_line2'], row['city'],
+             row['state'], row['postal_code'], row['country'],
+             row['created_at'], row['updated_at']
+            )
+    ]
+   
+def add_address_by_user_id(form):
+    # cur = mysql.connection.cursor()
+    # cur.execute("""
+    #     INSERT INTO user_address (
+    #                             )
+    #     VALUES (%s, %s, %s, %s,
+    #             %s, %s, %d, %d,
+    #             curent_timestamp, curent_timestamp
+    #             )
+    # """, (form.username.data, form.password.data, form.email.data,
+    #       form.firstname.data, form.surname.data, form.phone.data))
+    # mysql.connection.commit()
+    # cur.close()
 
 #update
 #delete
@@ -146,8 +203,20 @@ def get_all_restaurants():
              row[7], row[8], row[9], row[10]) for row in results
     ]
 
-def get_restaurant_by_id():
-    pass
+def get_restaurant_by_id(restaurant_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM restaurant
+        WHERE restaurant_id = %s
+    """)
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Restaurant(str(row[0]), row[1], row[2],
+             bool(row[3]), row[4], bool(row[5]), row[6],
+             row[7], row[8], row[9], row[10])
+    ]
 
 def get_restaurant_by_name():
     pass
@@ -163,7 +232,18 @@ def get_driver_by_id(driver_id):
     pass
 
 def get_all_drivers():
-    pass
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM delivery_driver, user_table
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Restaurant(str(row[0]), row[1], row[2],
+             bool(row[3]), row[4], bool(row[5]), row[6],
+             row[7], row[8], row[9], row[10]) for row in results
+    ]
 
 def get_available_driver():
     pass
