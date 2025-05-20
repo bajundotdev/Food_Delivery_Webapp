@@ -74,29 +74,44 @@ def add_to_cart(product_id):
     if not is_logged_in():
         if 'shopping_cart' not in session:
             session['shopping_cart'] = {}
+            cart = session['shopping_cart']
+
+            # Add or update product quantity
+            if str(product_id) in cart:
+                cart[str(product_id)]['quantity'] += 1
+            else:
+                cart[str(product_id)] = {
+                    'id': product['id'],
+                    'name': product['name'],
+                    'price': product['price'],
+                    'quantity': 1
+                }
+
+            session['shopping_cart'] = cart  # Save back to session 
         
-    product = Product.get_by_id(product_id)
-    if not product:
-        flash('Product not found')
-        return redirect(url_for('product.list_products'))
+    else:
+        product = Product.get_by_id(product_id)
+        if not product:
+            flash('Product not found')
+            return redirect(url_for('product.list_products'))
+            
+        quantity = int(request.form.get('quantity', 1))
         
-    quantity = int(request.form.get('quantity', 1))
-    
-    cart = get_user_cart()
-    
-    # Create a new CartItem
-    cart_item = CartItem(
-        id=f"temp_{product_id}",  # Will be replaced when saved
-        product_id=product_id,
-        product=product,
-        quantity=quantity
-    )
-    
-    # Add to cart
-    cart.add_item(cart_item)
-    
-    # Save to session
-    session['cart'] = cart
+        cart = get_user_cart()
+        
+        # Create a new CartItem
+        cart_item = CartItem(
+            id=f"temp_{product_id}",  # Will be replaced when saved
+            product_id=product_id,
+            product=product,
+            quantity=quantity
+        )
+        
+        # Add to cart
+        cart.add_item(cart_item)
+        
+        # Save to session
+        session['cart'] = cart
     
     flash('Item added to cart')
     return redirect(url_for('cart.view_cart'))
