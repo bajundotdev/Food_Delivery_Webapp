@@ -12,9 +12,7 @@ from .product_model import Product
 
 @dataclass
 class CartItem:
-    id: str
-    product_id: str
-    products: List[Product] = field(default_factory=list)
+    product: Product
     quantity: int = 1
     
     def get_subtotal(self):

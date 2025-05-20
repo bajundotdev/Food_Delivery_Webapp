@@ -1,6 +1,6 @@
-from miltontours.db import get_tour
-from miltontours.models import Basket, BasketItem
-from miltontours.models import UserInfo, Order, OrderStatus
+from project.db import get_product_by_id
+from project.models.cart_model import Cart, CartItem
+from project.models import UserInfo, Order, OrderStatus
 
 from flask import session
 
@@ -16,45 +16,41 @@ def get_user():
         )
     return None
 
-def get_basket():
-    basket_data = session.get('basket')
-    basket = Basket()
-    if isinstance(basket_data, dict):
-        for item in basket_data.get('items', []):
-            tour = get_tour(item['tour']['id'])
-            if tour:
-                basket.add_item(BasketItem(
-                    id=str(item['id']),
-                    tour=tour,
+def get_cart():
+    cart_data = session.get('shopping_cart')
+    cart = Cart()
+    if isinstance(cart_data, dict):
+        for item in cart_data.get('items'):
+            product = get_product_by_id(item['id'])
+            if product:
+                cart.add_item(CartItem(
+                    product = product,
                     quantity=item['quantity']
                 ))
-    return basket
+    return cart
 
 def _save_basket_to_session(basket):
-    session['basket'] = {
+    session['shopping_cart'] = {
         'items': [
             {
                 'id': item.id,
-                'quantity': item.quantity,
-                'tour': {
-                    'id': item.tour.id
-                }
+                'quantity': item.quantity
             } for item in basket.items
         ]
     }
 
-def add_to_basket(tour_id, quantity=1):
-    basket = get_basket()
-    basket.add_item(BasketItem(tour=get_tour(tour_id), quantity=quantity))
-    _save_basket_to_session(basket)
+def add_to_cart(product_id, quantity=1):
+    cart = get_cart()
+    cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=quantity))
+    _save_basket_to_session(cart)
 
-def remove_from_basket(basket_item_id):
-    basket = get_basket()
-    basket.remove_item(basket_item_id)
-    _save_basket_to_session(basket)
+def remove_from_cart(product_id):
+    cart = get_cart()
+    cart.remove_item(product_id)
+    _save_basket_to_session(cart)
 
 def empty_basket():
-    session['basket'] = {
+    session['shopping_cart'] = {
         'items': []
     }
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 # Import dummy database db.py
-from project.db import get_all_products, get_all_restaurants, check_user, add_user
+from project.db import get_all_products, get_all_restaurants, check_user, add_user, get_product_by_id
 from project.models import Cart, CartItem, Product
 
 # Create blueprints for different sections of the application
@@ -72,8 +72,8 @@ def view_cart():
 def add_to_cart(product_id):
     """Add item to cart."""
     if not is_logged_in():
-        flash('Please log in to add items to your cart')
-        return redirect(url_for('auth.login'))
+        if 'shopping_cart' not in session:
+            session['shopping_cart'] = {}
         
     product = Product.get_by_id(product_id)
     if not product:

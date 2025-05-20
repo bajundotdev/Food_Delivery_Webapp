@@ -16,6 +16,7 @@ class OrderStatus(Enum):
     IN_PROGRESS = "In Progress"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
+    READY = "Ready"
 
 class PaymentMethod(Enum):
     CASH = "Cash"

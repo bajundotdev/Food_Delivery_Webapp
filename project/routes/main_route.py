@@ -12,6 +12,8 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
+    cart_data = session.get('shopping_cart')
+    print(cart_data)
     # Get featured products and restaurants
     featured_products = get_all_products()[:4]  # Get first 4 products
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
@@ -19,6 +21,11 @@ def index():
     return render_template('index.html',
                           products=featured_products,
                           restaurants=featured_restaurants)
+
+@main_bp.post('/cart/<int:product_id>/')
+def adding_to_cart(product_id):
+    adding_to_cart(product_id)
+    return redirect(url_for('main.index'))
 
 @main_bp.route('/about')
 def about():
