@@ -31,7 +31,7 @@ class PaymentMethod(Enum):
 class OrderItem:
     id: str
     product_id: str
-    products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
+    #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
     quantity: int = 1
     price: float = 0.0  # Store the price at the time of order
     
@@ -43,14 +43,18 @@ class OrderItem:
 class Order:
     id: str
     user_id: str
-    status: OrderStatus = OrderStatus.PENDING
-    address: str = ""
-    payment_method: PaymentMethod = PaymentMethod.CASH
     driver_id: str = ""
+    address: str = ""
+    status: OrderStatus = OrderStatus.PENDING
     total: float = 0.0
-    items: List[OrderItem] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.now)
+    payment_method: PaymentMethod = PaymentMethod.CASH
+    placed_at: datetime = field(default_factory=datetime.now)
+    delivered_at: datetime = field(default_factory=datetime.now)
+    canceled_at: str = ""
+    notes: str = ""
+    payment_invoice: str = ""
     delivery_option: DeliveryOption = DeliveryOption.FOR_DELIVERY
+    products: List[OrderItem] = field(default_factory=list)
     
     def get_url(self):
         """Return URL to order detail page."""

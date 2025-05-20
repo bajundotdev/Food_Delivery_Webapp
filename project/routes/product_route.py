@@ -2,11 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.models import Product, ProductCategory
 
 # Import dummy database db.py
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user)
+from project.db import *
 
 # Create blueprints for different sections of the application
 product_bp = Blueprint('product', __name__, url_prefix='/products') 
@@ -46,3 +42,9 @@ def product_detail(product_id):
         return redirect(url_for('product.product_list'))
         
     return render_template('products/product_detail.html', product=product)
+
+@product_bp.route('/orders')
+def order_list():
+    """Display all orders."""
+    orders = get_all_orders()
+    return render_template('products/orders.html', orders=orders)

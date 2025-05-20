@@ -1,5 +1,6 @@
 # dummyDb.py
 from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
+from project.models.order_model import Order, OrderItem, OrderStatus
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mysqldb import MySQL
@@ -338,12 +339,55 @@ def get_available_driver():
 #delete driver
 
 ##################
-#    PAYMENT QUERIES   
-##################
-
-##################
 #    ORDER QUERIES   
 ##################
+def get_all_orders():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+    """)
+    results = cur.fetchall()
+    cur.close()
+    # return [
+    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
+    # ]
+    return results
+
+def get_restaurant_by_id(restaurant_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM restaurant
+        WHERE restaurant_id = %s
+    """, (restaurant_id,))
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+             row['email'], row['website'], row['description'], row['image_url'])
+    ]
+
+def get_restaurant_by_name(restaurant_name):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM restaurant
+        WHERE restaurant_id = %s
+    """, (restaurant_name,))
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+             row['email'], row['website'], row['description'], row['image_url'])
+    ]
+
 
 ##################
 #    CART QUERIES   
