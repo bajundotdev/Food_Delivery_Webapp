@@ -43,13 +43,22 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 # Driver Routes     #
 #####################
 
+@driver_bp.route('/dashboard')
+@login_required
+@driver_required
+def driver_dashboard():
+    """Display all drivers."""
+    drivers = []
+    return render_template('driver/dashboard.html', drivers=drivers)
+
 @driver_bp.route('/profile')
 @login_required
 @driver_required
 def profile():
     """Display all drivers."""
-    drivers = get_all_driver()
-    return render_template('drivers/profile.html', drivers=drivers)
+    # drivers = get_all_driver()
+    drivers = []
+    return render_template('driver/profile.html', drivers=drivers)
 
 
 

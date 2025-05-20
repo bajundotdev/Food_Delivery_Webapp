@@ -51,7 +51,7 @@ def login():
                 if session['role'] == "Admin":
                     return redirect(url_for('admin.admin_dashboard'))
                 elif session['role'] == "Delivery Driver":
-                    return redirect(url_for('driver.profile'))
+                    return redirect(url_for('driver.driver_dashboard'))
                 elif session['role'] == "Customer":
                     return redirect(url_for('main.index'))
         

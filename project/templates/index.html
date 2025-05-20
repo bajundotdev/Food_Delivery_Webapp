@@ -88,9 +88,6 @@
 
     <!-- Main container -->
     <main class="container my-4">
-        <section>
-            {{ session }}
-        </section>
         <!-- Featured Food Menu Section -->
         <section>
             <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
@@ -130,58 +127,7 @@
 
         </section>
 
-        <!-- (Default) Featured Food Menu Section -->
-        <section>
-            <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
-            <div class="row g-4">
-
-                <!-- Ad -->
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <div class="card-img-overlay h-25">
-                            <span class="badge bg-secondary">Ads</span>
-                        </div>
-                        <img src="{{ url_for('static', filename='img/chicken-red-curry-black-cup.jpg') }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="Restaurant 1" />
-                        <div class="card-body">
-                            <h5 class="card-title mt-2">Curry King</h5>
-                            <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
-                            <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></small></p>
-                            <a href="product_details.html" class="btn btn-danger">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Non-indigenous Owned -->
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ url_for('static', filename='img/pexels-catscoming-955137.jpg') }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="Restaurant 7" />
-                        <div class="card-body">
-                            <h5 class="card-title mt-2">Bite King Size</h5>
-                            <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
-                            <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></small></p>
-                            <a href="product_details.html" class="btn btn-danger">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Non-indigenous Owned -->
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <div class="card-img-overlay h-25">
-                            <span class="badge bg-danger"><i class="bi bi-basket"></i> Indigenous-Owned</span>
-                        </div>
-                        <img src="{{ url_for('static', filename='img/pexels-valeriya-1639565.jpg') }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="Restaurant 8" />
-                        <div class="card-body">
-                            <h5 class="card-title mt-2">Local First Burger</h5>
-                            <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
-                            <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></small></p>
-                            <a href="product_details.html" class="btn btn-danger">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
+        <hr>
 
         <!-- FAQ Section -->
         <section class="mb-5">

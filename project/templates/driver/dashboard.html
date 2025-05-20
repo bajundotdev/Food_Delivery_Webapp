@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+<!-- Admin Navigation bar -->
+{% block adminNavbar %}
+    {% include 'driver/driver_header.html' %}
+{% endblock %}
+
+{% block title %}
+    <div class="container mt-2">
+        <div class="row d-flex">
+            <div class="col">
+                <h2>My Dashboard</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            </ol>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <!-- Main content -->
+    <main class="container my-4">
+        <!-- Admin Dashboard Section -->
+        <section>
+            <!-- Cards -->
+            <div class="row g-4">
+                <!-- Users Card -->
+                <div class="col-12 col-md-3 col-sm-6">
+                    <a href="#" class="text-decoration-none">
+                        <div class="card text-bg-primary h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-people display-4 mb-0 text-white"></i>
+                                <h5 class="card-text fs-4 text-white mb-0">1,234</h5>
+                                <h5 class="card-title text-white mb-1">Customer</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Orders Card -->
+                <div class="col-12 col-md-3 col-sm-6">
+                    <a href="#" class="text-decoration-none">
+                        <div class="card text-bg-success h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-basket display-4 mb-0 text-white"></i>
+                                <h5 class="card-text fs-4 text-white mb-0">567</h5>
+                                <h5 class="card-title text-white mb-1">Orders</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Menu Card -->
+                <div class="col-12 col-md-3 col-sm-6">
+                    <a href="#" class="text-decoration-none">
+                        <div class="card text-bg-warning h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-list-ul display-4 mb-0 text-white"></i>
+                                <h5 class="card-text fs-4 text-white mb-0">42</h5>
+                                <h5 class="card-title text-white mb-1">Menu</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Delivery Drivers Card -->
+                <div class="col-12 col-md-3 col-sm-6">
+                    <a href="#" class="text-decoration-none">
+                        <div class="card text-bg-danger h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-truck display-4 mb-0 text-white"></i>
+                                <h5 class="card-text fs-4 text-white mb-0">15</h5>
+                                <h5 class="card-title text-white mb-1">Delivery Drivers</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Orders Section -->
+        <section>
+            <div class="row my-4">
+                <div class="col-12">
+                    <h4>Active Orders (4)</h4>
+                </div>
+
+                <div class="overflow-auto">
+                    <div class="d-flex flex-row gap-3 my-4">
+                        <!-- Example Incoming Order Card -->
+                        <div class="card shadow-sm incoming-order-card">
+                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                <span class="text-white">
+                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1004
+                                </span>
+                                <span class="badge bg-warning text-black ms-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">Alice Brown</h5>
+                                <p class="card-text mb-2">
+                                    <strong>Items:</strong> 2x Burger, 1x Fries<br>
+                                    <strong>Total:</strong> $22.50
+                                </p>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Incoming Order Card -->
+                        <div class="card shadow-sm incoming-order-card">
+                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                <span class="text-white">
+                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1005
+                                </span>
+                                <span class="badge bg-warning text-black ms-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">Bob Green</h5>
+                                <p class="card-text mb-2">
+                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
+                                    <strong>Total:</strong> $19.00
+                                </p>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Incoming Order Card -->
+                        <div class="card shadow-sm incoming-order-card">
+                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                <span class="text-white">
+                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1006
+                                </span>
+                                <span class="badge bg-warning text-black ms-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">Bob Green</h5>
+                                <p class="card-text mb-2">
+                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
+                                    <strong>Total:</strong> $19.00
+                                </p>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Incoming Order Card -->
+                        <div class="card shadow-sm incoming-order-card">
+                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                <span class="text-white">
+                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1007
+                                </span>
+                                <span class="badge bg-warning text-black ms-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">Bob Green</h5>
+                                <p class="card-text mb-2">
+                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
+                                    <strong>Total:</strong> $19.00
+                                </p>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-end">
+                    <a href="{{ url_for('admin.manage_orders') }}" class="btn btn-danger">
+                        Go to Orders <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Delivery Status Section -->
+        <section>
+            <div class="row mt-5">
+            <div class="col-12"></div>
+                <h4>Recent Delivery Status</h4>
+                <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th scope="col">Driver ID</th>
+                        <th scope="col">Customer Name</th>
+                        <th scope="col">Customer Address</th>
+                        <th scope="col">Current Order</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Last Active</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                        <a href="#" class="text-decoration-none">#201</a>
+                        </td>
+                        <td>Alice Brown</td>
+                        <td>123 Main St, Brisbane</td>
+                        <td>#1004</td>
+                        <td><span class="badge bg-success">Delivered</span></td>
+                        <td>2025-06-01 14:32</td>
+                        <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <a href="#" class="text-decoration-none">#202</a>
+                        </td>
+                        <td>Bob Green</td>
+                        <td>456 Queen St, Brisbane</td>
+                        <td>#1005</td>
+                        <td><span class="badge bg-warning text-dark">On Delivery</span></td>
+                        <td>2025-06-01 14:28</td>
+                        <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <a href="#" class="text-decoration-none">#203</a>
+                        </td>
+                        <td>Emma Lee</td>
+                        <td>789 King St, Brisbane</td>
+                        <td>#1006</td>
+                        <td><span class="badge bg-secondary">Pending</span></td>
+                        <td>2025-06-01 13:50</td>
+                        <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

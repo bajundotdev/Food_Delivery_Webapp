@@ -16,7 +16,12 @@
     <!-- Header -->
     <header class="text-center sticky-top">
         <!-- Default navbar: Hidden if there is no user role -->
-        {% if session['role'] %}
+        {% if session['role'] == "Admin" %}
+            {% include 'admin/admin_header.html' %}
+        {% elif session['role'] == "Delivery Driver" %}
+            {% include 'driver/driver_header.html' %}
+        {% elif session['role'] == "Customer" %}
+        {% else %}            
             <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     <div class="d-flex d-block d-md-none">
@@ -48,14 +53,13 @@
             </nav>
         {% endif %}
 
-        {% include 'admin/admin_header.html' %}
-
         {% block alerts %}
         {% endblock %}
     </header>
-    
-    {{ session }}
 
+    <section>
+        {{ session }}
+    </section>
     <!-- Title block -->
     {% block title %}
     {% endblock %}
