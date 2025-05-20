@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+<!-- Admin Navigation bar -->
+{% block adminNavbar %}
+    {% include 'admin/admin_header.html' %}
+{% endblock %}
+
+{% block title %}
+    <div class="container mt-2">
+        <div class="row d-flex">
+            <div class="col">
+                <h2>Manage Restaurant</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant')}}">Restaurant</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Admins</li>
+            </ol>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <!-- Main content -->
+    <main class="container my-4">
+        <!-- Collapsible Quick Actions -->
+        <section>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="accordion" id="quickActionsAccordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" id="quickActionsHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quickActionsCollapse" aria-expanded="false" aria-controls="quickActionsCollapse">
+                                    Quick Actions
+                                </button>
+                            </div>
+                            <div id="quickActionsCollapse" class="accordion-collapse collapse" aria-labelledby="quickActionsHeading" data-bs-parent="#quickActionsAccordion">
+                                <div class="accordion-body p-0">
+                                    <ul class="list-group">
+                                        <a href="{{ url_for('admin.manage_users') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-person-plus me-2"></i> Manage Customer
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-graph-up me-2"></i> View Reports
+                                        </a>
+                                        <a href="{{ url_for('admin.manage_drivers') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-truck me-2"></i> Drivers
+                                        </a>
+                                        <a href="{{ url_for('admin.manage_product') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-plus-circle me-2"></i> Add New Menu
+                                        </a>
+                                        <a href="{{ url_for('admin.manage_users') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-person-gear me-2"></i> Manage Admins
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-bar-chart me-2"></i> Sales Analytics
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                            <i class="bi bi-gear me-2"></i> Settings
+                                        </a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manage Admin Section -->
+        <section>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h4>System Administrators</h4>
+                    <!-- Admins Table -->
+                    <div class="table-responsive mb-4">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">Admin ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for admin in admins %}
+                        <tr>
+                            <td>{{ admin.id }}</td>
+                            <td>{{ admin.name }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.role }}</td>
+                            <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No admins found.</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <!-- Update Admin Form -->
+                    <h4>Update Admin Details</h4>
+                    <form method="post" class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="admin_id" name="admin_id" value="{{ selected_admin.id if selected_admin else '' }}" readonly placeholder="Admin ID">
+                                <label for="admin_id">Admin ID</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="admin_name" name="admin_name" value="{{ selected_admin.name if selected_admin else '' }}" placeholder="Name">
+                                <label for="admin_name">Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ selected_admin.email if selected_admin else '' }}" placeholder="Email">
+                                <label for="admin_email">Email</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="admin_role" name="admin_role" aria-label="Admin Role">
+                                    <option value="SuperAdmin">SuperAdmin</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
+                                <label for="admin_role">Role</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Update Admin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

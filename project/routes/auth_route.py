@@ -50,12 +50,10 @@ def login():
                 flash('Login successful!')
                 if session['role'] == "Admin":
                     return redirect(url_for('admin.admin_dashboard'))
-                elif session['role'] == "Customer":
-                    return redirect(url_for('user.profile'))
                 elif session['role'] == "Delivery Driver":
                     return redirect(url_for('driver.profile'))
-                elif session['role'] == "Restaurant Owner":
-                    return redirect(url_for('user.profile'))
+                elif session['role'] == "Customer":
+                    return redirect(url_for('main.index'))
         
     return render_template('login.html', form=form)
 
@@ -63,5 +61,7 @@ def login():
 def logout():
     """User logout route."""
     clear_user_session()
+    session['logged_in'] = False
+    session['role'] = ""
     flash('You have been logged out')
     return redirect(url_for('main.index'))

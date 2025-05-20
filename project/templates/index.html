@@ -1,30 +1,5 @@
 {% extends 'base.html' %}
 
-{% block header %}
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container-fluid">
-            <div class="d-flex d-block d-sm-none">
-                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-            </div>
-
-            <a class="navbar-brand text-danger" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='img/icon.png') }}" alt="https://www.freepik.com/icon/restaurant_10264235#fromView=search&page=1&position=38&uuid=ff7f88b7-a7ed-41c5-a0c2-59c856b934b7" height="40"> Foodah!
-            </a>
-
-            <div class="d-flex d-none d-sm-block">
-                <a class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                <a class="btn btn-danger me-4" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up for a free delivery</a>
-                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
-            </div>
-
-            <div class="d-flex d-block d-sm-none">
-                <a href="delivery_request.html" class="btn btn-outline-danger mx-2">Cart <span class="badge bg-danger">3</span></a>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
-
 {% block main %}
     <!-- Hero Section -->
     <section class="hero-section bg-light py-5">
@@ -50,25 +25,6 @@
             </div>
         </div>
     </section>
-
-    <!-- List of links here -->
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h4>Sample Links</h4>
-                <h5>This will be removed upon finalization</h5>
-                <ul class="list-group">
-                    <li class="list-group-item"><a href="{{ url_for('main.index') }}">Home route: ('main.index') </a></li>
-                    <li class="list-group-item"><a href="{{ url_for('product.product_list') }}">Menu or products route: ('product.list_products')</a></li>
-                    <li class="list-group-item"><a href="{{ url_for('product.product_detail', product_id=1) }}">For specific product route: ('product.product_detail', product_id=product.id)</a></li>
-                    <li class="list-group-item"><a href="{{ url_for('user.profile') }}">User Profile route: ('user.profile')</a></li>
-                    <li class="list-group-item"><a href="#">Cart route: ('cart.view_cart')</a></li>
-                    <li class="list-group-item"><a href="#">Driver route: ('driver.list_drivers')</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
     <!-- Filter Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
         <div class="offcanvas-header">
@@ -132,6 +88,9 @@
 
     <!-- Main container -->
     <main class="container my-4">
+        <section>
+            {{ session }}
+        </section>
         <!-- Featured Food Menu Section -->
         <section>
             <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
@@ -267,4 +226,5 @@
             </div>
         </section>
     </main>
+
 {% endblock %}
