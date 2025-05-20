@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 # Import dummy database db.py
 from project.db import get_all_driver, get_all_products, get_all_restaurants, check_user, add_user
-
+from project.session import add_to_cart
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 
@@ -22,10 +22,10 @@ def index():
                           products=featured_products,
                           restaurants=featured_restaurants)
 
-@main_bp.post('/cart/<int:product_id>/')
+@main_bp.route('/cart/<int:product_id>/')
 def adding_to_cart(product_id):
-    adding_to_cart(product_id)
-    return redirect(url_for('main.index'))
+    add_to_cart(product_id)
+    #return redirect(url_for('main.index'))
 
 @main_bp.route('/about')
 def about():

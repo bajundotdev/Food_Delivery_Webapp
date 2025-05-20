@@ -1,24 +1,25 @@
 from project.db import get_product_by_id
 from project.models.cart_model import Cart, CartItem
-from project.models import UserInfo, Order, OrderStatus
+#from project.models import UserInfo, Order, OrderStatus
 
 from flask import session
 
-def get_user():
-    user_dict = session.get('user')
-    if user_dict:
-        return UserInfo(
-            id=str(user_dict['user_id']),
-            firstname=user_dict['firstname'],
-            surname=user_dict['surname'],
-            email=user_dict['email'],
-            phone=user_dict['phone']
-        )
-    return None
+# def get_user():
+#     user_dict = session.get('user')
+#     if user_dict:
+#         return UserInfo(
+#             id=str(user_dict['user_id']),
+#             firstname=user_dict['firstname'],
+#             surname=user_dict['surname'],
+#             email=user_dict['email'],
+#             phone=user_dict['phone']
+#         )
+#     return None
 
 def get_cart():
     cart_data = session.get('shopping_cart')
     cart = Cart()
+    print(cart_data)
     if isinstance(cart_data, dict):
         for item in cart_data.get('items'):
             product = get_product_by_id(item['id'])
@@ -34,7 +35,8 @@ def _save_basket_to_session(basket):
         'items': [
             {
                 'id': item.id,
-                'quantity': item.quantity
+                'quantity': item.quantity,
+                'prodcuct': item.product
             } for item in basket.items
         ]
     }
@@ -54,11 +56,11 @@ def empty_basket():
         'items': []
     }
 
-def convert_basket_to_order(basket):
-    return Order(
-        id=None,
-        status=OrderStatus.PENDING,
-        user=get_user(),
-        total_cost=basket.total_cost(),
-        items=basket.items
-    )
+# def convert_basket_to_order(basket):
+#     return Order(
+#         id=None,
+#         status=OrderStatus.PENDING,
+#         user=get_user(),
+#         total_cost=basket.total_cost(),
+#         items=basket.items
+#     )
