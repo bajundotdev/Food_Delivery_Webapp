@@ -1,6 +1,6 @@
 # dummyDb.py
 from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
-from project.models.order_model import Order, OrderItem, OrderStatus
+from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mysqldb import MySQL
@@ -358,37 +358,90 @@ def get_all_orders():
     # ]
     return results
 
-def get_restaurant_by_id(restaurant_id):
+def get_all_orders_by_id(order_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM restaurant
-        WHERE restaurant_id = %s
-    """, (restaurant_id,))
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE ot.order_id = %s
+    """, (order_id,))
     row = cur.fetchone()
     cur.close()
-    return [
-        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-             row['email'], row['website'], row['description'], row['image_url'])
-    ]
+    # return [
+    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
+    # ]
+    return row
 
-def get_restaurant_by_name(restaurant_name):
+def get_all_orders_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM restaurant
-        WHERE restaurant_id = %s
-    """, (restaurant_name,))
-    row = cur.fetchone()
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE ot.user_id = %s
+    """, (user_id,))
+    row = cur.fetchall()
     cur.close()
-    return [
-        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-             row['email'], row['website'], row['description'], row['image_url'])
-    ]
+    # return [
+    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
+    # ]
+    return row
 
+def get_all_orders_by_status(status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ot.*
+        FROM order_table ot
+        WHERE ot.status = %s
+    """, (status,))
+    results = cur.fetchall()
+    cur.close()
+    # return [
+    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
+    # ]
+    return results
 
 ##################
 #    CART QUERIES   
 ##################
+def get_all_cart_items():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.*, pt.*, cart.quantity * pt.price as total
+        FROM cart_items cart
+        JOIN product_table pt ON cart.product_id = pt.product_id
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+    ]
+   
+    return results
+
+def get_all_cart_items_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.*, pt.*, cart.quantity * pt.price as total
+        FROM cart_items cart
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE cart.user_id = %s
+    """, (user_id,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+    ]

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Get orders</h1>
+{{ orders }}
+
+<h1>Get order by id</h1>
+{{ order_item }}
+
+<h1>Get order by user id</h1>
+{{ order_item_by_user }}
+
+<h1>Get order by status</h1>
+{{ order_by_status }}
+
+<h1>Get cart</h1>
+{{ cart_items }}
+
+<h1>Choppers's cart</h1>
+{{ user_items }}
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 # Import dummy database db.py
-from project.db import get_all_driver, get_all_products, get_all_restaurants, check_user, add_user
+from project.db import *
 from project.session import add_to_cart
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
@@ -34,3 +34,20 @@ def about():
 @main_bp.route('/contact')
 def contact():
     return render_template('contact.html')  # Assuming you have a contact.html template
+
+@main_bp.route('/test')
+def order_list():
+    """Display all orders."""
+    orders = get_all_orders()
+    order_item = get_all_orders_by_id(2)
+    order_item_by_user = get_all_orders_by_user_id(10)
+    order_by_status = get_all_orders_by_status("Completed")
+    cart_items = get_all_cart_items()
+    user_items = get_all_cart_items_by_user_id(9)
+    return render_template('/test.html', orders=orders,
+                           order_item=order_item,
+                           order_item_by_user=order_item_by_user,
+                           order_by_status=order_by_status,
+                           cart_items=cart_items,
+                           user_items=user_items
+                           )

@@ -43,8 +43,4 @@ def product_detail(product_id):
         
     return render_template('products/product_detail.html', product=product)
 
-@product_bp.route('/orders')
-def order_list():
-    """Display all orders."""
-    orders = get_all_orders()
-    return render_template('products/orders.html', orders=orders)
+
