@@ -72,7 +72,7 @@ def manage_orders():
         orders = Order.get_orders_by_status(status_filter)
     else:
         orders = Order.get_all()
-    return render_template('admin/orders.html', orders=orders)
+    return render_template('admin/manage_orders.html', orders=orders)
 
 @admin_bp.route('/menu')
 @login_required
