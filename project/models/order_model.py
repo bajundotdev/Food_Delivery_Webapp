@@ -16,6 +16,7 @@ class OrderStatus(Enum):
     IN_PROGRESS = "In Progress"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
+    READY = "Ready"
 
 class PaymentMethod(Enum):
     CASH = "Cash"
@@ -42,14 +43,14 @@ class OrderItem:
 class Order:
     id: str
     user_id: str
-    status: OrderStatus = OrderStatus.PENDING
-    address: str = ""
-    payment_method: PaymentMethod = PaymentMethod.CASH
-    driver_id: str = ""
-    total: float = 0.0
-    items: List[OrderItem] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.now)
-    delivery_option: DeliveryOption = DeliveryOption.FOR_DELIVERY
+    driver: str
+    address: str 
+    status: OrderStatus.READY
+    total_price: float = 0.0
+    payment_status: str = ""
+    payment_method: str = ""
+    notes: str = ""
+    payment_invoice: str = ""
     
     def get_url(self):
         """Return URL to order detail page."""

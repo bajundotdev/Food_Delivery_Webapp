@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, Restaurant, User, Driver, UserRole
+from project.models import Product, Restaurant, User, Driver, UserRole, Order
 from datetime import datetime
 from werkzeug.security import check_password_hash
 from flask_mysqldb import MySQL
@@ -177,6 +177,21 @@ def get_product_by_category(categ):
         Product(str(row[0]), row[1], row[2],
              row[3], float(row[4]), float(row[5]), int(row[6]),
              row[7], row[8], str(row[11])) for row in results
+    ]
+
+def get_order_ready(status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM order_table
+        WHERE status = '%s'
+    """ % status)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row[0]), row[1], row[2],
+             row[3], row[4], float(row[5]), str(row[6]),
+             row[7], row[11], row[12]) for row in results
     ]
 
 #add
