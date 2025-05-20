@@ -7,27 +7,14 @@ from flask_wtf.file import FileRequired, FileAllowed
 # Authentication Forms #
 ########################
 class LoginForm(FlaskForm):
-    username = StringField(
-        'Email',
-        validators=[DataRequired(), Email()],
-        render_kw={"class": "form-control"}
-    )
-    password = PasswordField(
-        'Password',
-        validators=[DataRequired()],
-        render_kw={"class": "form-control"}
-    )
-    remember = BooleanField(
-        'Remember Me',
-        render_kw={"class": "form-check-input"}
-    )
-    submit = SubmitField(
-        'Log In',
-        render_kw={"class": "btn btn-primary"}
-    )
+    username = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    #remember = BooleanField('Remember Me')
+    submit = SubmitField('Log In')
 
 class RegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    fullname = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    phone_number = StringField('Name', validators=[DataRequired(), Length(min=2, max=14)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])

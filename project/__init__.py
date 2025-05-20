@@ -18,6 +18,7 @@ def create_app():
     app.config['MYSQL_USER'] = 'root'         # Your MySQL username
     app.config['MYSQL_PASSWORD'] = 'n12333492'     # Your MySQL password
     app.config['MYSQL_DB'] = 'foodah_database'      # Name of the database you created. Change the file name to match your database name.
+    app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     
      # Initialize MySQL
     mysql.init_app(app)
