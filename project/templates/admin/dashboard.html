@@ -45,7 +45,7 @@
                         <ul class="dropdown-menu" aria-labelledby="restaurantDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('admin.manage_orders') }}">Manage restaurant</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.manage_product') }}">Manage menus</a></li>
-                            <li><a class="dropdown-item" href="{{ admin.manage_users }}">Manage admins</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.manage_users') }}">Manage admins</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.manage_drivers') }}">Manage drivers</a></li>
                         </ul>
                     </li>
@@ -54,7 +54,7 @@
                             Customers
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="customersDropdown">
-                            <li><a class="dropdown-item" href="#">Manage Customers</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.manage_users') }}">Manage Customers</a></li>
                             <li><a class="dropdown-item" href="#">Customer Reports</a></li>
                         </ul>
                     </li>
@@ -63,7 +63,7 @@
                             {{ session['user']['firstname'] }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Manage profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Manage profile</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                         </ul>
                     </li>
