@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+    <!-- Main container -->
+    <main class="container my-4">
+        <!-- Signup Function Modal -->
+        <h1>Create an account to enjoy exclusive benefits</h1>
+        <div class="d-grid gap-3">
+            <!-- Form -->
+            <form action="{{ url_for('auth.register') }}" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Full Name" required>
+                    <label for="fullname">Full Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone number" required>
+                    <label for="phone_number">Phone number</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+                    <label for="email">Email Address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password" placeholder="Confirm Password" required>
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Sign up</button>
+                {{ form.csrf_token }}
+            </form>
+            
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-dark">Login instead</a>
+            <p>By signing up, you agree to our <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+    </main>
+
+{% endblock %}

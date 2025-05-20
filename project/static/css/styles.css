@@ -41,3 +41,7 @@ footer h4.brand-color {
 .card-img-deal {
     height: 200px;
 }
+
+.incoming-order-card {
+    min-width: 300px;
+}

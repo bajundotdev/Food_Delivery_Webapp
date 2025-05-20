@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from project.forms import ProductForm
-from project.decorators import login_required, admin_required
+from project.decorators import login_required, admin_required, driver_required
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 
@@ -65,11 +65,47 @@ def manage_categories():
 @admin_bp.route('/orders')
 @login_required
 @admin_required
-def orders():
+def manage_orders():
     status_filter = request.args.get('status', '')
     
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
         orders = Order.get_all()
-    return render_template('admin/orders.html', orders=orders)
+    return render_template('admin/manage_orders.html', orders=orders)
+
+@admin_bp.route('/menu')
+@login_required
+@admin_required
+def manage_product():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        orders = Order.get_all()
+    return render_template('admin/manage_products_and_category.html', orders=orders)
+
+@admin_bp.route('/users')
+@login_required
+@admin_required
+def manage_users():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        orders = Order.get_all()
+    return render_template('admin/manage_customers.html', orders=orders)
+
+@admin_bp.route('/drivers')
+@login_required
+@admin_required
+def manage_drivers():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        orders = Order.get_all()
+    return render_template('admin/manage_customers.html', orders=orders)

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
 # Import dummy database db.py
-from project.db import get_all_products, get_all_restaurants, check_user, add_user
+from project.db import get_all_products, get_all_restaurants, check_user, add_user, get_product_by_id
 from project.models import Cart, CartItem, Product
 
 # Create blueprints for different sections of the application
@@ -72,31 +72,46 @@ def view_cart():
 def add_to_cart(product_id):
     """Add item to cart."""
     if not is_logged_in():
-        flash('Please log in to add items to your cart')
-        return redirect(url_for('auth.login'))
+        if 'shopping_cart' not in session:
+            session['shopping_cart'] = {}
+            cart = session['shopping_cart']
+
+            # Add or update product quantity
+            if str(product_id) in cart:
+                cart[str(product_id)]['quantity'] += 1
+            else:
+                cart[str(product_id)] = {
+                    'id': product['id'],
+                    'name': product['name'],
+                    'price': product['price'],
+                    'quantity': 1
+                }
+
+            session['shopping_cart'] = cart  # Save back to session 
         
-    product = Product.get_by_id(product_id)
-    if not product:
-        flash('Product not found')
-        return redirect(url_for('product.list_products'))
+    else:
+        product = Product.get_by_id(product_id)
+        if not product:
+            flash('Product not found')
+            return redirect(url_for('product.list_products'))
+            
+        quantity = int(request.form.get('quantity', 1))
         
-    quantity = int(request.form.get('quantity', 1))
-    
-    cart = get_user_cart()
-    
-    # Create a new CartItem
-    cart_item = CartItem(
-        id=f"temp_{product_id}",  # Will be replaced when saved
-        product_id=product_id,
-        product=product,
-        quantity=quantity
-    )
-    
-    # Add to cart
-    cart.add_item(cart_item)
-    
-    # Save to session
-    session['cart'] = cart
+        cart = get_user_cart()
+        
+        # Create a new CartItem
+        cart_item = CartItem(
+            id=f"temp_{product_id}",  # Will be replaced when saved
+            product_id=product_id,
+            product=product,
+            quantity=quantity
+        )
+        
+        # Add to cart
+        cart.add_item(cart_item)
+        
+        # Save to session
+        session['cart'] = cart
     
     flash('Item added to cart')
     return redirect(url_for('cart.view_cart'))

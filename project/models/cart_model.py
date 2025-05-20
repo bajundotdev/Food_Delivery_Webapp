@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List
 from enum import Enum
+from uuid import uuid4
 
 # Import models
 from .product_model import Product
@@ -12,10 +13,9 @@ from .product_model import Product
 
 @dataclass
 class CartItem:
-    id: str
-    product_id: str
-    products: List[Product] = field(default_factory=list)
+    product: Product
     quantity: int = 1
+    id: str = field(default_factory=lambda: str(uuid4()))
     
     def get_subtotal(self):
         """Calculate subtotal for this item."""
@@ -32,12 +32,12 @@ class CartItem:
         
 @dataclass
 class Cart:
-    user_id: str
+    user_id: str = None
     items: List[CartItem] = field(default_factory=list)
     
     def add_item(self, item: CartItem):
         """Add an item to the cart."""
-        existing_item = self.get_item(item.product_id)
+        existing_item = self.get_item(item.id)
         if existing_item:
             existing_item.increment_quantity()
         else:
