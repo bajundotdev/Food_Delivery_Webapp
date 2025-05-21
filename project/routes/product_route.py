@@ -53,7 +53,6 @@ def get_order_by_status():
     """Display order by status."""
     status_enum = 'Ready'
     order = get_order_ready(status_enum)
-    print(order)
     return render_template('products/product_list.html', 
                               order=order, 
                               status=status_enum)

@@ -214,25 +214,11 @@ def get_order_ready(status):
     results = cur.fetchall()
     cur.close()
     return [
-        Order(str(row[0]), row[1], row[2],
-             row[3], row[4], float(row[5]), str(row[6]),
-             row[7], row[11], row[12]) for row in results
+        Order(str(row['order_id']), row['user_id'], row['driver_id'],
+             row['address_id'], row['status'], float(row['total_price']), str(row['payment_status']),
+             row['payment_method'], row['notes'], row['payment_invoice']) for row in results
     ]
 
-def get_order_ready(status):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT *
-        FROM order_table
-        WHERE status = '%s'
-    """ % status)
-    results = cur.fetchall()
-    cur.close()
-    return [
-        Order(str(row[0]), row[1], row[2],
-             row[3], row[4], float(row[5]), str(row[6]),
-             row[7], row[11], row[12]) for row in results
-    ]
 
 #add
 #update
