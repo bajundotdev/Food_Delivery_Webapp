@@ -287,13 +287,14 @@ def get_driver_details_by_user_id(user_id):
     row = cur.fetchone()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+        Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+             row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+             int(row['total_deliveries']),
+             row['fullname'], row['email'], row['phone_number'],
+             row['profile_picture_url'], row['is_available']
              )
     ]
+
 def get_driver_by_id(driver_id):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -309,11 +310,11 @@ def get_driver_by_id(driver_id):
     row = cur.fetchone()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+        Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+             row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+             int(row['total_deliveries']),
+             row['fullname'], row['email'], row['phone_number'],
+             row['profile_picture_url'], row['is_available']
              )
     ]
 
@@ -335,11 +336,11 @@ def get_all_driver():
     results = cur.fetchall()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['user_table.is_active'], row['driver_is_available']
+        Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+             row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+             int(row['total_deliveries']),
+             row['fullname'], row['email'], row['phone_number'],
+             row['profile_picture_url'], row['is_active'], row['driver_is_available']
              ) for row in results
     ]
 
@@ -358,15 +359,52 @@ def get_available_driver():
     results = cur.fetchall()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+        Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+             row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+             int(row['total_deliveries']),
+             row['fullname'], row['email'], row['phone_number'],
+             row['profile_picture_url'], row['is_active'], row['driver_is_available']
              ) for row in results
     ]
 
+def set_driver_status(driver_id, status):
+    if status == "Available":
+        stat = 1
+    elif status == "Unavailable":
+        stat = 0
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE delivery_driver
+        SET is_available = %s
+        WHERE delivery_driver.driver_id = %s
+    """, (stat, driver_id, ))
+    mysql.connection.commit()
+
+def get_driver_status_by_driver_id(driver_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT is_available
+        FROM delivery_driver 
+        WHERE delivery_driver.driver_id = %s
+    """, (driver_id, ))
+    row = cur.fetchone()
+    cur.close() 
+    if row['is_available'] == 1:
+        status = "Available"
+    elif row['is_available'] == 0:
+        status = "Unavailable"
+    return status
+
+def driver_accept_delivery(driver_id, order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET driver_id = %s
+        WHERE order_id= %s
+    """, (driver_id, order_id,))
+    mysql.connection.commit()
 #add driver
+    
 #update driver
 #delete driver
 
@@ -504,6 +542,15 @@ def get_all_orders_by_status(status):
               row['address']
              ) for row in results
     ]
+def set_order_status(order_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET status = %s
+        WHERE order_id = %s
+    """, (order_id, ))
+    mysql.connection.commit()
+
 
 ##################
 #    CART QUERIES   
