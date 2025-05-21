@@ -2,16 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.models import Product, ProductCategory, OrderStatus
 
 # Import dummy database db.py
-<<<<<<< HEAD
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user,
-                get_order_ready)
-=======
 from project.db import *
->>>>>>> main
 
 # Create blueprints for different sections of the application
 product_bp = Blueprint('product', __name__, url_prefix='/products') 
@@ -52,7 +43,6 @@ def product_detail(product_id):
         
     return render_template('products/product_detail.html', product=product)
 
-<<<<<<< HEAD
 @product_bp.route('/status')
 def get_order_by_status():
     """Display order by status."""
@@ -71,6 +61,4 @@ def get_order_by_status():
     # except KeyError:
     #     flash(f'Status {status} not found')
     #     return redirect(url_for('product.list_products'))
-=======
 
->>>>>>> main

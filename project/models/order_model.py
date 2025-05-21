@@ -41,18 +41,6 @@ class OrderItem:
 
 @dataclass
 class Order:
-<<<<<<< HEAD
-    id: str
-    user_id: str
-    driver: str
-    address: str 
-    status: OrderStatus.READY
-    total_price: float = 0.0
-    payment_status: str = ""
-    payment_method: str = ""
-    notes: str = ""
-    payment_invoice: str = ""
-=======
     id: str = ""
     user_id: str = ""
     driver_id: str = ""
@@ -70,7 +58,6 @@ class Order:
     email: str = ""
     phone_number: str = ""
     address: str = ""
->>>>>>> main
     
     def get_url(self):
         """Return URL to order detail page."""
