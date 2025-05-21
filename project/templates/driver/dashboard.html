@@ -117,92 +117,32 @@
                 <div class="col-12">
                     <h4>Active Orders (4)</h4>
                 </div>
-
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
-                        <div class="card shadow-sm incoming-order-card">
-                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white">
-                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1004
-                                </span>
-                                <span class="badge bg-warning text-black ms-2">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title mb-1">Alice Brown</h5>
-                                <p class="card-text mb-2">
-                                    <strong>Items:</strong> 2x Burger, 1x Fries<br>
-                                    <strong>Total:</strong> $22.50
-                                </p>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                        {% for order in orderReady %}
+                            {% if order.status == "Ready" %}
+                                <div class="card shadow-sm incoming-order-card">
+                                    <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                        <span class="text-white">
+                                            <i class="bi bi-bag-check me-2"></i> Incoming Order {{order.id}}
+                                        </span>
+                                        <span class="badge bg-warning text-black ms-2">New</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-1">{{fullname}}</h5>
+                                        <p class="card-text mb-2">
+                                            <strong>Items:</strong> {{order.product_name}}<br>
+                                            <strong>Total:</strong> {{order.total}}
+                                        </p>
+                                        <div class="d-flex">
+                                            <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                            <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Example Incoming Order Card -->
-                        <div class="card shadow-sm incoming-order-card">
-                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white">
-                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1005
-                                </span>
-                                <span class="badge bg-warning text-black ms-2">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title mb-1">Bob Green</h5>
-                                <p class="card-text mb-2">
-                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
-                                    <strong>Total:</strong> $19.00
-                                </p>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Example Incoming Order Card -->
-                        <div class="card shadow-sm incoming-order-card">
-                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white">
-                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1006
-                                </span>
-                                <span class="badge bg-warning text-black ms-2">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title mb-1">Bob Green</h5>
-                                <p class="card-text mb-2">
-                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
-                                    <strong>Total:</strong> $19.00
-                                </p>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Example Incoming Order Card -->
-                        <div class="card shadow-sm incoming-order-card">
-                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white">
-                                    <i class="bi bi-bag-check me-2"></i> Incoming Order #1007
-                                </span>
-                                <span class="badge bg-warning text-black ms-2">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title mb-1">Bob Green</h5>
-                                <p class="card-text mb-2">
-                                    <strong>Items:</strong> 1x Pizza, 2x Soda<br>
-                                    <strong>Total:</strong> $19.00
-                                </p>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -226,52 +166,28 @@
                         <th scope="col">Driver ID</th>
                         <th scope="col">Customer Name</th>
                         <th scope="col">Customer Address</th>
-                        <th scope="col">Current Order</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Last Active</th>
+                        <th scope="col">Time Delivered</th>
                         <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
+                    {% for order in orderCompleted %}
+                    {% if order.status == "Completed" %}
                     <tr>
                         <td>
-                        <a href="#" class="text-decoration-none">#201</a>
+                        <a href="#" class="text-decoration-none">{{order.id}}</a>
                         </td>
-                        <td>Alice Brown</td>
-                        <td>123 Main St, Brisbane</td>
-                        <td>#1004</td>
-                        <td><span class="badge bg-success">Delivered</span></td>
-                        <td>2025-06-01 14:32</td>
+                        <td>{{order.fullname}}</td>
+                        <td>{{order.address}}</td>
+                        <td><span class="badge bg-success">{{order.status}}</span></td>
+                        <td>{{order.delivered_at}}</td>
                         <td>
                         <a href="#" class="btn btn-sm btn-outline-primary">View</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">#202</a>
-                        </td>
-                        <td>Bob Green</td>
-                        <td>456 Queen St, Brisbane</td>
-                        <td>#1005</td>
-                        <td><span class="badge bg-warning text-dark">On Delivery</span></td>
-                        <td>2025-06-01 14:28</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">#203</a>
-                        </td>
-                        <td>Emma Lee</td>
-                        <td>789 King St, Brisbane</td>
-                        <td>#1006</td>
-                        <td><span class="badge bg-secondary">Pending</span></td>
-                        <td>2025-06-01 13:50</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
+                    {% endif %}
+                    {% endfor %}
                     </tbody>
                 </table>
                 </div>

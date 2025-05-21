@@ -43,14 +43,6 @@ def product_detail(product_id):
         
     return render_template('products/product_detail.html', product=product)
 
-@product_bp.route('/status')
-def get_order_by_status():
-    """Display order by status."""
-    status_enum = 'Ready'
-    order = get_order_ready(status_enum)
-    return render_template('products/product_list.html', 
-                              order=order, 
-                              status=status_enum)
     # try:
     #     # Convert string to enum
     #     status_enum = "Ready"

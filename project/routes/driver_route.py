@@ -43,12 +43,20 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 @driver_required
 def driver_dashboard():
     """Display all drivers."""
+
+    #get all orders na ready
+    # for this order in orders
+        #get the products
+    #get all products orders from above order_id
     user = session.get('user')
     user_id = user['user_id']
     driver = get_driver_details_by_user_id(user_id)
     driver_id = driver[0].id
-    orderCompleted = get_all_orders_by_driver_id_status(driver_id, status="Completed") 
-    return render_template('driver/dashboard.html', orderCompleted=orderCompleted)
+    # orderReady = get_all_orders_by_status(status="Ready")
+    orderReady = get_all_orders_and_products()
+
+    orderCompleted = get_all_orders_by_driver_id_status(driver_id, "Completed") 
+    return render_template('driver/dashboard.html', driver=driver, orderCompleted=orderCompleted, orderReady=orderReady)
 
 @driver_bp.route('/profile')
 @login_required
