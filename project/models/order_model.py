@@ -31,7 +31,7 @@ class PaymentMethod(Enum):
 class OrderItem:
     id: str
     product_id: str
-    products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
+    #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
     quantity: int = 1
     price: float = 0.0  # Store the price at the time of order
     
@@ -41,6 +41,7 @@ class OrderItem:
 
 @dataclass
 class Order:
+<<<<<<< HEAD
     id: str
     user_id: str
     driver: str
@@ -51,6 +52,25 @@ class Order:
     payment_method: str = ""
     notes: str = ""
     payment_invoice: str = ""
+=======
+    id: str = ""
+    user_id: str = ""
+    driver_id: str = ""
+    status: OrderStatus = OrderStatus.PENDING
+    total: float = 0.0
+    payment_status: str = ""
+    payment_method: PaymentMethod = PaymentMethod.CASH
+    placed_at: datetime = field(default_factory=datetime.now)
+    delivered_at: datetime = field(default_factory=datetime.now)
+    canceled_at: str = ""
+    notes: str = ""
+    payment_invoice: str = ""
+    delivery_option: DeliveryOption = DeliveryOption.FOR_DELIVERY
+    fullname: str = ""
+    email: str = ""
+    phone_number: str = ""
+    address: str = ""
+>>>>>>> main
     
     def get_url(self):
         """Return URL to order detail page."""
@@ -62,11 +82,6 @@ class Order:
         from models import Product, Cart
         # Implementation needed
         pass
-    
-    def calculate_total(self):
-        """Calculate the total price of the order."""
-        self.total = sum(item.get_subtotal() for item in self.items)
-        return self.total
     
     def update_status(self, status: OrderStatus):
         """Update order status."""

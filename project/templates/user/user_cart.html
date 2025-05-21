@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <div class="container mt-2">
+        <div class="row d-flex">
+            <div class="col">
+                <h2>My Cart</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index')}}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Cart</li>
+            </ol>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <!-- Main content: Cart Delivery Summary -->
+    <main class="container my-4">
+        <form action="{{ url_for('cart.checkout_cart') }}" method="post">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Cart item 1 -->
+                        <tr>
+                            <td class="align-middle">
+                                <img src="{{ url_for('static', filename='img/pexels-pedrofurtadoo-31450853.jpg') }}" alt="Margherita Pizza" class="img-thumbnail me-2" style="width: 50px;" />
+                                Margherita Pizza
+                            </td>
+                            <td class="align-middle">$8.00</td>
+                            <td class="align-middle">
+                                <input type="number" class="form-control" name="quantity_1" value="2" min="1" style="width: 60px;" />
+                            </td>
+                            <td class="align-middle">$16.00</td>
+                            <td class="align-middle">
+                                <button type="submit" name="remove" value="1" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </td>
+                        </tr>
+                        <!-- Cart item 2 -->
+                        <tr>
+                            <td class="align-middle">
+                                <img src="{{ url_for('static', filename='img/chicken-red-curry-black-cup.jpg') }}" alt="Butter Chicken Curry" class="img-thumbnail me-2" style="width: 50px;" />
+                                Butter Chicken Curry
+                            </td>
+                            <td class="align-middle">$15.99</td>
+                            <td class="align-middle">
+                                <input type="number" class="form-control" name="quantity_2" value="1" min="1" style="width: 60px;" />
+                            </td>
+                            <td class="align-middle">$15.99</td>
+                            <td class="align-middle">
+                                <button type="submit" name="remove" value="2" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <!-- Total row -->
+                        <tr>
+                            <td colspan="3"></td>
+                            <td class="text-end fw-bold">Total:</td>
+                            <td class="fw-bold">$31.99</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="text-end">
+                <button type="submit" name="checkout" class="btn btn-success">Proceed to Checkout</button>
+            </div>
+        </form>
+    </main>
+{% endblock %}

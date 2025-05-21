@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Orders ready for driver 1</h1>
+{{ driver_orders }}
+
+<h1>Orders status is completed</h1>
+{{ completed_orders }}
+
+<h1>Get orders and products</h1>
+{{ orderered_products }}
+
+<h1>Get order details</h1>
+{{ orders_users }}
+
+<h1>Get order by id</h1>
+{{ order_item }}
+
+<h1>Get order by user id</h1>
+{{ order_item_by_user }}
+
+<h1>Get order by status</h1>
+{{ order_by_status }}
+
+<h1>Get cart</h1>
+{{ cart_items }}
+
+<h1>Choppers's cart</h1>
+{{ user_items}}
+
+{% endblock %}

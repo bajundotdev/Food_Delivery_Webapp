@@ -34,5 +34,4 @@ def save_cart(cart):
 
 def clear_user_session():
     """Clear user session data."""
-    session.pop('user_id', None)
-    session.pop('user_role', None)
+    session.clear()

@@ -1,5 +1,4 @@
-# dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole, Order
+from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mysqldb import MySQL
@@ -221,6 +220,17 @@ def get_order_ready(status):
 
 
 #add
+def add_product(form):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO product_table (product_name,description,category,price,food_rating,
+                prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id))
+        VALUES (%s, %s, %s, %s, %s, 
+                %s, %s, %s, %s, %s, %s)"""
+        , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
+           form.prep_time_est.data, form.food_image_url.data, form.is_active.data, curent_timestamp, curent_timestamp,form.restaurant_id.data))
+    mysql.connection.commit()
+    cur.close()
 #update
 #delete
 ##################
@@ -354,13 +364,172 @@ def get_available_driver():
 #delete driver
 
 ##################
-#    PAYMENT QUERIES   
-##################
-
-##################
 #    ORDER QUERIES   
 ##################
+def get_all_orders_and_products():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+    """)
+    results = cur.fetchall()
+    cur.close()
+    # return [
+    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
+    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
+    # ]
+    return results
+
+def get_all_orders():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id
+        ORDER BY ordert.status
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
+def get_all_orders_by_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.order_id = %s
+        ORDER BY ordert.status
+    """, (order_id,))
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             )
+    ]
+
+def get_all_orders_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.user_id = %s
+        ORDER BY ordert.status
+    """, (user_id,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
+def get_all_orders_by_driver_id_status(driver_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s AND ordert.status = %s
+        ORDER BY ordert.status
+    """, (driver_id, status,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
+def get_all_orders_by_status(status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.status = %s
+        ORDER BY ordert.status
+    """, (status,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
 
 ##################
 #    CART QUERIES   
 ##################
+def get_all_cart_items():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.*, pt.*, cart.quantity * pt.price as total
+        FROM cart_items cart
+        JOIN product_table pt ON cart.product_id = pt.product_id
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+    ]
+   
+    return results
+
+def get_all_cart_items_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.*, pt.*, cart.quantity * pt.price as total
+        FROM cart_items cart
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE cart.user_id = %s
+    """, (user_id,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+    ]
