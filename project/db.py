@@ -351,7 +351,7 @@ def get_available_driver():
 ##################
 #    ORDER QUERIES   
 ##################
-def get_all_orders():
+def get_all_orders_and_products():
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
@@ -368,57 +368,120 @@ def get_all_orders():
     # ]
     return results
 
+def get_all_orders():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id
+        ORDER BY ordert.status
+    """)
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
 def get_all_orders_by_id(order_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
-        FROM order_table ot
-        JOIN cart_items cart ON ot.order_id = cart.order_id
-        JOIN product_table pt ON cart.product_id = pt.product_id
-        WHERE ot.order_id = %s
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.order_id = %s
+        ORDER BY ordert.status
     """, (order_id,))
     row = cur.fetchone()
     cur.close()
-    # return [
-    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
-    # ]
-    return row
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             )
+    ]
 
 def get_all_orders_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
-        FROM order_table ot
-        JOIN cart_items cart ON ot.order_id = cart.order_id
-        JOIN product_table pt ON cart.product_id = pt.product_id
-        WHERE ot.user_id = %s
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.user_id = %s
+        ORDER BY ordert.status
     """, (user_id,))
-    row = cur.fetchall()
+    results = cur.fetchall()
     cur.close()
-    # return [
-    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
-    # ]
-    return row
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
+def get_all_orders_by_driver_id_status(driver_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s AND ordert.status = %s
+        ORDER BY ordert.status
+    """, (driver_id, status,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
 
 def get_all_orders_by_status(status):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT ot.*
-        FROM order_table ot
-        WHERE ot.status = %s
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.status = %s
+        ORDER BY ordert.status
     """, (status,))
     results = cur.fetchall()
     cur.close()
-    # return [
-    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
-    # ]
-    return results
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
 
 ##################
 #    CART QUERIES   

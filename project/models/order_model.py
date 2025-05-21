@@ -41,12 +41,12 @@ class OrderItem:
 
 @dataclass
 class Order:
-    id: str
-    user_id: str
+    id: str = ""
+    user_id: str = ""
     driver_id: str = ""
-    address: str = ""
     status: OrderStatus = OrderStatus.PENDING
     total: float = 0.0
+    payment_status: str = ""
     payment_method: PaymentMethod = PaymentMethod.CASH
     placed_at: datetime = field(default_factory=datetime.now)
     delivered_at: datetime = field(default_factory=datetime.now)
@@ -54,7 +54,10 @@ class Order:
     notes: str = ""
     payment_invoice: str = ""
     delivery_option: DeliveryOption = DeliveryOption.FOR_DELIVERY
-    products: List[OrderItem] = field(default_factory=list)
+    fullname: str = ""
+    email: str = ""
+    phone_number: str = ""
+    address: str = ""
     
     def get_url(self):
         """Return URL to order detail page."""
@@ -66,11 +69,6 @@ class Order:
         from models import Product, Cart
         # Implementation needed
         pass
-    
-    def calculate_total(self):
-        """Calculate the total price of the order."""
-        self.total = sum(item.get_subtotal() for item in self.items)
-        return self.total
     
     def update_status(self, status: OrderStatus):
         """Update order status."""

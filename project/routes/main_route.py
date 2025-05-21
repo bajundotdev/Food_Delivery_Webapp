@@ -35,19 +35,28 @@ def about():
 def contact():
     return render_template('contact.html')  # Assuming you have a contact.html template
 
+
+############################ DO NOT GO BEYOND THIS POINT #########################
+############################ FOR TESTING ONLY ####################################
 @main_bp.route('/test')
 def order_list():
     """Display all orders."""
-    orders = get_all_orders()
+    orderered_products = get_all_orders_and_products()
+    order = get_all_orders()
     order_item = get_all_orders_by_id(2)
     order_item_by_user = get_all_orders_by_user_id(10)
     order_by_status = get_all_orders_by_status("Completed")
     cart_items = get_all_cart_items()
     user_items = get_all_cart_items_by_user_id(9)
-    return render_template('/test.html', orders=orders,
+    driver_orders = get_all_orders_by_driver_id_status(1, "Ready")
+    completed_orders = get_all_orders_by_status("Completed")
+    return render_template('/test.html', orderered_products=orderered_products,
+                           orders_users = order,
                            order_item=order_item,
                            order_item_by_user=order_item_by_user,
                            order_by_status=order_by_status,
                            cart_items=cart_items,
-                           user_items=user_items
+                           user_items=user_items,
+                            driver_orders = driver_orders,
+                            completed_orders=completed_orders
                            )
