@@ -1,3 +1,5 @@
+# dummyDb.py
+from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
 from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -203,23 +205,6 @@ def get_product_by_category(categ):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def get_order_ready(status):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT *
-        FROM order_table
-        WHERE status = '%s'
-    """ % status)
-    results = cur.fetchall()
-    cur.close()
-    return [
-        Order(str(row['order_id']), row['user_id'], row['driver_id'],
-             row['address_id'], row['status'], float(row['total_price']), str(row['payment_status']),
-             row['payment_method'], row['notes'], row['payment_invoice']) for row in results
-    ]
-
-
-#add
 def add_product(form):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -287,6 +272,28 @@ def get_restaurant_by_name(restaurant_name):
 ##################
 #    DRIVER QUERIES   
 ##################
+def get_driver_details_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
+                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
+                delivery_driver.total_deliveries,
+                user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
+                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
+                
+        FROM delivery_driver, user_table
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1 AND delivery_driver.user_id = %s
+    """, (user_id, ))
+    row = cur.fetchone()
+    cur.close()
+    return [
+        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
+             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
+             int(row['delivery_driver.total_deliveries']),
+             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
+             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+             )
+    ]
 def get_driver_by_id(driver_id):
     cur = mysql.connection.cursor()
     cur.execute("""
