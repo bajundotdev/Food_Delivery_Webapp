@@ -3,12 +3,7 @@ from project.models import Driver, DriverStatus
 from project.decorators import login_required, admin_required, driver_required
 
 # Import dummy database db.py
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user,
-                get_all_driver)
+from project.db import *
 
 # Create blueprints for different sections of the application
 driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
@@ -48,15 +43,23 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 @driver_required
 def driver_dashboard():
     """Display all drivers."""
-    drivers = []
-    return render_template('driver/dashboard.html', drivers=drivers)
+    user = session.get('user')
+    user_id = user['user_id']
+    driver = get_driver_details_by_user_id(user_id)
+    driver_id = driver[0].id
+    orderCompleted = get_all_orders_by_driver_id_status(driver_id, status="Completed") 
+    return render_template('driver/dashboard.html', orderCompleted=orderCompleted)
 
 @driver_bp.route('/profile')
 @login_required
 @driver_required
 def profile():
     """Display all drivers."""
-    # drivers = get_all_driver()
-    drivers = []
-    return render_template('driver/profile.html', drivers=drivers)
+    user = session.get('user')
+    user_id = user['user_id']
+    driver = get_driver_details_by_user_id(user_id)
+    driver_id = driver[0].id
+    orderCompleted = get_all_orders_by_driver_id_status(driver_id, status="Completed")
+
+    return render_template('driver/profile.html', driver=driver, orderCompleted=orderCompleted)
 
