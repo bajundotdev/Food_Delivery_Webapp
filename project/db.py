@@ -5,7 +5,7 @@ from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mysqldb import MySQL
 
-curent_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
 mysql = MySQL()
 
@@ -92,7 +92,7 @@ def add_user(form):
     cur.execute("""
         INSERT INTO user_table (email, password_hash, fullname, phone_number, user_type, is_active, is_verified, created_at, updated_at, last_login, profile_picture_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)"""
-        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), curent_timestamp, curent_timestamp, curent_timestamp,"user.jpg"))
+        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"user.jpg"))
     mysql.connection.commit()
     cur.close()
 
@@ -130,7 +130,7 @@ def add_address_by_user_id(form):
     #                             )
     #     VALUES (%s, %s, %s, %s,
     #             %s, %s, %d, %d,
-    #             curent_timestamp, curent_timestamp
+    #             current_timestamp, current_timestamp
     #             )
     # """, (form.username.data, form.password.data, form.email.data,
     #       form.firstname.data, form.surname.data, form.phone.data))
@@ -208,11 +208,11 @@ def add_product(form):
     cur = mysql.connection.cursor()
     cur.execute("""
         INSERT INTO product_table (product_name,description,category,price,food_rating,
-                prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id))
+                prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id)
         VALUES (%s, %s, %s, %s, %s, 
                 %s, %s, %s, %s, %s, %s)"""
         , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
-           form.prep_time_est.data, form.food_image_url.data, form.is_active.data, curent_timestamp, curent_timestamp,form.restaurant_id.data))
+           form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
     mysql.connection.commit()
     cur.close()
 #update
@@ -475,14 +475,13 @@ def get_all_orders_by_id(order_id):
     """, (order_id,))
     row = cur.fetchone()
     cur.close()
-    return [
-        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+    return Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
               row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
               row['payment_invoice'], row['delivery_option'],
               row['fullname'], row['email'],row['phone_number'],
               row['address']
              )
-    ]
+    
 
 def get_all_orders_by_user_id(user_id):
     cur = mysql.connection.cursor()
@@ -597,3 +596,37 @@ def get_all_cart_items_by_user_id(user_id):
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
     ]
+
+def get_uncheckedout_cart_items_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.*, pt.*, cart.quantity * pt.price as total
+        FROM cart_items cart
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE cart.user_id = %s AND order_id IS NULL
+    """, (user_id,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])),  row['cart_id'], row['quantity']) for row in results
+    ]
+
+def add_cart_item_to_db(product_id, user_id, quantity):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO cart_items (product_id, user_id, created_at, quantity)
+        VALUES (%s, %s, %s, %s)"""
+        , (product_id, user_id, current_timestamp, quantity))
+    mysql.connection.commit()
+    cur.close()
+
+def delete_cart_item_from_db(cart_id, product_id, user_id, quantity):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO cart_items (product_id, user_id, created_at, quantity)
+        VALUES (%s, %s, %s, %s)"""
+        , (product_id, user_id, quantity))
+    mysql.connection.commit()
+    cur.close()

@@ -14,8 +14,10 @@ from .product_model import Product
 @dataclass
 class CartItem:
     product: Product
+    cart_id: str = ""
     quantity: int = 1
     id: str = field(default_factory=lambda: str(uuid4()))
+    
     
     def get_subtotal(self):
         """Calculate subtotal for this item."""
