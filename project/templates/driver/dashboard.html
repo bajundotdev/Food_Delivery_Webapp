@@ -39,8 +39,7 @@
                             <h4 class="card-title mb-1">Hi, {{ session['user']['firstname'] }}!</h4>
                             <p class="card-text mb-1 text-muted">{{ session['user']['email'] }}</p>
                             <p class="card-text mb-0">
-                                <span class="me-3"><i class="bi bi-geo-alt"></i> user.address</span>
-                                <span><i class="bi bi-telephone"></i> user.phone</span>
+                                <span><i class="bi bi-telephone"></i> {{ session['user']['phone'] }}</span>
                             </p>
                         </div>  
                     </div>
@@ -56,24 +55,11 @@
         <!-- Admin Dashboard Section -->
         <section>
             <!-- Cards -->
-            <div class="row g-4">
-                <!-- Users Card -->
-                <div class="col-12 col-md-3 col-sm-6">
-                    <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-primary h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-people display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">1,234</h5>
-                                <h5 class="card-title text-white mb-1">Customer</h5>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
+            <div class="row g-4">       
                 <!-- Orders Card -->
                 <div class="col-12 col-md-3 col-sm-6">
                     <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-success h-100">
+                        <div class="card text-bg-primary h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-basket display-4 mb-0 text-white"></i>
                                 <h5 class="card-text fs-4 text-white mb-0">{{orderCompleted | length}}</h5>
@@ -83,26 +69,13 @@
                     </a>
                 </div>
 
-                <!-- Menu Card -->
-                <div class="col-12 col-md-3 col-sm-6">
-                    <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-warning h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-list-ul display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">42</h5>
-                                <h5 class="card-title text-white mb-1">Menu</h5>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
                 <!-- Delivery Drivers Card -->
                 <div class="col-12 col-md-3 col-sm-6">
                     <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-danger h-100">
+                        <div class="card text-bg-success h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-truck display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">15</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{orderCompleted | length}}</h5>
                                 <h5 class="card-title text-white mb-1">Delivery Drivers</h5>
                             </div>
                         </div>
@@ -115,7 +88,7 @@
         <section>
             <div class="row my-4">
                 <div class="col-12">
-                    <h4>Active Orders (4)</h4>
+                    <h4>Active Orders ({{orderCompleted | length}})</h4>
                 </div>
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
