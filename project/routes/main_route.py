@@ -41,6 +41,7 @@ def contact():
 @main_bp.route('/test')
 def order_list():
     """Display all orders."""
+    driver_status = get_driver_status_by_driver_id(1)
     orderered_products = get_all_orders_and_products()
     order = get_all_orders()
     order_item = get_all_orders_by_id(2)
@@ -50,7 +51,10 @@ def order_list():
     user_items = get_all_cart_items_by_user_id(9)
     driver_orders = get_all_orders_by_driver_id_status(1, "Ready")
     completed_orders = get_all_orders_by_status("Completed")
-    return render_template('/test.html', orderered_products=orderered_products,
+    set_driver_status(1, "Unavailable")
+    return render_template('/test.html', 
+                           driver_status=driver_status,
+                           orderered_products=orderered_products,
                            orders_users = order,
                            order_item=order_item,
                            order_item_by_user=order_item_by_user,
