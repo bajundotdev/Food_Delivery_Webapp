@@ -115,6 +115,7 @@ class OrderStatusForm(FlaskForm):
     status = SelectField('Update Status', choices=[
         ('processing', 'Processing'),
         ('shipped', 'Shipped'),
+        ('ready', 'Ready'),
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled')
     ], validators=[DataRequired()])
