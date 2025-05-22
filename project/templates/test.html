@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<h1>Product items added to cart (in session)</h1>
+{{ session_cart }}
+
 <h1>Driver availability</h1>
 {{ driver_status }}
 
@@ -25,7 +28,7 @@
 <h1>Get order by status</h1>
 {{ order_by_status }}
 
-<h1>Get cart</h1>
+<h1>Get uncheckedout cart</h1>
 {{ cart_items }}
 
 <h1>Choppers's cart</h1>

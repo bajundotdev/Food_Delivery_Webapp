@@ -56,7 +56,9 @@
                                 <a href="{{ url_for('cart.view_cart') }}" class="nav-link position-relative mx-2 border border-danger text-danger">
                                     <i class="bi bi-cart"></i>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        3
+                                        {% block carts %}
+                                        {{ session.get('shopping_cart').get('items') | length }}
+                                        {% endblock %} 
                                     </span>
                                 </a>
                             </li>
