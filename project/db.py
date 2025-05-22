@@ -168,11 +168,9 @@ def get_product_by_id(product_id):
     row = cur.fetchone()
     #print("id: ", product_id)
     cur.close()
-    return [
-        Product(row['product_id'], row['product_name'], row['description'],
+    return Product(row['product_id'], row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id']))
-    ]
 
 def search_product_by_name(search_str):
     str = "%" + str(search_str) + "%"

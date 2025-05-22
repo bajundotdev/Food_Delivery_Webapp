@@ -32,7 +32,7 @@ class CartItem:
         
 @dataclass
 class Cart:
-    user_id: str = None
+    #user_id: str = None
     items: List[CartItem] = field(default_factory=list)
     
     def add_item(self, item: CartItem):
