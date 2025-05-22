@@ -12,7 +12,10 @@ mysql = MySQL()
 #####################
 
 class ProductCategory(Enum):
-    MAIN_COURSE = "Main"
+    MAIN_COURSE = "Main Dish"
+    DESSERT = "Dessert"
+    SNACK = "Snack"
+    BEVERAGE = "Beverage"
 
 @dataclass
 class Product:
@@ -24,7 +27,7 @@ class Product:
     food_rating: float = 0.00
     prep_time: int = 5
     image_url: str = ""
-    is_active: bool = False
+    is_active: bool = True
     restaurant_id: str = ""
     
     def get_url(self):
