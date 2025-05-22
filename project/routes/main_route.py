@@ -12,14 +12,12 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
-    item_num_in_cart_session = len(session.get('shopping_cart'))
-    print(item_num_in_cart_session)
+    
     # Get featured products and restaurants
     featured_products = get_all_products()[:4]  # Get first 4 products
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
 
     return render_template('index.html',
-                          item_num_in_cart_session=item_num_in_cart_session,
                           products=featured_products,
                           restaurants=featured_restaurants)
 
@@ -58,6 +56,7 @@ def order_list():
     driver_orders = get_all_orders_by_driver_id_status(driver_id, "Ready")
     completed_orders = get_all_orders_by_status("Completed")
     set_driver_status(driver_id, "Unavailable")
+    delete_cart_item_from_db(6,9)
     return render_template('/test.html',
                            session_cart = session_cart, 
                            driver_status=driver_status,

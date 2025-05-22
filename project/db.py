@@ -624,11 +624,11 @@ def add_cart_item_to_db(product_id, user_id, quantity):
     mysql.connection.commit()
     cur.close()
 
-def delete_cart_item_from_db(cart_id, product_id, user_id, quantity):
+def delete_cart_item_from_db(cart_id, user_id,):
     cur = mysql.connection.cursor()
     cur.execute("""
-        INSERT INTO cart_items (product_id, user_id, created_at, quantity)
-        VALUES (%s, %s, %s, %s)"""
-        , (product_id, user_id, quantity))
+        DELETE FROM cart_items WHERE cart_id = %s AND user_id = %s
+        """
+        , (cart_id, user_id,))
     mysql.connection.commit()
     cur.close()
