@@ -45,8 +45,6 @@ def order_list():
 
 
     """Display all orders."""
-
-
     driver_status = get_driver_status_by_driver_id(1)
     orderered_products = get_all_orders_and_products()
     order = get_all_orders()
