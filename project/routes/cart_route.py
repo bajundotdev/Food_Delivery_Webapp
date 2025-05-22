@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from project.decorators import login_required, admin_required, driver_required
 
 # Import dummy database db.py
 from project.db import get_all_products, get_all_restaurants, check_user, add_user, get_product_by_id
@@ -53,7 +54,7 @@ dummy_cart_items = []
 
 @cart_bp.route('/')
 def view_cart():
-    return render_template('users/user_cart.html')
+    return render_template('user/user_cart.html')
     # """View cart contents."""
     # if not is_logged_in():
     #     flash('Please log in to view your cart')
@@ -132,6 +133,7 @@ def remove_from_cart(product_id):
     flash('Item removed from cart')
     return redirect(url_for('cart.view_cart'))
 
-@cart_bp.route('/checkout')
+@cart_bp.route('/checkout', methods=['POST'])
+@login_required
 def checkout_cart():
-    return render_template('users/checkout.html')
+    return render_template('user/checkout.html')

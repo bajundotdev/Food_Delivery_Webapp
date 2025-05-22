@@ -45,7 +45,7 @@ def clear_user_session():
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('users/profile.html')
+    return render_template('user/profile.html')
 # def profile():
 #     """View and edit user profile on the same page."""
 #     if not is_logged_in():

@@ -8,6 +8,12 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 mysql = MySQL()
 
+@admin_bp.route('/')
+@login_required
+@admin_required
+def manage_admins():
+    return render_template('admin/manage_admins.html')
+
 @admin_bp.route('/dashboard')
 @login_required
 @admin_required
@@ -71,8 +77,28 @@ def manage_orders():
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
-        orders = Order.get_all()
+        # orders = Order.get_all()
+        orders = []
     return render_template('admin/manage_orders.html', orders=orders)
+
+@admin_bp.route('/order/<string:order_id>')
+@login_required
+@admin_required
+def view_order(order_id):
+    return render_template('admin/manage_orders.html', orders=order_id)
+
+@admin_bp.route('/orders/report')
+@login_required
+@admin_required
+def manage_order_report():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        # orders = Order.get_all()
+        orders = []
+    return render_template('admin/manage_order_report.html', orders=orders)
 
 @admin_bp.route('/menu')
 @login_required
@@ -83,7 +109,8 @@ def manage_product():
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
-        orders = Order.get_all()
+        # orders = Order.get_all()
+        orders = []
     return render_template('admin/manage_products_and_category.html', orders=orders)
 
 @admin_bp.route('/users')
@@ -95,8 +122,22 @@ def manage_users():
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
-        orders = Order.get_all()
+        # orders = Order.get_all()
+        orders = []
     return render_template('admin/manage_customers.html', orders=orders)
+
+@admin_bp.route('/restaurant')
+@login_required
+@admin_required
+def manage_restaurant():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        # orders = Order.get_all()
+        orders = []
+    return render_template('admin/manage_restaurant.html', orders=orders)
 
 @admin_bp.route('/drivers')
 @login_required
@@ -107,5 +148,6 @@ def manage_drivers():
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
-        orders = Order.get_all()
-    return render_template('admin/manage_customers.html', orders=orders)
+        # orders = Order.get_all()
+        orders = []
+    return render_template('admin/manage_drivers.html', orders=orders)
