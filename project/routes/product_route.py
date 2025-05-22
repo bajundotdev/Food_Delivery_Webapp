@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from project.models import Product, ProductCategory
+from project.models import Product, ProductCategory, OrderStatus
 
 # Import dummy database db.py
 from project.db import *
@@ -43,4 +43,14 @@ def product_detail(product_id):
         
     return render_template('products/product_detail.html', product=product)
 
+    # try:
+    #     # Convert string to enum
+    #     status_enum = "Ready"
+    #     order = get_order_ready(status_enum)
+    #     return render_template('products/product_list.html', 
+    #                           order=order, 
+    #                           status=status_enum)
+    # except KeyError:
+    #     flash(f'Status {status} not found')
+    #     return redirect(url_for('product.list_products'))
 

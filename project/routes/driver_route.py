@@ -3,12 +3,7 @@ from project.models import Driver, DriverStatus
 from project.decorators import login_required, admin_required, driver_required
 
 # Import dummy database db.py
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user,
-                get_all_driver)
+from project.db import *
 
 # Create blueprints for different sections of the application
 driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
@@ -48,54 +43,32 @@ driver_bp = Blueprint('driver', __name__, url_prefix='/drivers')
 @driver_required
 def driver_dashboard():
     """Display all drivers."""
-    drivers = []
-    return render_template('driver/dashboard.html', drivers=drivers)
+
+    #get all orders na ready
+    # for this order in orders
+        #get the products
+    #get all products orders from above order_id
+    user = session.get('user')
+    user_id = user['user_id']
+    driver = get_driver_details_by_user_id(user_id)
+    driver_id = driver[0].id
+    # orderReady = get_all_orders_by_status(status="Ready")
+    orderReady = get_all_orders_and_products()
+
+
+    orderCompleted = get_all_orders_by_driver_id_status(driver_id, "Completed") 
+    return render_template('driver/dashboard.html', driver=driver, orderCompleted=orderCompleted, orderReady=orderReady)
 
 @driver_bp.route('/profile')
 @login_required
 @driver_required
 def profile():
     """Display all drivers."""
-    # drivers = get_all_driver()
-    drivers = []
-    return render_template('driver/profile.html', drivers=drivers)
+    user = session.get('user')
+    user_id = user['user_id']
+    driver = get_driver_details_by_user_id(user_id)
+    driver_id = driver[0].id
+    orderCompleted = get_all_orders_by_driver_id_status(driver_id, status="Completed")
 
+    return render_template('driver/profile.html', driver=driver, orderCompleted=orderCompleted)
 
-
-# def profile():
-#     """View and edit user profile on the same page."""
-#     if not is_logged_in():
-#         flash('Please log in to view your profile')
-#         return redirect(url_for('auth.login'))
-        
-#     user_id = get_user_id()
-#     user = User.get_by_id(user_id)
-    
-#     if not user:
-#         flash('User not found')
-#         return redirect(url_for('auth.login'))
-    
-#     # Get user's recent orders and addresses
-#     orders = Order.get_by_user(user_id)
-#     addresses = UserAddress.get_by_user(user_id)
-    
-#     form = UserForm()
-    
-#     if form.validate_on_submit():
-#         user.name = form.name.data
-#         user.email = form.email.data
-#         # Other fields as needed
-#         user.save()
-        
-#         flash('Profile updated successfully!')
-#         return redirect(url_for('user.profile'))
-#     elif request.method == 'GET':
-#         # Populate form with user data
-#         form.name.data = user.name
-#         form.email.data = user.email
-    
-#     return render_template('profile.html', 
-#                           user=user,
-#                           orders=orders, 
-#                           addresses=addresses,
-#                           form=form)
