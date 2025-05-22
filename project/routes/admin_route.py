@@ -4,6 +4,8 @@ from project.decorators import login_required, admin_required, driver_required
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 
+from project.db import *
+
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 mysql = MySQL()
@@ -100,18 +102,51 @@ def manage_order_report():
         orders = []
     return render_template('admin/manage_order_report.html', orders=orders)
 
+###########################
+#   Manage CRUD Products  #
+###########################
+
 @admin_bp.route('/menu')
 @login_required
 @admin_required
 def manage_product():
+
     status_filter = request.args.get('status', '')
     
     if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
+        menus = Product.get_orders_by_status(status_filter)
     else:
-        # orders = Order.get_all()
-        orders = []
-    return render_template('admin/manage_products_and_category.html', orders=orders)
+        menus = get_all_products()
+
+    return render_template('admin/manage_products_and_category.html', menus=menus)
+
+@admin_bp.route('/menu/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def add_product():
+    form_product = ProductForm()
+    if request.method == 'POST':
+        add_product_to_db(form_product)
+        return redirect(url_for('admin.manage_product'))
+    
+    return render_template('admin/product_add_form.html', form_product=form_product, categories=ProductCategory)
+
+@admin_bp.route('/menu/update/<int:product_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def update_product(product_id):
+    if request.method == "GET":
+        pass
+    else:
+        return redirect(url_for('admin.manage_product'))
+    return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_product(product_id):
+    return redirect(url_for('admin.manage_product'))
+
 
 @admin_bp.route('/users')
 @login_required

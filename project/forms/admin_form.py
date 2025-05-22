@@ -30,14 +30,16 @@ class AdminSearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 class ProductForm(FlaskForm):
-    name = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
-    description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
-    price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0.01)])
+    product_name = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
     category = SelectField('Category', validators=[DataRequired()])
-    restaurant_id = SelectField('Restaurant', validators=[DataRequired()])
-    image = FileField('Product Image', validators=[
-        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')
-    ])
+    price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0.01)])
+    is_active = SelectField('Status', validators=[DataRequired()])
+    food_rating = FloatField('Food Rating', default=100)
+    prep_time_est = FloatField('Prepping Time Est', validators=[NumberRange(min=1)], default=10)
+    restaurant_id = StringField('Restaurant')
+    food_image_url = FileField('Product Image', validators=[
+        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')], default="food.jpg")
+    description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
     submit = SubmitField('Save Product')
 
 class RestaurantForm(FlaskForm):
