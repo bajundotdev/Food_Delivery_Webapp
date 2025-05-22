@@ -1,4 +1,4 @@
-from project.db import get_product_by_id
+from project.db import *
 from project.models.cart_model import Cart, CartItem
 #from project.models import UserInfo, Order, OrderStatus
 
@@ -19,10 +19,10 @@ from flask import session
 def get_cart():
     cart_data = session.get('shopping_cart')
     cart = Cart()
-    print(cart_data)
+    #print(cart_data)
     if isinstance(cart_data, dict):
         for item in cart_data.get('items'):
-            product = get_product_by_id(item['id'])
+            product = get_product_by_id(item.id)
             if product:
                 cart.add_item(CartItem(
                     product = product,
@@ -43,8 +43,10 @@ def _save_basket_to_session(basket):
 
 def add_to_cart(product_id, quantity=1):
     cart = get_cart()
-    cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=quantity))
+    print("product id: ", product_id)
+    cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=int(quantity)))
     _save_basket_to_session(cart)
+    print(cart)
 
 def remove_from_cart(product_id):
     cart = get_cart()

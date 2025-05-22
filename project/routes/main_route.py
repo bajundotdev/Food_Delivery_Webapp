@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 # Import dummy database db.py
 from project.db import *
-from project.session import add_to_cart
+from project.session import *
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 
@@ -40,7 +40,13 @@ def contact():
 ############################ FOR TESTING ONLY ####################################
 @main_bp.route('/test')
 def order_list():
+    ###session check####
+    add_to_cart(int(2),1)
+
+
     """Display all orders."""
+
+
     driver_status = get_driver_status_by_driver_id(1)
     orderered_products = get_all_orders_and_products()
     order = get_all_orders()

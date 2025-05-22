@@ -50,7 +50,7 @@ class Cart:
     def get_item(self, product_id: str):
         """Get an item from the cart by its product ID."""
         for item in self.items:
-            if item.product_id == product_id:
+            if item.id == product_id:
                 return item
         return None
     
