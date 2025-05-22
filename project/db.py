@@ -44,7 +44,7 @@ def get_user_by_email(email):
                 row['user_type'], bool(row['is_active']), row['last_login'])
         ]
     else:
-        return None
+        return []
 
 def get_user_by_id(user_id):
     cur = mysql.connection.cursor()
@@ -163,12 +163,13 @@ def get_product_by_id(product_id):
     cur.execute("""
         SELECT *
         FROM product_table
-        WHERE product_id = %d
-    """ % product_id)
+        WHERE product_id = %s
+    """ , (product_id,))
     row = cur.fetchone()
+    #print("id: ", product_id)
     cur.close()
     return [
-        Product(str(row['product_id']), row['product_name'], row['description'],
+        Product(row['product_id'], row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id']))
     ]
@@ -275,58 +276,65 @@ def get_restaurant_by_name(restaurant_name):
 def get_driver_details_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
-                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
-                delivery_driver.total_deliveries,
+        SELECT  driver_id, delivery_driver.user_id as uid,  vehicle_type,
+                 license_number,  vehicle_plate,  driver_rating,
+                 total_deliveries,is_available,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
-                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
+                user_table.profile_picture_url, user_table.is_active
                 
         FROM delivery_driver, user_table
-        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1 AND delivery_driver.user_id = %s
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.user_id = %s
     """, (user_id, ))
     row = cur.fetchone()
     cur.close()
-    return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
-             )
-    ]
+    if row is not None:
+        return [
+            Driver(str(row['driver_id']), str(row['uid']), row['vehicle_type'],
+                row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+                int(row['total_deliveries']),
+                row['fullname'], row['email'], row['phone_number'],
+                row['profile_picture_url'], row['is_available']
+                )
+        ]
+    else:
+        return []
+
 def get_driver_by_id(driver_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
-                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
-                delivery_driver.total_deliveries,
+        SELECT  driver_id, delivery_driver.user_id,  vehicle_type,
+                 license_number,  vehicle_plate,  driver_rating,
+                 total_deliveries,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
-                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
+                user_table.profile_picture_url, user_table.is_active,  is_available
                 
         FROM delivery_driver, user_table
-        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1 AND delivery_driver.driver_id = %d
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND  driver_id = %d
     """, driver_id)
     row = cur.fetchone()
     cur.close()
-    return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
-             )
-    ]
+    if row is not None:
+        return [
+            Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+                    row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+                    int(row['total_deliveries']),
+                    row['fullname'], row['email'], row['phone_number'],
+                    row['profile_picture_url'], row['is_available']
+                    )
+        ]
+    else:
+        return []
 
 def get_all_driver():
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
-                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
-                delivery_driver.total_deliveries,
+        SELECT  driver_id, delivery_driver.user_id,  vehicle_type,
+                 license_number,  vehicle_plate,  driver_rating,
+                 total_deliveries,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
-                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available,
-                CASE WHEN delivery_driver.is_available = 1 THEN 'Available'
-                WHEN delivery_driver.is_available = 0 THEN 'Unavailable'
+                user_table.profile_picture_url, user_table.is_active,  is_available,
+                CASE WHEN  is_available = 1 THEN 'Available'
+                WHEN  is_available = 0 THEN 'Unavailable'
                 END AS driver_is_available
                 
         FROM delivery_driver, user_table
@@ -334,39 +342,81 @@ def get_all_driver():
     """)
     results = cur.fetchall()
     cur.close()
-    return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['user_table.is_active'], row['driver_is_available']
-             ) for row in results
-    ]
-
+    if results is not None:
+        return [
+            Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+                row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+                int(row['total_deliveries']),
+                row['fullname'], row['email'], row['phone_number'],
+                row['profile_picture_url'], row['is_active'], row['driver_is_available']
+                ) for row in results
+        ]
+    else:
+        return []
 def get_available_driver():
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
-                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
-                delivery_driver.total_deliveries,
+        SELECT  driver_id, delivery_driver.user_id,  vehicle_type,
+                 license_number,  vehicle_plate,  driver_rating,
+                 total_deliveries,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
-                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
+                user_table.profile_picture_url, user_table.is_active,  is_available
                 
         FROM delivery_driver, user_table
-        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND  is_available = 1
     """)
     results = cur.fetchall()
     cur.close()
-    return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
-             ) for row in results
-    ]
+    if results is not None:
+        return [
+            Driver(str(row['driver_id']), str(row['user_id']), row['vehicle_type'],
+                row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+                int(row['total_deliveries']),
+                row['fullname'], row['email'], row['phone_number'],
+                row['profile_picture_url'], row['is_active'], row['driver_is_available']
+                ) for row in results
+        ]
+    else:
+        return []
+    
+def set_driver_status(driver_id, status):
+    if status == "Available":
+        stat = 1
+    elif status == "Unavailable":
+        stat = 0
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE delivery_driver
+        SET is_available = %s
+        WHERE  driver_id = %s
+    """, (stat, driver_id, ))
+    mysql.connection.commit()
 
+def get_driver_status_by_driver_id(driver_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT is_available
+        FROM delivery_driver 
+        WHERE  driver_id = %s
+    """, (driver_id, ))
+    row = cur.fetchone()
+    cur.close() 
+    if row['is_available'] == 1:
+        status = "Available"
+    elif row['is_available'] == 0:
+        status = "Unavailable"
+    return status
+
+def driver_accept_delivery(driver_id, order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET driver_id = %s
+        WHERE order_id= %s
+    """, (driver_id, order_id,))
+    mysql.connection.commit()
 #add driver
+    
 #update driver
 #delete driver
 
@@ -504,6 +554,15 @@ def get_all_orders_by_status(status):
               row['address']
              ) for row in results
     ]
+def set_order_status(order_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET status = %s
+        WHERE order_id = %s
+    """, (order_id, ))
+    mysql.connection.commit()
+
 
 ##################
 #    CART QUERIES   
