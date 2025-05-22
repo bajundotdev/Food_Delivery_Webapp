@@ -55,6 +55,7 @@ def driver_dashboard():
     # orderReady = get_all_orders_by_status(status="Ready")
     orderReady = get_all_orders_and_products()
 
+
     orderCompleted = get_all_orders_by_driver_id_status(driver_id, "Completed") 
     return render_template('driver/dashboard.html', driver=driver, orderCompleted=orderCompleted, orderReady=orderReady)
 
