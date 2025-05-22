@@ -14,8 +14,10 @@ from .product_model import Product
 @dataclass
 class CartItem:
     product: Product
+    cart_id: str = ""
     quantity: int = 1
     id: str = field(default_factory=lambda: str(uuid4()))
+    
     
     def get_subtotal(self):
         """Calculate subtotal for this item."""
@@ -32,7 +34,7 @@ class CartItem:
         
 @dataclass
 class Cart:
-    user_id: str = None
+    #user_id: str = None
     items: List[CartItem] = field(default_factory=list)
     
     def add_item(self, item: CartItem):
@@ -50,7 +52,7 @@ class Cart:
     def get_item(self, product_id: str):
         """Get an item from the cart by its product ID."""
         for item in self.items:
-            if item.product_id == product_id:
+            if item.id == product_id:
                 return item
         return None
     

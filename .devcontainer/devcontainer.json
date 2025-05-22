@@ -1,0 +1,12 @@
+{
+  "name": "MySQL Workbench VNC",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "forwardPorts": [
+    5901
+  ],
+  "remoteUser": "vscode",
+  "postCreateCommand": "echo 'To view MySQL Workbench, forward port 5901 and connect with your VNC client (e.g., TigerVNC).' "
+}

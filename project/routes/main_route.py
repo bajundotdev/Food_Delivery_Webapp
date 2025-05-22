@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 # Import dummy database db.py
 from project.db import *
-from project.session import add_to_cart
+from project.session import *
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 
@@ -12,13 +12,14 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
-    cart_data = session.get('shopping_cart')
-    print(cart_data)
+    item_num_in_cart_session = len(session.get('shopping_cart'))
+    print(item_num_in_cart_session)
     # Get featured products and restaurants
     featured_products = get_all_products()[:4]  # Get first 4 products
     featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
 
     return render_template('index.html',
+                          item_num_in_cart_session=item_num_in_cart_session,
                           products=featured_products,
                           restaurants=featured_restaurants)
 
@@ -40,19 +41,25 @@ def contact():
 ############################ FOR TESTING ONLY ####################################
 @main_bp.route('/test')
 def order_list():
+    ###session check####
+    add_to_cart(int(2),1)
+    session_cart = session.get('shopping_cart')
+
     """Display all orders."""
+    driver_id = 1
     driver_status = get_driver_status_by_driver_id(1)
     orderered_products = get_all_orders_and_products()
     order = get_all_orders()
     order_item = get_all_orders_by_id(2)
     order_item_by_user = get_all_orders_by_user_id(10)
     order_by_status = get_all_orders_by_status("Completed")
-    cart_items = get_all_cart_items()
+    cart_items = get_uncheckedout_cart_items_by_user_id(5)
     user_items = get_all_cart_items_by_user_id(9)
-    driver_orders = get_all_orders_by_driver_id_status(1, "Ready")
+    driver_orders = get_all_orders_by_driver_id_status(driver_id, "Ready")
     completed_orders = get_all_orders_by_status("Completed")
-    set_driver_status(1, "Unavailable")
-    return render_template('/test.html', 
+    set_driver_status(driver_id, "Unavailable")
+    return render_template('/test.html',
+                           session_cart = session_cart, 
                            driver_status=driver_status,
                            orderered_products=orderered_products,
                            orders_users = order,
