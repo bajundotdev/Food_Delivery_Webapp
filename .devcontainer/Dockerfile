@@ -8,9 +8,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 # - fluxbox: a lightweight window manager
 # - tigervnc-standalone-server: VNC server
 # - x11-apps: useful X utilities (optional, for testing)
-RUN apt-get update && \
-    apt-get install -y sudo wget xterm fluxbox tigervnc-standalone-server x11-apps mysql-workbench dbus-x11 && \
+RUN wget https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb && \
+    DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.24-1_all.deb && \
+    apt-get update && \
+    apt-get install -y mysql-workbench && \
     rm -rf /var/lib/apt/lists/*
+
 
 # (Optional) Create a non-root user "vscode" and allow passwordless sudo.
 RUN useradd -ms /bin/bash vscode && \
