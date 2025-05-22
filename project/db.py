@@ -276,7 +276,7 @@ def get_restaurant_by_name(restaurant_name):
 def get_driver_details_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT  driver_id, delivery_driver.user_id,  vehicle_type,
+        SELECT  driver_id,user_id,  vehicle_type,
                  license_number,  vehicle_plate,  driver_rating,
                  total_deliveries,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
