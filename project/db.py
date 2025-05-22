@@ -287,11 +287,11 @@ def get_driver_details_by_user_id(user_id):
     row = cur.fetchone()
     cur.close()
     return [
-        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
-             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
-             int(row['delivery_driver.total_deliveries']),
-             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
-             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+        Driver(row['driver_id'], row['user_id'], row['vehicle_type'],
+             row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
+             int(row['total_deliveries']),
+             row['fullname'], row['email'], row['phone_number'],
+             row['profile_picture_url'], row['is_available']
              )
     ]
 def get_driver_by_id(driver_id):
