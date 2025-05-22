@@ -276,29 +276,26 @@ def get_restaurant_by_name(restaurant_name):
 def get_driver_details_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT  driver_id, delivery_driver.user_id as uid,  vehicle_type,
-                 license_number,  vehicle_plate,  driver_rating,
-                 total_deliveries,is_available,
+        SELECT delivery_driver.driver_id, delivery_driver.user_id, delivery_driver.vehicle_type,
+                delivery_driver.license_number, delivery_driver.vehicle_plate, delivery_driver.driver_rating,
+                delivery_driver.total_deliveries,
                 user_table.user_id, user_table.fullname, user_table.email, user_table.phone_number,
-                user_table.profile_picture_url, user_table.is_active
+                user_table.profile_picture_url, user_table.is_active, delivery_driver.is_available
                 
         FROM delivery_driver, user_table
-        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.user_id = %s
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND delivery_driver.is_available = 1 AND delivery_driver.user_id = %s
     """, (user_id, ))
     row = cur.fetchone()
     cur.close()
-    if row is not None:
-        return [
-            Driver(str(row['driver_id']), str(row['uid']), row['vehicle_type'],
-                row['license_number'], row['vehicle_plate'], float(row['driver_rating']),
-                int(row['total_deliveries']),
-                row['fullname'], row['email'], row['phone_number'],
-                row['profile_picture_url'], row['is_available']
-                )
-        ]
-    else:
-        return []
-
+    return [
+        Driver(str(row['delivery_driver.driver_id']), str(row['delivery_driver.user_id']), row['delivery_driver.vehicle_type'],
+             row['delivery_driver.license_number'], row['delivery_driver.vehicle_plate'], float(row['delivery_driver.driver_rating']),
+             int(row['delivery_driver.total_deliveries']),
+             row['user_table.fullname'], row['user_table.email'], row['user_table.phone_number'],
+             row['user_table.profile_picture_url'], row['delivery_driver.is_available']
+             )
+    ]
+  
 def get_driver_by_id(driver_id):
     cur = mysql.connection.cursor()
     cur.execute("""
