@@ -70,40 +70,7 @@
             </div>
         </section>
 
-        <!-- Update Category Section -->
-        <section>
-            <div class="row mt-5">
-                <div class="col-12">
-                    <h4 class="mb-4">Update Category</h4>
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="update_category_id" name="category_id" required>
-                                            <option value="" disabled selected>Select Category</option>
-                                            {% for category in categories %}
-                                                <option value="{{ category.id }}">{{ category.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="update_category_id">Category</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="update_category_name" name="category_name" placeholder="New Category Name" required>
-                                        <label for="update_category_name">New Category Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-4">
-                                    <button type="submit" class="btn btn-primary">Update Category</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
 
         <hr>
 
@@ -112,13 +79,22 @@
             <div class="row mt-5">
                 <div class="col-12">
                     <h4 class="mb-4">Update Menu</h4>
+
+                    
+
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
+                            <form action="{{ url_for('admin.save_product') }}" method="post" class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Menu Name" required>
-                                        <label for="product_name">Menu Name</label>
+                                        <input type="text" class="form-control" id="product_id" name="product_id" placeholder="{{ form_product.id }}" value="{{ form_product.id }}" readonly required>
+                                        <label for="product_id">Product ID</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="{{ form_product.name }}" value="{{ form_product.name }}" required>
+                                        <label for="product_name">Product name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -134,15 +110,15 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="Price" required>
+                                        <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="{{ form_product.price }}" value="{{ form_product.price }}" required>
                                         <label for="price">Price</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select class="form-select" id="is_active" name="is_active" required>
-                                            <option value="1" selected>Active</option>
-                                            <option value="0">Inactive</option>
+                                            <option value="1" selected>Available</option>
+                                            <option value="0">Unavailable</option>
                                         </select>
                                         <label for="is_active">Status</label>
                                     </div>
@@ -155,8 +131,8 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" id="description" name="description" placeholder="Description" style="height: 100px"></textarea>
-                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="description" name="description" placeholder="{{ form_product.description }}" value="{{ form_product.description }}" style="height: 100px">{{ form_product.description }}</textarea>
+                                        <label for="description">Product description</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-4">

@@ -68,6 +68,7 @@ class SearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 class ProductForm(FlaskForm):
+    product_id = StringField('Product ID', validators=[DataRequired(), Length(min=2, max=100)])
     name = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
     description = TextAreaField('Description', validators=[
         DataRequired(), 
