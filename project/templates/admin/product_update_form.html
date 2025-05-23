@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Manage Menus</h2>
+                <h2>Update Menu: Product Title</h2>
             </div>
         </div>
     </div>
@@ -17,7 +17,8 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant') }}">Restaurant</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Menus</li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_product') }}">Menus</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Update Menu</li>
             </ol>
         </div>
     </nav>
@@ -69,11 +70,7 @@
                 </div>
             </div>
         </section>
-
-        
-
         <hr>
-
         <!-- Update Menu Section -->
         <section>
             <div class="row mt-5">
