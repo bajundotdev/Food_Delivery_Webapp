@@ -26,15 +26,20 @@ def manage_admins():
 @admin_required
 def admin_dashboard():
     user_id = session['user']['user_id']
-    admin_details = get_user_by_id(user_id)
-    all_orders = get_all_orders()[:10]
+    admin_details = get_user_info_with_address_by_user_id(user_id)
+    all_users = get_all_users()
+    all_orders = get_all_orders()
+    all_products = get_all_products()
     orders_with_products = get_all_orders_and_products()[:10]
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
-    return render_template('admin/dashboard.html', admin_details=admin_details[0],
+    return render_template('admin/dashboard.html', admin_details=admin_details,
+                                                all_users=all_users,
                                                 all_orders=all_orders, 
+                                                all_products=all_products, 
                                                 orders_with_products=orders_with_products,
+                                                orders_by_status=orders_by_status,
                                                 drivers=drivers)
 
 #############################
@@ -184,10 +189,11 @@ def edit_product(product_id):
     
     return render_template('admin/edit_product.html', product=product)
 
-@admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
+@admin_bp.route('/menu/delete', methods=['POST'])
 @login_required
 @admin_required
 def delete_product(product_id):
+    product_id = request.args.get('')
     delete_product_from_list(product_id)
     return redirect(url_for('admin.manage_product'))
 

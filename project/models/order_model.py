@@ -14,9 +14,16 @@ class DeliveryOption(Enum):
 class OrderStatus(Enum):
     PENDING = "Pending"
     IN_PROGRESS = "In Progress"
+    READY = "Ready"
+    DELIVERY_IN_PROGRESS = "Delivery in Progress"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
-    READY = "Ready"
+
+# Customer view: upon checkout: status order = Pending (admin)
+# Admin: once received order status = Pending, change the status = if accept ("In Progress -- Cooking")
+# Admin: once order is READY, it will trigger the Driver side, status = "READY" na naay ready for delivery
+# Driver: 
+
 class PaymentMethod(Enum):
     CASH = "Cash"
     CREDIT_CARD = "Credit Card"
