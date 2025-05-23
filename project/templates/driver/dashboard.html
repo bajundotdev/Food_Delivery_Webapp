@@ -64,7 +64,7 @@
                             <div class="card-body text-center">
                                 <i class="bi bi-basket display-4 mb-0 text-white"></i>
                                 <h5 class="card-text fs-4 text-white mb-0">{{orderCompleted | length}}</h5>
-                                <h5 class="card-title text-white mb-1">Orders</h5>
+                                <h5 class="card-title text-white mb-1">Delivered Orders</h5>
                             </div>
                         </div>
                     </a>
@@ -121,25 +121,6 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                        <div class="card shadow-sm incoming-order-card">
-                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white">
-                                    <i class="bi bi-bag-check me-2"></i> Incoming Order order.id}}
-                                </span>
-                                <span class="badge bg-warning text-black ms-2">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title mb-1">fullname}}</h5>
-                                <p class="card-text mb-2">
-                                    <strong>Items:</strong> order.product_name}}<br>
-                                    <strong>Total:</strong> order.total}}
-                                </p>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
