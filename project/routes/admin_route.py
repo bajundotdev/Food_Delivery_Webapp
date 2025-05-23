@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
-from project.forms import ProductForm
+from project.forms.admin_form import ProductForm
 from project.decorators import login_required, admin_required, driver_required
 from project.models import Product, Order
 from flask_mysqldb import MySQL
@@ -144,15 +144,36 @@ def add_product():
 @admin_required
 def update_product(product_id):
     form_product = ProductForm()
+    form_product = get_product_by_id(product_id)
+  
     if request.method == "GET":
         return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+    # elif request.method == "POST":
+    #     return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+    return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/menu/save/', methods=('POST', 'GET'))
+@login_required
+@admin_required
+def save_product():
+    update_form = ProductForm()
+    #form_product = get_product_by_id(product_id)
+    #update_product_table(form_product)
+    if request.method == "POST":
+        update_product_table(update_form)
+        for info in update_form:
+            print(info.data)
+        flash('Product successfully updated!')
+        return redirect(url_for('admin.manage_product'))
+        # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
 
-@admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
+@admin_bp.route('/menu/delete/<int:product_id>', methods=('POST', 'GET'))
 @login_required
 @admin_required
 def delete_product(product_id):
+    delete_product_from_list(product_id)
     return redirect(url_for('admin.manage_product'))
 
 

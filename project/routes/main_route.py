@@ -54,7 +54,7 @@ def order_list():
     cart_items = get_uncheckedout_cart_items_by_user_id(5)
     user_items = get_all_cart_items_by_user_id(9)
     driver_orders = get_all_orders_by_driver_id_status(driver_id, "Ready")
-    completed_orders = get_all_orders_by_status("Completed")
+    completed_orders = get_all_orders_by_status("Ready")
     set_driver_status(driver_id, "Unavailable")
     delete_cart_item_from_db(6,9)
     return render_template('/test.html',

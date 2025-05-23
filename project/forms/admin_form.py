@@ -30,6 +30,7 @@ class AdminSearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 class ProductForm(FlaskForm):
+    product_id = StringField('Product ID', validators=[DataRequired(), Length(min=2, max=100)])
     product_name = StringField('Product Name', validators=[DataRequired(), Length(min=2, max=100)])
     category = SelectField('Category', validators=[DataRequired()])
     price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0.01)])
