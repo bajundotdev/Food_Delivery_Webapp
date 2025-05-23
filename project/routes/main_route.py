@@ -20,10 +20,10 @@ def index():
                           products=featured_products,
                           restaurants=featured_restaurants)
 
-@main_bp.route('/cart/<int:product_id>/')
+@main_bp.post('/cart/<int:product_id>/')
 def adding_to_cart(product_id):
     add_to_cart(product_id)
-    #return redirect(url_for('main.index'))
+    return redirect(url_for('main.index'))
 
 @main_bp.route('/about')
 def about():
@@ -40,7 +40,7 @@ def contact():
 def order_list():
     ###session check####
     #add_order_to_db(10,2,OrderStatus.PENDING, 20.99, "Success" ,"Debit Card")
-    add_to_cart(int(2),1)
+    
     session_cart = session.get('shopping_cart')
 
     """Display all orders."""

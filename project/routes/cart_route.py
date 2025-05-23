@@ -2,12 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.decorators import login_required, admin_required, driver_required
 
 # Import dummy database db.py
-from project.db import get_all_products, get_all_restaurants, check_user, add_user, get_product_by_id
+from project.db import *
 from project.models import Cart, CartItem, Product
+
 
 # Create blueprints for different sections of the application
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
-
+from project.session import *
 ##########################
 # Session Management     #
 ##########################
@@ -48,13 +49,34 @@ def get_user_cart():
 ###################
 # Cart Routes     #
 ###################
+@cart_bp.post('/removebasketitem/<string:cart_id>/')
+def removing_from_cart(cart_id):
+    cart = get_cart()
+    item = cart.get_item(cart_id)
+    
+    if item:
+        #flash(f"Removed '{item.product.name}' from basket.")
+        print("item: ", item)
+        
+        remove_from_cart(item.id)
+        print("removing item")
+    else:
+        flash("Item not found in basket.", "warning")
 
+    return redirect(url_for('cart.view_cart'))
 # Dummy data for cart items
 dummy_cart_items = []
 
 @cart_bp.route('/')
 def view_cart():
-    return render_template('user/user_cart.html')
+    product_id = request.form.get('product_id')
+    order = get_cart()
+
+    if product_id:
+        print(f'user requested to add tour id = {product_id}')
+        add_to_cart(product_id)
+
+    return render_template('user/user_cart.html', order=order, totalprice=order.total_cost())
     # """View cart contents."""
     # if not is_logged_in():
     #     flash('Please log in to view your cart')
@@ -116,6 +138,8 @@ def add_to_cart(product_id):
     
     flash('Item added to cart')
     return redirect(url_for('cart.view_cart'))
+
+
 
 @cart_bp.route('/remove/<product_id>')
 def remove_from_cart(product_id):

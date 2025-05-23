@@ -107,7 +107,12 @@
                                 <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
                                 <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></p>
                                 <div class="mt-auto d-flex gap-2">
-                                    <a href="#" class="btn btn-danger flex-grow-1">Add to Cart</a>
+                                    <form method="POST" action="{{ url_for('main.adding_to_cart', product_id = product.id) }}">
+                                    <input 
+                                        type="submit" 
+                                        value="Add to Basket" 
+                                        class="btn btn-primary">
+                                    </form>
                                     <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-outline-danger">View Menu</a>
                                 </div>
                             </div>
