@@ -25,7 +25,7 @@
 {% block main %}
     <!-- Main content: Cart Delivery Summary -->
     <main class="container my-4">
-        <form action="{{ url_for('cart.checkout_cart') }}" method="post">
+        
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -75,6 +75,6 @@
             <div class="text-end">
                 <button type="submit" name="checkout" class="btn btn-success">Proceed to Checkout</button>
             </div>
-        </form>
+  
     </main>
 {% endblock %}
