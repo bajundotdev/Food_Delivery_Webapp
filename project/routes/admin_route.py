@@ -20,14 +20,18 @@ def admin_dashboard():
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
-    return render_template('/dashboard.html', all_orders=all_orders, 
+    return render_template('dashboard.html', all_orders=all_orders, 
                            orders_with_products=orders_with_products,
                            drivers=drivers)
-
+# Manage Administrators 
+@admin_bp.route('/admin')
+@login_required
+@admin_required
 def manage_admins():
-    return render_template('/dashboard.html')
 
-#Product Management
+    return render_template('admin/manage_admin.html')
+
+# Mange
 @admin_bp.route('/products', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -52,7 +56,7 @@ def edit_product(product_id):
     
     return render_template('admin/manage_products_and_category.html', product=product)
 
-@admin_bp.route('/categories', methods=['GET', 'POST'])
+@admin_bp.route('/products', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def manage_categories():
@@ -74,7 +78,7 @@ def manage_categories():
         cursor.execute("SELECT * FROM categories")
         categories = cursor.fetchall()
 
-    return render_template('admin/categories.html', form=form, categories=categories)
+    return render_template('admin/manage_products_and_category.html', form=form, categories=categories)
 
 @admin_bp.route('/orders')
 @login_required
@@ -83,11 +87,11 @@ def manage_orders():
     status_filter = request.args.get('status', '')
     
     if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
+        orders = Order.get_orders_by_status(status_filter) # where this 
     else:
         # orders = Order.get_all()
         orders = []
-    return render_template('admin/manage_orders.html', orders=orders)
+    return render_template('admin/manage_orders.html', orders=orders_id)
 
 @admin_bp.route('/order/<string:order_id>')
 @login_required
@@ -133,9 +137,9 @@ def add_product():
     form_product = ProductForm()
     if request.method == 'POST':
         add_product_to_db(form_product)
-        return redirect(url_for('admin.manage_product'))
+        return redirect(url_for('admin.manage_products_and_category.html'))
     
-    return render_template('admin/product_add_form.html', form_product=form_product, categories=ProductCategory)
+    return render_template('admin/menu_update_form.html', form_product=form_product, categories=ProductCategory)
 
 @admin_bp.route('/menu/update/<int:product_id>', methods=['GET', 'POST'])
 @login_required
@@ -143,7 +147,7 @@ def add_product():
 def update_product(product_id):
     form_product = ProductForm()
     if request.method == "GET":
-        return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+        return render_template('admin/menu_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
 
@@ -151,7 +155,7 @@ def update_product(product_id):
 @login_required
 @admin_required
 def delete_product(product_id):
-    return redirect(url_for('admin.manage_product'))
+    return redirect(url_for('admin/menu_update_form.html'))
 
 
 @admin_bp.route('/users')
