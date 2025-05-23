@@ -398,6 +398,7 @@ def set_driver_status(driver_id, status):
         WHERE  driver_id = %s
     """, (stat, driver_id, ))
     mysql.connection.commit()
+    cur.close()
 
 def get_driver_status_by_driver_id(driver_id):
     cur = mysql.connection.cursor()
@@ -422,6 +423,7 @@ def driver_accept_delivery(driver_id, order_id):
         WHERE order_id= %s
     """, (driver_id, order_id,))
     mysql.connection.commit()
+    cur.close()
 #add driver
     
 #update driver
@@ -569,8 +571,17 @@ def set_order_status(order_id, status):
     """, (order_id, ))
     mysql.connection.commit()
 
+def add_order_to_db(user_id, address_id, status, total_price, payment_status ,payment_method):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO order_table (user_id, address_id, status, total_price, payment_status ,payment_method, placed_at, payment_invoice)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        , (user_id, address_id ,status, total_price, payment_status, payment_method, current_timestamp, str(str(user_id)+str(current_timestamp)),))
+    mysql.connection.commit()
+    cur.close()
 
-##################
+
+#####################################################
 #    CART QUERIES   
 ##################
 def get_all_cart_items():

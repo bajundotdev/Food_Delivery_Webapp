@@ -122,20 +122,20 @@
                 {% for product in products %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4">
                         <div class="card h-100">
-                            <form method="post" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}">
-
-                                <input type="hidden" name="product_id" value="{{ product.id }}">
-
-                                <img src="{{ url_for('static', filename='img/'+product.image_url) }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="..." />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title mt-2">{{ product.name }}</h5>
-                                    <p class="card-title mt-2">{{ product.description }}</p>
-                                    <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
-                                    <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></p>
-                                    <div class="mt-auto d-flex gap-2">
-                                        <button type="submit" class="btn btn-danger flex-grow-1">Add to Cart</button>
-                                        <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-outline-danger">View Menu</a>
-                                    </div>
+                            <img src="{{ url_for('static', filename='img/'+product.image_url) }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="..." />
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title mt-2">{{ product.name }}</h5>
+                                <p class="card-title mt-2">{{ product.description }}</p>
+                                <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
+                                <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></p>
+                                <div class="mt-auto d-flex gap-2">
+                                    <form method="POST" action="{{ url_for('main.adding_to_cart', product_id = product.id) }}">
+                                    <input 
+                                        type="submit" 
+                                        value="Add to Basket" 
+                                        class="btn btn-primary">
+                                    </form>
+                                    <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-outline-danger">View Menu</a>
                                 </div>
                             </form>
                         </div>

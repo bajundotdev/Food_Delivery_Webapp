@@ -51,9 +51,10 @@ def add_to_cart(product_id, quantity=1):
     cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=int(quantity)))
     _save_basket_to_session(cart)
 
-def remove_from_cart(product_id):
+def remove_from_cart(item_id):
     cart = get_cart()
-    cart.remove_item(product_id)
+    print("removing from session")
+    cart.remove_item(item_id)
     _save_basket_to_session(cart)
 
 def empty_basket():

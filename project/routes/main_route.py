@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-# Import dummy database db.py
 from project.db import *
 from project.session import *
 from project.forms import CartForm
@@ -21,10 +20,10 @@ def index():
                            products=featured_products,
                            cart_form=cart_form)
 
-@main_bp.route('/cart/<int:product_id>/')
+@main_bp.post('/cart/<int:product_id>/')
 def adding_to_cart(product_id):
     add_to_cart(product_id)
-    #return redirect(url_for('main.index'))
+    return redirect(url_for('main.index'))
 
 @main_bp.route('/about')
 def about():
@@ -40,7 +39,8 @@ def contact():
 @main_bp.route('/test')
 def order_list():
     ###session check####
-    add_to_cart(int(2),1)
+    #add_order_to_db(10,2,OrderStatus.PENDING, 20.99, "Success" ,"Debit Card")
+    
     session_cart = session.get('shopping_cart')
 
     """Display all orders."""
@@ -48,7 +48,7 @@ def order_list():
     driver_status = get_driver_status_by_driver_id(1)
     orderered_products = get_all_orders_and_products()
     order = get_all_orders()
-    order_item = get_all_orders_by_id(2)
+    order_item = get_all_orders_by_id(3)
     order_item_by_user = get_all_orders_by_user_id(10)
     order_by_status = get_all_orders_by_status("Completed")
     cart_items = get_uncheckedout_cart_items_by_user_id(5)
