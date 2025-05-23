@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
-from project.forms import ProductForm
-from project.decorators import login_required, admin_required, driver_required
+from flask import Blueprint, render_template, redirect, session, url_for, flash, request
+from project.decorators import login_required, admin_required
+from project.forms.admin_form import ProductForm
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 
@@ -9,6 +9,10 @@ from project.db import *
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 mysql = MySQL()
+
+#############################
+#   Manage Dashboard        #
+#############################
 
 @admin_bp.route('/')
 @login_required
@@ -21,38 +25,21 @@ def manage_admins():
 @login_required
 @admin_required
 def admin_dashboard():
+    user_id = session['user']['user_id']
+    admin_details = get_user_by_id(user_id)
     all_orders = get_all_orders()[:10]
     orders_with_products = get_all_orders_and_products()[:10]
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
-    return render_template('admin/dashboard.html', all_orders=all_orders, 
+    return render_template('admin/dashboard.html', admin_details=admin_details[0],
+                                                all_orders=all_orders, 
                                                 orders_with_products=orders_with_products,
                                                 drivers=drivers)
 
-@admin_bp.route('/products', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def edit_product(product_id):
-    product = Product.get_by_id(product_id)
-    
-    if not product:
-        flash('Product not found.', 'danger')
-        return redirect(url_for('admin.products'))
-    
-    if request.method == 'POST':
-        product.name = request.form['name']
-        product.price = float(request.form['price'])
-        product.stock = int(request.form['stock'])
-        product.description = request.form['description']
-        
-        if product.save():
-            flash('Product updated successfully.', 'success')
-            return redirect(url_for('admin.products'))
-        else:
-            flash('Failed to update product.', 'danger')
-    
-    return render_template('admin/edit_product.html', product=product)
+#############################
+#   Manage CRUD Categories  #
+#############################
 
 @admin_bp.route('/categories', methods=['GET', 'POST'])
 @login_required
@@ -77,6 +64,10 @@ def manage_categories():
         categories = cursor.fetchall()
 
     return render_template('admin/categories.html', form=form, categories=categories)
+
+###########################
+#   Manage CRUD Orders    #
+###########################
 
 @admin_bp.route('/orders')
 @login_required
@@ -144,15 +135,60 @@ def add_product():
 @admin_required
 def update_product(product_id):
     form_product = ProductForm()
+    form_product = get_product_by_id(product_id)
+  
     if request.method == "GET":
-        return render_template('admin/product_add_form.html', form_product=form_product, categories=ProductCategory)
+        return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+    # elif request.method == "POST":
+    #     return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+    return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/menu/save/', methods=('POST', 'GET'))
+@login_required
+@admin_required
+def save_product():
+    update_form = ProductForm()
+    #form_product = get_product_by_id(product_id)
+    #update_product_table(form_product)
+    if request.method == "POST":
+        update_product_table(update_form)
+        for info in update_form:
+            print(info.data)
+        flash('Product successfully updated!')
+        return redirect(url_for('admin.manage_product'))
+        # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/products', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_product(product_id):
+    product = Product.get_by_id(product_id)
+    
+    if not product:
+        flash('Product not found.', 'danger')
+        return redirect(url_for('admin.products'))
+    
+    if request.method == 'POST':
+        product.name = request.form['name']
+        product.price = float(request.form['price'])
+        product.stock = int(request.form['stock'])
+        product.description = request.form['description']
+        
+        if product.save():
+            flash('Product updated successfully.', 'success')
+            return redirect(url_for('admin.products'))
+        else:
+            flash('Failed to update product.', 'danger')
+    
+    return render_template('admin/edit_product.html', product=product)
 
 @admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_product(product_id):
+    delete_product_from_list(product_id)
     return redirect(url_for('admin.manage_product'))
 
 

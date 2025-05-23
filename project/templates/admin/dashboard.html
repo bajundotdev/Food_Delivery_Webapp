@@ -25,7 +25,7 @@
 {% block main %}
     <!-- Main content -->
     <main class="container my-4">
-
+        {{ admin_details }}
         <!-- User Profile Section -->
         <section class="mb-4">
             <div class="card shadow-sm">
@@ -35,9 +35,9 @@
                             <img src="{{ url_for('static', filename='img/icon-7797704_1280.png') }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
                         </div>
                     </div>
-                    <div class="col-md-6 text-md-start text-center">
+                    <div class="col-md-5 text-md-start text-center">
                         <div class="card-body">
-                            <h4 class="card-title mb-1">Hi, {{ session['user']['firstname'] }}!</h4>
+                            <h4 class="card-title mb-1">Hi, {{ admin_details['name'] }}!</h4>
                             <p class="card-text mb-1 text-muted">{{ session['user']['email'] }}</p>
                             <p class="card-text mb-0">
                                 <span class="me-3"><i class="bi bi-geo-alt"></i> user.address</span>
@@ -45,7 +45,13 @@
                             </p>
                         </div>  
                     </div>
-                    <div class="col-md-3 col-sm-12 text-center p-2">
+                    <div class="col-md-4 col-sm-12 text-center p-2">
+                        <form method="post" action="/" class="d-inline">
+                            <input type="hidden" name="admin_id" value="{{ admin_details['id'] }}">
+                            <button type="submit" class="btn {% if admin_details['status'] == 'Active' %}btn-success{% elif admin_details['status'] == 'Inactive' %}btn-secondary{% elif admin_details['status'] == 'Suspended' %}btn-danger{% else %}btn-primary{% endif %}">
+                                Change Status
+                            </button>
+                        </form>
                         <a href="#" class="btn btn-outline-primary">
                             <span class="bi bi-pencil me-1"></span> Edit Profile
                         </a>
@@ -161,7 +167,7 @@
         <section>
             <div class="row my-4">
                 <div class="col-12">
-                    <h4>Incoming Orders ({{ orders_with_products | length }})</h4>
+                    <h4><i class="bi bi-bag-check me-2"></i> Incoming Orders ({{ orders_with_products | length }})</h4>
                 </div>
                 
                 {% for order in orders_with_products %}

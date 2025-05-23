@@ -89,7 +89,10 @@
         <section>
             <div class="row my-4">
                 <div class="col-12">
-                    <h4>Active Orders ({{orderCompleted | length}})</h4>
+                    <h4>
+                        <span class="bi bi-truck me-2"></span>
+                        Orders Ready for Delivery ({{orderReady | length}})
+                    </h4>
                 </div>
                 {{orderReady}}
                 <div class="overflow-auto">
@@ -118,6 +121,25 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                        <div class="card shadow-sm incoming-order-card">
+                            <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                <span class="text-white">
+                                    <i class="bi bi-bag-check me-2"></i> Incoming Order order.id}}
+                                </span>
+                                <span class="badge bg-warning text-black ms-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">fullname}}</h5>
+                                <p class="card-text mb-2">
+                                    <strong>Items:</strong> order.product_name}}<br>
+                                    <strong>Total:</strong> order.total}}
+                                </p>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm me-2">Accept</button>
+                                    <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

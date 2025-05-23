@@ -26,17 +26,17 @@ class PaymentMethod(Enum):
 # Order Models      #
 #####################
 
-# @dataclass
-# class OrderItem:
-#     id: str
-#     product_id: str
-#     #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
-#     quantity: int = 1
-#     price: float = 0.0  # Store the price at the time of order
-    
-#     def get_subtotal(self):
-#         """Calculate subtotal for this item."""
-#         return self.price * self.quantity
+@dataclass
+class OrderItem:
+    id: str
+    product_id: str
+    #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
+    quantity: int = 1
+    price: float = 0.0  # Store the price at the time of order
+
+    def get_subtotal(self):
+        """Calculate subtotal for this item."""
+        return self.price * self.quantity
 
 @dataclass
 class Order:
@@ -57,7 +57,7 @@ class Order:
     email: str = ""
     phone_number: str = ""
     address: str = ""
-    
+    items: List[OrderItem] = field(default_factory=lambda: [])
     def get_url(self):
         """Return URL to order detail page."""
         return f"/order/{self.id}"
