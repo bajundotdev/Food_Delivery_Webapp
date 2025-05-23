@@ -12,8 +12,8 @@ class SearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 class CartForm(FlaskForm):
-    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=1, max=20)])
     product_id = HiddenField('Product ID')
+    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=1, max=20)], default=1)
     submit = SubmitField('Add to Cart')
 
 class OrderForm(FlaskForm):

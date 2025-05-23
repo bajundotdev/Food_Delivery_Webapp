@@ -16,11 +16,19 @@ mysql = MySQL()
 def manage_admins():
     return render_template('admin/manage_admins.html')
 
+# DASHBOARD
 @admin_bp.route('/dashboard')
 @login_required
 @admin_required
 def admin_dashboard():
-    return render_template('admin/dashboard.html')
+    all_orders = get_all_orders()[:10]
+    orders_with_products = get_all_orders_and_products()[:10]
+    orders_by_status = get_all_orders_by_status('Pending')[:10]
+    drivers = get_all_driver()
+
+    return render_template('admin/dashboard.html', all_orders=all_orders, 
+                                                orders_with_products=orders_with_products,
+                                                drivers=drivers)
 
 @admin_bp.route('/products', methods=['GET', 'POST'])
 @login_required
@@ -135,10 +143,10 @@ def add_product():
 @login_required
 @admin_required
 def update_product(product_id):
+    form_product = ProductForm()
     if request.method == "GET":
-        pass
-    else:
-        return redirect(url_for('admin.manage_product'))
+        return render_template('admin/product_add_form.html', form_product=form_product, categories=ProductCategory)
+
     return redirect(url_for('admin.manage_product'))
 
 @admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])

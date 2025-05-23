@@ -69,26 +69,29 @@ def view_cart():
     #                       cart=cart,
     #                       total=cart.total_cost())
 
-@cart_bp.route('/add/<int:product_id>', methods=['POST'])
+@cart_bp.route('/add/<string:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     """Add item to cart."""
+    
+    product_id = request.args.get(product_id)
+
     if not is_logged_in():
         if 'shopping_cart' not in session:
             session['shopping_cart'] = {}
             cart = session['shopping_cart']
 
-            # Add or update product quantity
-            if str(product_id) in cart:
-                cart[str(product_id)]['quantity'] += 1
-            else:
-                cart[str(product_id)] = {
-                    'id': product['id'],
-                    'name': product['name'],
-                    'price': product['price'],
-                    'quantity': 1
-                }
+        # Add or update product quantity
+        if str(product_id) in cart:
+            cart[str(product_id)]['quantity'] += 1
+        else:
+            cart[str(product_id)] = {
+                # 'id': product['id'],
+                # 'name': product['name'],
+                # 'price': product['price'],
+                # 'quantity': 1
+            }
 
-            session['shopping_cart'] = cart  # Save back to session 
+        session['shopping_cart'] = cart  # Save back to session 
         
     else:
         product = Product.get_by_id(product_id)
@@ -115,7 +118,7 @@ def add_to_cart(product_id):
         session['cart'] = cart
     
     flash('Item added to cart')
-    return redirect(url_for('cart.view_cart'))
+    return redirect(url_for('main.index'))
 
 @cart_bp.route('/remove/<product_id>')
 def remove_from_cart(product_id):
