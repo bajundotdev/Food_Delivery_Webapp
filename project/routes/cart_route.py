@@ -140,23 +140,6 @@ def add_to_cart(product_id):
     return redirect(url_for('cart.view_cart'))
 
 
-
-@cart_bp.route('/remove/<product_id>')
-def remove_from_cart(product_id):
-    """Remove item from cart."""
-    if not is_logged_in():
-        flash('Please log in to modify your cart')
-        return redirect(url_for('auth.login'))
-        
-    cart = get_user_cart()
-    cart.remove_item(product_id)
-    
-    # Save to session
-    session['cart'] = cart
-    
-    flash('Item removed from cart')
-    return redirect(url_for('cart.view_cart'))
-
 @cart_bp.route('/checkout', methods=['POST'])
 @login_required
 def checkout_cart():
