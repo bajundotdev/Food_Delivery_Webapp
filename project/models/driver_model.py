@@ -11,6 +11,8 @@ from enum import Enum
 class DriverStatus(Enum):
     AVAILABLE = "Available"
     UNAVAILABLE = "Unavailable"
+    EN_ROUTE = "En Route"
+    OFFLINE = "Offline"
 
 @dataclass
 class Driver:

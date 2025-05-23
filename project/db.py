@@ -26,6 +26,26 @@ def check_user(email, password):
 #####################
 #    USER QUERIES   #
 #####################
+
+def get_all_users():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+    """, )
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login'])
+        ]
+    else:
+        return []
+
 def get_user_by_email(email):
     cur = mysql.connection.cursor()
     cur.execute("""

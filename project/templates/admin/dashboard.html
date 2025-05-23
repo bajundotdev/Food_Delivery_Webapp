@@ -25,7 +25,6 @@
 {% block main %}
     <!-- Main content -->
     <main class="container my-4">
-        {{ admin_details }}
         <!-- User Profile Section -->
         <section class="mb-4">
             <div class="card shadow-sm">
@@ -37,19 +36,34 @@
                     </div>
                     <div class="col-md-5 text-md-start text-center">
                         <div class="card-body">
-                            <h4 class="card-title mb-1">Hi, {{ admin_details['name'] }}!</h4>
-                            <p class="card-text mb-1 text-muted">{{ session['user']['email'] }}</p>
+                            <h4 class="card-title mb-1">
+                                Hi, {{ admin_details['name'] }}!
+                                {% if admin_details['is_active'] %}
+                                    <span class="badge text-success ms-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-danger ms-2">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Inactive
+                                    </span>
+                                {% endif %}
+                            </h4>
+                            <p class="card-text mb-1 text-muted">{{ admin_details['email'] }}</p>
                             <p class="card-text mb-0">
-                                <span class="me-3"><i class="bi bi-geo-alt"></i> user.address</span>
-                                <span><i class="bi bi-telephone"></i> user.phone</span>
+                                <span class="me-3"><i class="bi bi-geo-alt"></i> user.address }}</span>
+                                <span><i class="bi bi-telephone"></i> {{ admin_details['phone'] }}</span>
                             </p>
                         </div>  
                     </div>
                     <div class="col-md-4 col-sm-12 text-center p-2">
                         <form method="post" action="/" class="d-inline">
                             <input type="hidden" name="admin_id" value="{{ admin_details['id'] }}">
-                            <button type="submit" class="btn {% if admin_details['status'] == 'Active' %}btn-success{% elif admin_details['status'] == 'Inactive' %}btn-secondary{% elif admin_details['status'] == 'Suspended' %}btn-danger{% else %}btn-primary{% endif %}">
-                                Change Status
+                            <button type="submit" class="btn btn-primary">
+                                {% if admin_details['is_active'] %}
+                                    <i class="bi bi-x-circle-fill me-1"></i> Change Status
+                                {% else %}
+                                    <i class="bi bi-check-circle-fill me-1"></i> Change Status
+                                {% endif %}
                             </button>
                         </form>
                         <a href="#" class="btn btn-outline-primary">
@@ -70,7 +84,7 @@
                         <div class="card text-bg-primary h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-people display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">1,234</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{ all_users | length }}</h5>
                                 <h5 class="card-title text-white mb-1">Customer</h5>
                             </div>
                         </div>
@@ -83,7 +97,7 @@
                         <div class="card text-bg-success h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-basket display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">567</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{ all_orders | length }}</h5>
                                 <h5 class="card-title text-white mb-1">Orders</h5>
                             </div>
                         </div>
@@ -96,7 +110,7 @@
                         <div class="card text-bg-warning h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-list-ul display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">42</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{ all_products | length }}</h5>
                                 <h5 class="card-title text-white mb-1">Menu</h5>
                             </div>
                         </div>
@@ -109,7 +123,7 @@
                         <div class="card text-bg-danger h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-truck display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">15</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{ drivers | length }}</h5>
                                 <h5 class="card-title text-white mb-1">Delivery Drivers</h5>
                             </div>
                         </div>
@@ -162,21 +176,13 @@
             </div>
         </section>
 
-
         <!-- Incoming Orders Section -->
         <section>
             <div class="row my-4">
                 <div class="col-12">
                     <h4><i class="bi bi-bag-check me-2"></i> Incoming Orders ({{ orders_with_products | length }})</h4>
                 </div>
-                
-                {% for order in orders_with_products %}
-                    {% if order.status == "Pending" %}
-                        {{ order }}
-                    {% endif %}
-                    <hr>
-                {% endfor %}
-                
+
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
@@ -313,6 +319,7 @@
                             </button>
                         </div>
                     </form>
+                    
                     <div class="table-responsive">
                         <table class="table table-striped align-middle">
                             <thead>
@@ -335,15 +342,15 @@
                                         <td>${{ order.total }}</td>
                                         <td>
                                             {% if order.status == "Pending" %}
-                                                <span class="badge bg-primary">{{ order.status }}</span>
+                                                <span class="badge bg-warning text-black">{{ order.status }}</span>
                                             {% elif order.status == "Completed" %}
                                                 <span class="badge bg-success">{{ order.status }}</span>
                                             {% elif order.status == "Cancelled" %}
                                                 <span class="badge bg-danger">{{ order.status }}</span>
                                             {% elif order.status == "On Delivery" %}
-                                                <span class="badge bg-warning">{{ order.status }}</span>
+                                                <span class="badge bg-warning text-black">{{ order.status }}</span>
                                             {% else %}
-                                                <span class="badge bg-secondary">{{ order.status }}</span>
+                                                <span class="badge bg-primary">{{ order.status }}</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ order.placed_at }}</td>
@@ -364,93 +371,81 @@
         <!-- Driver Status Section -->
         <section>
             <div class="row mt-5">
-            <div class="col-12"></div>
-                <h4>Driver Status</h4>
-                <!-- Search and Filter Form -->
-                <form method="get" action="" class="row g-3 align-items-end my-3">
-                    <div class="col-md-4 position-relative">
-                        <input type="text" class="form-control ps-5" id="search_recent_order" name="search_recent_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_menu', '') }}">
-                        <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                            <i class="bi bi-search"></i>
-                        </span>
+                <div class="col-12">
+                    <h4>
+                        <span class="bi bi-truck me-2"></span>
+                        Driver Status
+                    </h4>
+                    <!-- Search and Filter Form -->
+                    <form method="get" action="" class="row g-3 align-items-end my-3">
+                        <div class="col-md-4 position-relative">
+                            <input type="text" class="form-control ps-5" id="search_driver" name="search_driver" placeholder="Search Driver Name or ID" value="{{ request.args.get('search_driver', '') }}">
+                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                        </div>
+                        <div class="col-md-3 position-relative">
+                            <select class="form-select ps-5" id="driver_status" name="driver_status">
+                                <option value="">All Status</option>
+                                <option value="Available" {% if request.args.get('driver_status') == 'Available' %}selected{% endif %}>Available</option>
+                                <option value="On Delivery" {% if request.args.get('driver_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                <option value="Offline" {% if request.args.get('driver_status') == 'Offline' %}selected{% endif %}>Offline</option>
+                            </select>
+                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                <i class="bi bi-toggle-on"></i>
+                            </span>
+                        </div>
+                        <div class="col-md-3 position-relative">
+                            <input type="datetime-local" class="form-control ps-5" id="last_active" name="last_active" value="{{ request.args.get('last_active', '') }}">
+                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                <i class="bi bi-calendar-date"></i>
+                            </span>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <span class="bi bi-search me-1"></span> Search
+                            </button>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">Driver ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Last Active</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for driver in drivers %}
+                                <tr>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">#{{ driver.id }}</a>
+                                    </td>
+                                    <td>{{ driver.fullname }}</td>
+                                    <td>
+                                        {% if driver.status == "Available" %}
+                                            <span class="badge bg-success">{{ driver.status }}</span>
+                                        {% elif driver.status == "En Route" %}
+                                            <span class="badge bg-warning text-black">{{ driver.status }}</span>
+                                        {% elif driver.status == "Offline" %}
+                                            <span class="badge bg-secondary">{{ driver.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ driver.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>2025-06-01 14:32</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary"><span class="bi bi-eye me-1"></span> View</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                     </div>
-                    <div class="col-md-3 position-relative">
-                        <select class="form-select ps-5" id="status" name="status">
-                            <option value="">All Status</option>
-                            <option value="Pending" {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
-                            <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                            <option value="On Delivery" {% if request.args.get('status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
-                        </select>
-                        <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                            <i class="bi bi-toggle-on"></i>
-                        </span>
-                    </div>
-                    <div class="col-md-3 position-relative">
-                        <input type="datetime-local" class="form-control ps-5" id="order_date" name="order_date" value="{{ request.args.get('order_date', '') }}">
-                        <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                            <i class="bi bi-calendar-date"></i>
-                        </span>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <span class="bi bi-search me-1"></span> Search
-                        </button>
-                    </div>
-                </form>
-                <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead>
-                    <tr>
-                        <th scope="col">Driver ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Current Order</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Last Active</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">#201</a>
-                        </td>
-                        <td>Sam Wilson</td>
-                        <td>#1004</td>
-                        <td><span class="badge bg-success">Available</span></td>
-                        <td>2025-06-01 14:32</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">#202</a>
-                        </td>
-                        <td>Linda Park</td>
-                        <td>#1005</td>
-                        <td><span class="badge bg-warning text-dark">On Delivery</span></td>
-                        <td>2025-06-01 14:28</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">#203</a>
-                        </td>
-                        <td>Mike Chen</td>
-                        <td>-</td>
-                        <td><span class="badge bg-secondary">Offline</span></td>
-                        <td>2025-06-01 13:50</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
                 </div>
-            </div>
             </div>
         </section>
     </main>
