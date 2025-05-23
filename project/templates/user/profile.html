@@ -40,8 +40,8 @@
                             <h4 class="card-title mb-1">Hi, {{ session['user']['firstname'] }}!</h4>
                             <p class="card-text mb-1 text-muted">{{ session['user']['email'] }}</p>
                             <p class="card-text mb-0">
-                                <span class="me-3"><i class="bi bi-geo-alt"></i> user.address</span>
-                                <span><i class="bi bi-telephone"></i> user.phone</span>
+                                <span class="me-3"><i class="bi bi-geo-alt"></i> {{address}}</span></br>
+                                <span><i class="bi bi-telephone"></i> {{user_info.phone}} </span>
                             </p>
                         </div>  
                     </div>
@@ -135,44 +135,27 @@
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date of order</th>
+                                    <th scope="col">Completion date</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for order in inordermo %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1001) }}" class="text-decoration-none">#1001</a>
+                                        <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="text-decoration-none"> {{order.id}} </a>
                                     </td>
-                                    <td>$25.00</td>
-                                    <td><span class="badge bg-success">Delivered</span></td>
-                                    <td>2025-06-01</td>
+                                    <td>{{order.total}}</td>
+                                    <td><span class="badge bg-success">{{order.status}}</span></td>
+                                    <td>{{order.placed_at}}</td>
+                                    <td>{{order.delivered_at}}</td>
                                     <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1001) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                        <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">View</a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1002) }}" class="text-decoration-none">#1002</a>
-                                    </td>
-                                    <td>$18.50</td>
-                                    <td><span class="badge bg-warning text-dark">Pending</span></td>
-                                    <td>2025-06-01</td>
-                                    <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1002) }}" class="btn btn-sm btn-outline-primary">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1003) }}" class="text-decoration-none">#1003</a>
-                                    </td>
-                                    <td>$12.00</td>
-                                    <td><span class="badge bg-danger">Cancelled</span></td>
-                                    <td>2025-05-31</td>
-                                    <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=1003) }}" class="btn btn-sm btn-outline-primary">View</a>
-                                    </td>
-                                </tr>
+                                {% endfor %}
+                                
                             </tbody>
                         </table>
                     </div>

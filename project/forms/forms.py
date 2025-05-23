@@ -100,17 +100,17 @@ class CartOperationForm(FlaskForm):
     ], default=1)
     submit = SubmitField('Update Cart')
 
-class CheckoutForm(FlaskForm):
-    payment_method = SelectField('Payment Method', choices=[
-        ('credit_card', 'Credit Card'),
-        ('debit_card', 'Debit Card'), 
-        ('cash', 'Cash on Delivery')
-    ], validators=[DataRequired()])
-    delivery_notes = TextAreaField('Delivery Instructions', validators=[
-        Optional(),
-        Length(max=200)
-    ])
-    submit = SubmitField('Place Order')
+# class CheckoutForm(FlaskForm):
+#     payment_method = SelectField('Payment Method', choices=[
+#         ('credit_card', 'Credit Card'),
+#         ('debit_card', 'Debit Card'), 
+#         ('cash', 'Cash on Delivery')
+#     ], validators=[DataRequired()])
+#     delivery_notes = TextAreaField('Delivery Instructions', validators=[
+#         Optional(),
+#         Length(max=200)
+#     ])
+#     submit = SubmitField('Place Order')
 
 class OrderStatusForm(FlaskForm):
     status = SelectField('Update Status', choices=[

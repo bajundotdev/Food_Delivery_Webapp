@@ -2,11 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.forms import LoginForm
 
 # Import dummy database db.py
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user)
+from project.db import *
 
 from project.models import Order, User, UserAddress
 
@@ -45,7 +41,17 @@ def clear_user_session():
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('user/profile.html')
+    user_session = session.get('user')
+    user_details = get_user_info_with_address_by_email(user_session['email'])
+    if user_details:
+        user_info = user_details[0]
+        address = user_details[1]
+    else:
+        user_info = ""
+        address = ""
+    user_id = session.get('user').get('user_id')
+    inordermo = get_all_orders_by_user_id(user_id)
+    return render_template('user/profile.html', inordermo = inordermo, user_info=user_info, address = address)
 # def profile():
 #     """View and edit user profile on the same page."""
 #     if not is_logged_in():

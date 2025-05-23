@@ -39,8 +39,10 @@ class Cart:
     
     def add_item(self, item: CartItem):
         """Add an item to the cart."""
-        existing_item = self.get_item(item.id)
+        existing_item = self.check_item(item.product.id)
+        #print(item.id)
         if existing_item:
+            print("existing")
             existing_item.increment_quantity()
         else:
             self.items.append(item)
@@ -50,6 +52,13 @@ class Cart:
         print("begin")
         self.items = [item for item in self.items if item.id != item_id]
         print("remove success")
+    
+    def check_item(self, product_id: str):
+        """Get an item from the cart by its product ID."""
+        for item in self.items:
+            if item.product.id == product_id:
+                return item
+        return None
     
     def get_item(self, product_id: str):
         """Get an item from the cart by its product ID."""

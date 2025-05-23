@@ -720,12 +720,12 @@ def get_uncheckedout_cart_items_by_user_id(user_id):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])),  row['cart_id'], row['quantity']) for row in results
     ]
 
-def add_cart_item_to_db(product_id, user_id, quantity):
+def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        INSERT INTO cart_items (product_id, user_id, created_at, quantity)
-        VALUES (%s, %s, %s, %s)"""
-        , (product_id, user_id, current_timestamp, quantity))
+        INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
+        VALUES (%s, %s, %s, %s, %s)"""
+        , (product_id, user_id, current_timestamp, quantity, temp_id,))
     mysql.connection.commit()
     cur.close()
 
@@ -750,8 +750,9 @@ def add_order(order):
     order_id = cur.lastrowid
 
     for item in order.items:
-        cur.execute("INSERT INTO order_items (order_id, tour_id, quantity) VALUES (%s, %s, %s)",
-                    (order_id, item.tour.id, item.quantity))
-
+        #update order_id in cart_items where product_id = product_id and user_id = user_id
+    #     cur.execute("INSERT INTO order_items (order_id, tour_id, quantity) VALUES (%s, %s, %s)",
+    #                 (order_id, item.tour.id, item.quantity))
+        pass
     mysql.connection.commit()
     cur.close()

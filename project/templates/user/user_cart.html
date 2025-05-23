@@ -83,7 +83,7 @@
             </div>
             <div class="text-end">
                 {% if order.items|length > 0 %}
-                <form method="POST" action="{{ url_for('cart.checkout_cart') }}">
+                <form method="GET" action="{{ url_for('cart.checkout_cart') }}">
                     <input type="submit" value="Proceed to Checkout" class="btn btn-success">
                 </form>
                 {% else %}

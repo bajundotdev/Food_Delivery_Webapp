@@ -8,7 +8,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">{{ session['user']['firstname'] }}</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        
                         <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Manage Profile</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>

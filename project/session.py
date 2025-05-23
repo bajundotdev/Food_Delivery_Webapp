@@ -9,8 +9,7 @@ def get_user():
     if user_dict:
         return User(
             id=str(user_dict['user_id']),
-            firstname=user_dict['firstname'],
-            surname=user_dict['surname'],
+            name=user_dict['firstname'],
             email=user_dict['email'],
             phone=user_dict['phone']
         )
@@ -50,6 +49,7 @@ def add_to_cart(product_id, quantity=1):
     cart = get_cart()
     cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=int(quantity)))
     _save_basket_to_session(cart)
+    
 
 def remove_from_cart(item_id):
     cart = get_cart()
@@ -61,12 +61,13 @@ def empty_basket():
     session['shopping_cart'] = {
         'items': []
     }
+    #call db to delete items
 
 def convert_basket_to_order(basket):
     return Order(
         id=None,
         status=OrderStatus.PENDING,
-        user=get_user(),
-        total_cost=basket.total_cost(),
+        user_id=get_user().id,
+        total=basket.total_cost(),
         items=basket.items
     )
