@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.forms.authentication_form import LoginForm, RegistrationForm
-from project.db import check_user, add_user, get_user_by_email, add_cart_item_to_db
+from project.db import check_user, add_user, get_user_by_email, add_cart_item_to_db, get_uncheckedout_cart_items_by_user_id
 from project.routes.utils import clear_user_session
-
+from project.session import *
 auth_bp = Blueprint('auth', __name__, url_prefix='/')
 
 ###################
@@ -53,7 +53,11 @@ def login():
                 elif session['role'] == "Delivery Driver":
                     return redirect(url_for('driver.driver_dashboard'))
                 elif session['role'] == "Customer":
-                    
+                    user_id = session['user']['user_id']
+                    cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
+                    for item in cart_from_db:
+                        add_cart_item_from_db(item)
+                        print(item)    
                     return redirect(url_for('user.profile'))
         
     return render_template('login.html', form=form)

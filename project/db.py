@@ -729,12 +729,12 @@ def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
     mysql.connection.commit()
     cur.close()
 
-def delete_cart_item_from_db(cart_id, user_id,):
+def delete_cart_item_from_db(temp_id, user_id,):
     cur = mysql.connection.cursor()
     cur.execute("""
-        DELETE FROM cart_items WHERE cart_id = %s AND user_id = %s
+        DELETE FROM cart_items WHERE temp_id = %s AND user_id = %s
         """
-        , (cart_id, user_id,))
+        , (temp_id, user_id,))
     mysql.connection.commit()
     cur.close()
 
