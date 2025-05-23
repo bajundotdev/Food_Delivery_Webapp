@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
+#from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole, Order, OrderItem
 from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -148,6 +148,7 @@ def get_all_products():
     cur.execute("""
         SELECT *
         FROM product_table
+        WHERE deleted = 0
     """)
     results = cur.fetchall()
     cur.close()
@@ -168,10 +169,12 @@ def get_product_by_id(product_id):
     row = cur.fetchone()
     #print("id: ", product_id)
     cur.close()
-
-    return Product(row['product_id'], row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id']))
+    if row is not None:
+        return Product(row['product_id'], row['product_name'], row['description'],
+                row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+                row['food_image_url'], row['is_active'], str(row['restaurant_id']))
+    else:
+        return []
 
 def search_product_by_name(search_str):
     str = "%" + str(search_str) + "%"
@@ -220,9 +223,30 @@ def add_product_to_db(form):
     except:
         return
 
-    
+def update_product_table(form):
 
-#update
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE product_table
+        SET product_name = %s,category = %s, price = %s, is_active = %s, description = %s
+        WHERE  product_id = %s
+    """, (form.product_name.data, form.category.data, form.price.data, form.is_active.data, form.description.data, form.product_id.data,))
+
+    mysql.connection.commit()
+    cur.close()
+
+def delete_product_from_list(product_id):
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE product_table
+        SET deleted = 1
+        WHERE  product_id = %s
+    """, ( product_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
 #delete
 ##################
 #    RESTAURANT QUERIES   
@@ -387,6 +411,7 @@ def get_available_driver():
         return []
     
 def set_driver_status(driver_id, status):
+    stat = 0
     if status == "Available":
         stat = 1
     elif status == "Unavailable":
@@ -448,6 +473,26 @@ def get_all_orders_and_products():
     #          row['email'], row['website'], row['description'], row['image_url']) for row in results
     # ]
     return results
+
+def get_all_order_items_by_order_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE ot.order_id = %s
+    """, (order_id, ))
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return [
+            # OrderItem(str(row['order_id']), row['product_id'], row['restaurant_name'],
+            #     bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+            #     row['email'], row['website'], row['description'], row['image_url']) for row in results
+        ]
+    else:
+        return []
 
 def get_all_orders():
     cur = mysql.connection.cursor()
