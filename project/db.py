@@ -106,6 +106,27 @@ def get_user_info_with_address_by_user_id(user_id):
         ]
     else:
         return None
+    
+def get_user_info_with_address_by_email(email):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_table.user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM user_table, user_address addt
+        WHERE user_table.email = %s AND user_table.user_id = addt.user_id
+    """, (email,))
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']), row['address']
+        ]
+    else:
+        return None
 
 def search_user_by_name(fullname):
     search_name = "%" + str(fullname) + "%"
@@ -734,5 +755,23 @@ def delete_cart_item_from_db(cart_id, user_id,):
         DELETE FROM cart_items WHERE cart_id = %s AND user_id = %s
         """
         , (cart_id, user_id,))
+    mysql.connection.commit()
+    cur.close()
+
+################################    CHECK OUT QUERIES       #####
+def add_order(order):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO orders (user_id, order_status, total_cost, customer_name, customer_email, customer_phone)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (order.user.id, order.status.value, order.total_cost,
+          f"{order.user.firstname} {order.user.surname}",
+          order.user.email, order.user.phone))
+    order_id = cur.lastrowid
+
+    for item in order.items:
+        cur.execute("INSERT INTO order_items (order_id, tour_id, quantity) VALUES (%s, %s, %s)",
+                    (order_id, item.tour.id, item.quantity))
+
     mysql.connection.commit()
     cur.close()
