@@ -102,7 +102,7 @@ def get_user_info_with_address_by_user_id(user_id):
         return [
             User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
                 row['password_hash'], row['profile_picture_url'],
-                row['user_type'], bool(row['is_active']), row['last_login'], row['address'])
+                row['user_type'], bool(row['is_active']), row['last_login']), row['address']
         ]
     else:
         return None

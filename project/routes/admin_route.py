@@ -34,7 +34,7 @@ def admin_dashboard():
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
-    return render_template('admin/dashboard.html', admin_details=admin_details[0],
+    return render_template('admin/dashboard.html', admin_details=admin_details,
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
