@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from project.forms import ProductForm
-from project.decorators import login_required, admin_required, driver_required
+from project.decorators import login_required, admin_required
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 
@@ -10,14 +10,8 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 mysql = MySQL()
 
+# Dashboard Index 
 @admin_bp.route('/')
-@login_required
-@admin_required
-def manage_admins():
-    return render_template('admin/manage_admins.html')
-
-# DASHBOARD
-@admin_bp.route('/dashboard')
 @login_required
 @admin_required
 def admin_dashboard():
@@ -26,10 +20,14 @@ def admin_dashboard():
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
-    return render_template('admin/dashboard.html', all_orders=all_orders, 
-                                                orders_with_products=orders_with_products,
-                                                drivers=drivers)
+    return render_template('/dashboard.html', all_orders=all_orders, 
+                           orders_with_products=orders_with_products,
+                           drivers=drivers)
 
+def manage_admins():
+    return render_template('/dashboard.html')
+
+#Product Management
 @admin_bp.route('/products', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -52,7 +50,7 @@ def edit_product(product_id):
         else:
             flash('Failed to update product.', 'danger')
     
-    return render_template('admin/edit_product.html', product=product)
+    return render_template('admin/manage_products_and_category.html', product=product)
 
 @admin_bp.route('/categories', methods=['GET', 'POST'])
 @login_required

@@ -16,7 +16,7 @@ def create_app():
     # Change to the actual database name once saved in the folder
     app.config['MYSQL_HOST'] = 'localhost'        # Database host (usually localhost)
     app.config['MYSQL_USER'] = 'root'         # Your MySQL username
-    app.config['MYSQL_PASSWORD'] = 'n12333492'     # Your MySQL password
+    app.config['MYSQL_PASSWORD'] = 'new_password'     # Your MySQL password
     app.config['MYSQL_DB'] = 'foodah_database'      # Name of the database you created. Change the file name to match your database name.
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     
