@@ -359,6 +359,7 @@ def get_all_driver():
         ]
     else:
         return []
+    
 def get_available_driver():
     cur = mysql.connection.cursor()
     cur.execute("""
