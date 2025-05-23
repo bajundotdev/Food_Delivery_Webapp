@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.db import *
 from project.session import *
+from project.forms import CartForm
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 
@@ -11,14 +12,13 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
-    
+    cart_form = CartForm()
     # Get featured products and restaurants
-    featured_products = get_all_products()[:4]  # Get first 4 products
-    featured_restaurants = get_all_restaurants()[:3]  # Get first 3 restaurants
+    featured_products = get_all_products()
 
-    return render_template('index.html',
-                          products=featured_products,
-                          restaurants=featured_restaurants)
+    return render_template('index.html', 
+                           products=featured_products,
+                           cart_form=cart_form)
 
 @main_bp.post('/cart/<int:product_id>/')
 def adding_to_cart(product_id):

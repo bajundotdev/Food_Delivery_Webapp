@@ -205,17 +205,23 @@ def get_product_by_category(categ):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def add_product(form):
+def add_product_to_db(form):
     cur = mysql.connection.cursor()
-    cur.execute("""
-        INSERT INTO product_table (product_name,description,category,price,food_rating,
-                prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id)
-        VALUES (%s, %s, %s, %s, %s, 
-                %s, %s, %s, %s, %s, %s)"""
-        , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
-           form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
-    mysql.connection.commit()
-    cur.close()
+    try:
+        cur.execute("""
+            INSERT INTO product_table (product_name,description,category,price,food_rating,
+                    prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id)
+            VALUES (%s, %s, %s, %s, %s, 
+                    %s, %s, %s, %s, %s, %s)"""
+            , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
+            form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
+        mysql.connection.commit()
+        cur.close()
+    except:
+        return
+
+    
+
 #update
 #delete
 ##################

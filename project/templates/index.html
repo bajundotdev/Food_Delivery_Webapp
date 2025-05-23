@@ -33,61 +33,82 @@
     <!-- Filter Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
         <div class="offcanvas-header">
-        <h5 id="filterOffcanvasLabel" class="offcanvas-title">Filter Options</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h5 id="filterOffcanvasLabel" class="offcanvas-title">Refine Your Search</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-        <form>
-            <div class="mb-3">
-            <h6>Cuisine</h6>
-            <!-- Cuisine filter checkboxes -->
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filterItalian" />
-                <label class="form-check-label" for="filterItalian">Italian</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filterChinese" />
-                <label class="form-check-label" for="filterChinese">Chinese</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filterIndian" />
-                <label class="form-check-label" for="filterIndian">Indian</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filterVegan" />
-                <label class="form-check-label" for="filterVegan">Vegan</label>
-            </div>
-            </div>
-            <div class="mb-3">
-            <h6>Rating</h6>
-            <!-- Rating filter options -->
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ratingFilter" id="rating4" value="4+" />
-                <label class="form-check-label" for="rating4">4 stars &amp; up</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ratingFilter" id="rating3" value="3+" />
-                <label class="form-check-label" for="rating3">3 stars &amp; up</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ratingFilter" id="ratingAny" value="any" checked />
-                <label class="form-check-label" for="ratingAny">Any</label>
-            </div>
-            </div>
-            <div class="mb-3">
-            <h6>Delivery Time</h6>
-            <!-- Delivery time filter options -->
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="timeFilter" id="delivery30" value="30" />
-                <label class="form-check-label" for="delivery30">Within 30 minutes</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="timeFilter" id="deliveryAny" value="any" checked />
-                <label class="form-check-label" for="deliveryAny">Any</label>
-            </div>
-            </div>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="offcanvas">Apply Filters</button>
-        </form>
+            <form>
+                <!-- Category Filter -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Category</label>
+                    <div class="row row-cols-2 g-2">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="filterMain" />
+                                <label class="form-check-label" for="filterMain">Main</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="filterDessert" />
+                                <label class="form-check-label" for="filterDessert">Dessert</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="filterDrink" />
+                                <label class="form-check-label" for="filterDrink">Drink</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="filterSnack" />
+                                <label class="form-check-label" for="filterSnack">Snack</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rating Filter -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Minimum Rating</label>
+                    <div class="btn-group w-100" role="group" aria-label="Rating filter">
+                        <input type="radio" class="btn-check" name="ratingFilter" id="ratingAny" value="any" checked>
+                        <label class="btn btn-outline-secondary" for="ratingAny">Any</label>
+                        <input type="radio" class="btn-check" name="ratingFilter" id="rating3" value="3+">
+                        <label class="btn btn-outline-secondary" for="rating3">3+ <i class="bi bi-star-fill text-warning"></i></label>
+                        <input type="radio" class="btn-check" name="ratingFilter" id="rating4" value="4+">
+                        <label class="btn btn-outline-secondary" for="rating4">4+ <i class="bi bi-star-fill text-warning"></i></label>
+                    </div>
+                </div>
+                <!-- Delivery Time Filter -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Delivery Time</label>
+                    <select class="form-select" name="timeFilter" id="deliveryTimeSelect">
+                        <option value="any" selected>Any</option>
+                        <option value="30">Within 30 minutes</option>
+                        <option value="45">Within 45 minutes</option>
+                        <option value="60">Within 1 hour</option>
+                    </select>
+                </div>
+                <!-- Price Range Filter -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Price Range</label>
+                    <div class="btn-group w-100" role="group" aria-label="Price range">
+                        <input type="radio" class="btn-check" name="priceFilter" id="priceAny" value="any" checked>
+                        <label class="btn btn-outline-secondary" for="priceAny">Any</label>
+                        <input type="radio" class="btn-check" name="priceFilter" id="price1" value="1">
+                        <label class="btn btn-outline-secondary" for="price1">$</label>
+                        <input type="radio" class="btn-check" name="priceFilter" id="price2" value="2">
+                        <label class="btn btn-outline-secondary" for="price2">$$</label>
+                        <input type="radio" class="btn-check" name="priceFilter" id="price3" value="3">
+                        <label class="btn btn-outline-secondary" for="price3">$$$</label>
+                    </div>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-danger">Apply Filters</button>
+                    <button type="reset" class="btn btn-outline-secondary">Clear All</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -95,6 +116,7 @@
     <main class="container my-4">
         <!-- Featured Food Menu Section -->
         <section>
+                {{ cart_form }}
             <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
             <div class="row g-4">
                 {% for product in products %}
@@ -115,7 +137,7 @@
                                     </form>
                                     <a href="{{ url_for('product.product_detail', product_id=product.id) }}" class="btn btn-outline-danger">View Menu</a>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}
