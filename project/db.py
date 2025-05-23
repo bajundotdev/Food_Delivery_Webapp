@@ -65,6 +65,27 @@ def get_user_by_id(user_id):
         ]
     else:
         return None
+    
+def get_user_info_with_address_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_table.user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM user_table, user_address addt
+        WHERE user_table.user_id = %s AND user_table.user_id = addt.user_id
+    """, (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login'], row['address'])
+        ]
+    else:
+        return None
 
 def search_user_by_name(fullname):
     search_name = "%" + str(fullname) + "%"
