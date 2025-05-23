@@ -76,7 +76,7 @@ def view_cart():
         print(f'user requested to add tour id = {product_id}')
         add_to_cart(product_id)
 
-    return render_template('user/user_cart.html', order=order, totalprice=order.total_cost())
+    return render_template('cart.html', order=order, totalprice=order.total_cost())
     # """View cart contents."""
     # if not is_logged_in():
     #     flash('Please log in to view your cart')
