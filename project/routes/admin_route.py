@@ -79,13 +79,23 @@ def manage_categories():
 @admin_required
 def manage_orders():
     status_filter = request.args.get('status', '')
+
+    orders_with_products = get_all_orders_and_products()[:10]
+    pending_orders = get_all_orders_by_status('Pending')
+    in_progress_orders = get_all_orders_by_status('In Progress')
+    ready_orders = get_all_orders_by_status('Ready')
+    drivers = get_all_driver()
     
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
         # orders = Order.get_all()
         orders = []
-    return render_template('admin/manage_orders.html', orders=orders)
+    return render_template('admin/manage_orders.html', orders_with_products=orders_with_products,
+                                                pending_orders=pending_orders,
+                                                in_progress_orders=in_progress_orders,
+                                                ready_orders=ready_orders,
+                                                drivers=drivers)
 
 @admin_bp.route('/order/<string:order_id>')
 @login_required
