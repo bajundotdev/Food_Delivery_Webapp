@@ -4,6 +4,8 @@ from project.decorators import login_required, admin_required, driver_required
 # Import dummy database db.py
 from project.db import *
 from project.models import Cart, CartItem, Product
+from project.forms.shopping_form import CheckoutForm
+
 
 
 # Create blueprints for different sections of the application
@@ -142,7 +144,42 @@ def add_to_cart(product_id):
     flash('Item added to cart')
     return redirect(url_for('main.index'))
 
+@cart_bp.post('/clearbasket/')
+def clear_basket():
+    empty_basket()
+    flash('Basket cleared.')
+    return redirect(url_for('cart.view_cart'))
+
 @cart_bp.route('/checkout', methods=['POST'])
 @login_required
 def checkout_cart():
-    return render_template('user/checkout.html')
+    cart = get_cart()
+    user_session = session.get('user')
+    #user_details= user_session['email']
+    user_details= get_user_info_with_address_by_email(user_session['email'])
+    if 'user' not in session or session['user']['user_id'] == 0:
+        flash('Please log in before checking out.')
+        return redirect(url_for('main.login'))
+
+    form = CheckoutForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # If user not logged in, use form data to simulate a user
+            if 'user' not in session:
+                session['user'] = {
+                    'user_id': 0,
+                    'firstname': form.firstname.data,
+                    'surname': form.surname.data,
+                    'email': form.email.data,
+                    'phone': form.phone.data,
+                }
+
+            order = convert_basket_to_order(cart)
+            add_order(order)
+            empty_basket()
+            flash('Your order has been placed!')
+            return redirect(url_for('user.profile'))
+        else:
+            flash('The provided information is missing or incorrect', 'error')
+
+    return render_template('user/checkout.html', form=form, cart=cart, user_details=user_details)

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FloatField, IntegerField, BooleanField, HiddenField, FileField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange, Optional
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FloatField, IntegerField, BooleanField, HiddenField, FileField, RadioField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange, Optional, InputRequired
 from flask_wtf.file import FileRequired, FileAllowed
 
 #####################
@@ -26,3 +26,13 @@ class OrderForm(FlaskForm):
                                ])
     notes = TextAreaField('Order Notes', validators=[Optional(), Length(max=500)])
     submit = SubmitField('Place Order')
+
+class CheckoutForm(FlaskForm):
+    """Form for user checkout."""
+    fullname = StringField("Full Name", validators = [InputRequired()])
+    phone = StringField("Your surname", validators = [InputRequired()])
+    email = StringField("Your email", validators = [InputRequired(), Email()])
+    address = StringField("Your phone number", validators = [InputRequired()])
+    notes = StringField("Delivery Instructions", validators = [InputRequired()])
+    payment_method = RadioField('Choose an option:', choices=[('option1', 'Credit Card'), ('option2', 'Debit Card'), ('option3', 'Cash on Delivery')], validators=[DataRequired()])
+    submit = SubmitField("Place Order")
