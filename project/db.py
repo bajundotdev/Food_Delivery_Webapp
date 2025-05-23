@@ -92,9 +92,9 @@ def get_user_info_with_address_by_user_id(user_id):
         SELECT user_table.user_id,fullname, email, phone_number,
                 password_hash ,profile_picture_url,
                 user_type, is_active, last_login,
-                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+                CONCAT(addt.user_id, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM user_table, user_address addt
-        WHERE user_table.user_id = %s AND user_table.user_id = addt.user_id
+        WHERE user_table.user_id = %s
     """, (user_id,))
     row = cur.fetchone()
     cur.close()

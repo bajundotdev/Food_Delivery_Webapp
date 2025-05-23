@@ -26,7 +26,7 @@ def manage_admins():
 @admin_required
 def admin_dashboard():
     user_id = session['user']['user_id']
-    admin_details = get_user_by_id(user_id)
+    admin_details = get_user_info_with_address_by_user_id(user_id)
     all_users = get_all_users()
     all_orders = get_all_orders()
     all_products = get_all_products()
@@ -39,6 +39,7 @@ def admin_dashboard():
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
                                                 orders_with_products=orders_with_products,
+                                                orders_by_status=orders_by_status,
                                                 drivers=drivers)
 
 #############################
