@@ -91,6 +91,7 @@
                 <div class="col-12">
                     <h4>Active Orders ({{orderCompleted | length}})</h4>
                 </div>
+                {{orderReady}}
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
@@ -133,6 +134,7 @@
             <div class="row mt-5">
             <div class="col-12"></div>
                 <h4>Recent Delivery Status</h4>
+                {{ orderCompleted }}
                 <div class="table-responsive">
                 <table class="table table-striped align-middle">
                     <thead>
@@ -150,7 +152,7 @@
                     {% if order.status == "Completed" %}
                     <tr>
                         <td>
-                        <a href="#" class="text-decoration-none">{{order.id}}</a>
+                        <a href="#" class="text-decoration-none">{{order.driver_id}}</a>
                         </td>
                         <td>{{order.fullname}}</td>
                         <td>{{order.address}}</td>
