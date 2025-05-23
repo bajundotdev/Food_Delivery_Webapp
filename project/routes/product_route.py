@@ -15,7 +15,7 @@ product_bp = Blueprint('product', __name__, url_prefix='/products')
 def product_list():
     """Display all products."""
     products = get_all_products()
-    return render_template('products/product_list.html', products=products)
+    return render_template('product_list.html', products=products)
 
 @product_bp.route('/category/<category>')
 def list_by_category(category):

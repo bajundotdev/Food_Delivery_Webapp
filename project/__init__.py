@@ -1,7 +1,8 @@
 # __init__.py
 from flask import Flask
 from flask_mysqldb import MySQL
-from .routes import all_blueprints
+from .views import register_views
+#from .routes import all_blueprints
 from .routes.error_handlers_route import not_found_error, internal_error
 
 mysql = MySQL()
@@ -24,8 +25,10 @@ def create_app():
     mysql.init_app(app)
 
     # Register all blueprints
-    for bp in all_blueprints:
-        app.register_blueprint(bp)
+ #   for bp in all_blueprints:
+ #       app.register_blueprint(bp)
+
+    register_views(app)
 
     app.register_error_handler(404, not_found_error)
     app.register_error_handler(500, internal_error)

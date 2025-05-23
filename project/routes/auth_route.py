@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.forms.authentication_form import LoginForm, RegistrationForm
 from project.db import check_user, add_user, get_user_by_email
 from project.routes.utils import clear_user_session
+from project.models import *
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/')
 
@@ -27,7 +28,7 @@ def register():
 
     return render_template('register.html', form=form)
 
-@auth_bp.route('/login/', methods=('POST', 'GET'))
+@auth_bp.route('/login', methods=('POST', 'GET'))
 def login():
     
     form = LoginForm()
