@@ -145,7 +145,7 @@ def add_product():
 def update_product(product_id):
     form_product = ProductForm()
     if request.method == "GET":
-        return render_template('admin/product_add_form.html', form_product=form_product, categories=ProductCategory)
+        return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
 

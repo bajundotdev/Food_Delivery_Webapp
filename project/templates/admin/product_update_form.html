@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Manage Menus</h2>
+                <h2>Update Menu: Product Title</h2>
             </div>
         </div>
     </div>
@@ -17,7 +17,8 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant') }}">Restaurant</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Menus</li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_product') }}">Menus</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Update Menu</li>
             </ol>
         </div>
     </nav>
@@ -69,43 +70,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Update Category Section -->
-        <section>
-            <div class="row mt-5">
-                <div class="col-12">
-                    <h4 class="mb-4">Update Category</h4>
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="update_category_id" name="category_id" required>
-                                            <option value="" disabled selected>Select Category</option>
-                                            {% for category in categories %}
-                                                <option value="{{ category.id }}">{{ category.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="update_category_id">Category</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="update_category_name" name="category_name" placeholder="New Category Name" required>
-                                        <label for="update_category_name">New Category Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-4">
-                                    <button type="submit" class="btn btn-primary">Update Category</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <hr>
 
         <!-- Update Menu Section -->
         <section>

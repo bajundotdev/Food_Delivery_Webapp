@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Manage Menus</h2>
+                <h2>Add Menu</h2>
             </div>
         </div>
     </div>
@@ -71,91 +71,64 @@
             </div>
         </section>
 
-        <!-- Add Category Section -->
-        <section>
-            <div class="row mt-5">
-                <div class="col-12">
-                    <h4>Add New Category</h4>
-                    <form method="post" class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="category_name" name="category_name" placeholder="Category Name" required>
-                                <label for="category_name">Category Name</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="category_status" name="category_status" required>
-                                    <option value="active" selected>Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                                <label for="category_status">Status</label>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-success">Add Category</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <hr>
-
         <!-- Add Menu Section -->
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4>Add New Menu</h4>
-                    <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Menu Name" required>
-                                <label for="product_name">Menu Name</label>
-                            </div>
+                    <h4 class="my-4">Add New Menu</h4>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Menu Name" required>
+                                        <label for="product_name">Menu Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="category" name="category" required>
+                                            <option value="" disabled selected>Select Category</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category.value }}">{{ category.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="category">Category</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="Price" required>
+                                        <label for="price">Price</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="is_active" name="is_active" required>
+                                            <option value="1" selected>Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                        <label for="is_active">Status</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-floating">
+                                        <input type="file" class="form-control" id="food_image_url" name="food_image_url" value="food.jpg" accept="image/*">
+                                        <label for="food_image_url">Menu Image</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="description" name="description" placeholder="Description" style="height: 100px"></textarea>
+                                        <label for="description">Description</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-success">Save Menu</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="category" name="category" required>
-                                    <option value="" disabled selected>Select Category</option>
-                                    {% for category in categories %}
-                                        <option value="{{ category.value }}">{{ category.value }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label for="category">Category</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="Price" required>
-                                <label for="price">Price</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="is_active" name="is_active" required>
-                                    <option value="1" selected>Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-                                <label for="is_active">Status</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-floating">
-                                <input type="file" class="form-control" id="food_image_url" name="food_image_url" value="food.jpg" accept="image/*">
-                                <label for="food_image_url">Menu Image</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control" id="description" name="description" placeholder="Description" style="height: 100px"></textarea>
-                                <label for="description">Description</label>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-success">Save Product</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>
