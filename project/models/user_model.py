@@ -29,6 +29,7 @@ class User:
     role: UserRole = UserRole.CUSTOMER
     is_active: bool = True
     last_login: str = ""
+    address: str = ""
     
     def get_url(self):
         """Return URL to user profile."""
