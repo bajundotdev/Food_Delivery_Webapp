@@ -110,8 +110,8 @@
                         <div class="col-md-3 position-relative">
                             <select class="form-select ps-5" id="status" name="status">
                                 <option value="">All Status</option>
-                                <option value="active" {% if request.args.get('status') == 'active' %}selected{% endif %}>Active</option>
-                                <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>Inactive</option>
+                                <option value="active" {% if request.args.get('status') == 'active' %}selected{% endif %}>Available</option>
+                                <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>Not Available</option>
                             </select>
                             <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
                                 <i class="bi bi-toggle-on"></i>
@@ -151,9 +151,9 @@
                                 <td>{{ menu.food_rating }}</td>
                                 <td>
                                 {% if menu.is_active %}
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success">Available</span>
                                 {% else %}
-                                    <span class="badge bg-secondary">Inactive</span>
+                                    <span class="badge bg-secondary">Not Available</span>
                                 {% endif %}
                                 </td>
                                 <td>
