@@ -32,7 +32,7 @@
                 <div class="row d-flex g-0 align-items-sm-center">
                     <div class="col-md-3 text-center p-3">
                         <div class="d-inline-block rounded-circle border border-3 border-dark overflow-hidden" style="width: 140px; height: 140px;">
-                            <img src="{{ url_for('static', filename='img/icon-7797704_1280.png') }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            <img src="{{ url_for('static', filename='img/profile_photos/' + photo) }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
                         </div>
                     </div>
                     <div class="col-md-5 text-md-start text-center">
@@ -70,7 +70,7 @@
                                 {% endif %}
                             </button>
                         </form>
-                        <a href="{{ url_for('user.update_profile', user_id=user_info.id) }}" class="btn btn-outline-primary">
+                        <a href="{{ url_for('user.update_profile', email=user_info.email) }}" class="btn btn-outline-primary">
                             <span class="bi bi-pencil me-1"></span> Edit Profile
                         </a>
                     </div>

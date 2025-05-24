@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from project.decorators import login_required
 from project.forms import LoginForm
+from project.forms.customer_form import UserForm
 from project.session import *
+from werkzeug.utils import secure_filename
+import os
 
 # Import dummy database db.py
 from project.db import *
@@ -10,6 +13,12 @@ from project.models import Order, User, UserAddress
 
 # Create blueprints for different sections of the application
 user_bp = Blueprint('user', __name__, url_prefix='/user')
+
+###################### FILE UPLOAD #####################
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ###################
 # # User Routes     #
@@ -23,17 +32,19 @@ def profile():
     if user_details:
         user_info = user_details[0]
         address = user_details[1]
+        photo = user_details[0].profile_picture_url
+        session['photo'] = photo
     else:
         user_info = ""
         address = ""
     user_id = session.get('user').get('user_id')
     inordermo = get_all_orders_by_user_id(user_id)
-    return render_template('user/profile.html', user_details=user_details, inordermo = inordermo, user_info=user_info, address = address)
+    return render_template('user/profile.html', user_details=user_details, inordermo = inordermo, user_info=user_info, address = address, photo = photo)
 
-@user_bp.route('/profile/update/<int:user_id>', methods=['GET', 'POST'])
+@user_bp.route('/profile/update/<string:email>', methods=['GET', 'POST'])
 @login_required
-def update_profile(user_id):
-    user_details = get_user_info_with_address_by_email(user_id)
+def update_profile(email):
+    user_details = get_user_info_with_address_by_email(email)
     return render_template('user/profile/update_profile.html', user_details=user_details)
 
 @user_bp.route('/view_order', methods=['GET', 'POST'])
@@ -42,6 +53,25 @@ def view_order():
     order_id = request.args.get('order_id')
     laman = get_products_from_order_id(order_id)
     return render_template('user/view_order.html', laman = laman, order_id = order_id)
+
+@user_bp.route('/user/save/', methods=('POST', 'GET'))
+@login_required
+def save_profile():
+
+    if request.method == "POST":
+        name = request.form.get('fullname')
+        
+        file = request.files.get('profile_image')
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+
+        update_user_profile(name,request.form.get('phone'), filename,request.form.get('email'))
+        flash('Profile saved!', 'success')
+        return redirect(url_for('user.profile'))
+
+    return redirect(url_for('user.profile'), photo = session.get('photo'))
 
 # def profile():
 #     """View and edit user profile on the same page."""

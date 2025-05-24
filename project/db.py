@@ -158,7 +158,16 @@ def add_user(form):
     mysql.connection.commit()
     cur.close()
 
-#update
+def update_user_profile(fullname, phone, profile_picture_url, email):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table
+        SET fullname = %s, phone_number = %s, profile_picture_url = %s
+        WHERE  email = %s
+    """, (fullname, phone, profile_picture_url,email,))
+
+    mysql.connection.commit()
+    cur.close()
 #delete
 
 ##################
@@ -259,7 +268,7 @@ def search_product(search_str):
     cur.execute("""
         SELECT *
         FROM product_table
-        WHERE product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s
+        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0
     """ , (like_str, like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
