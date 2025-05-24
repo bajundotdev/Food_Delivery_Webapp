@@ -253,13 +253,14 @@ def get_product_by_id(product_id):
         return []
 
 def search_product_by_name(search_str):
-    str = "%" + str(search_str) + "%"
+    like_str = "%" + str(search_str) + "%"
+    print(like_str)
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
         FROM product_table
-        WHERE product_id LIKE %s
-    """ % str)
+        WHERE product_name LIKE %s OR description LIKE %s
+    """ , (like_str, like_str))
     results = cur.fetchall()
     cur.close()
     return [
