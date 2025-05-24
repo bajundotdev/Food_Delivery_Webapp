@@ -151,7 +151,7 @@
                                     <td>{{order.placed_at}}</td>
                                     <td>{{order.delivered_at}}</td>
                                     <td>
-                                        <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                        <a href="{{ url_for('user.view_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">View</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

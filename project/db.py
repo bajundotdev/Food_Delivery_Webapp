@@ -553,7 +553,7 @@ def get_all_orders_and_products():
 def get_products_from_order_id(order_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT pt.*, ot.*
+        SELECT cart.quantity, pt.*
         FROM product_table pt
         JOIN cart_items cart ON cart.product_id = pt.product_id
         JOIN order_table ot ON ot.order_id = cart.order_id
