@@ -31,10 +31,11 @@ CREATE TABLE `cart_items` (
   `order_id` bigint DEFAULT NULL,
   `created_at` timestamp NOT NULL,
   `quantity` int NOT NULL,
+  `temp_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`cart_id`),
   KEY `cart_items_product_id_foreign` (`product_id`),
   KEY `cart_items_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +44,7 @@ CREATE TABLE `cart_items` (
 
 LOCK TABLES `cart_items` WRITE;
 /*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
-INSERT INTO `cart_items` VALUES (1,1,5,2,'2025-05-20 08:16:05',1),(2,2,5,2,'2025-05-20 08:16:14',2),(3,7,5,NULL,'2025-05-20 08:16:20',1),(4,3,9,3,'2025-05-20 08:17:02',1);
+INSERT INTO `cart_items` VALUES (1,1,5,2,'2025-05-20 08:16:05',1,NULL),(2,2,5,2,'2025-05-20 08:16:14',2,NULL),(3,7,5,NULL,'2025-05-20 08:16:20',1,NULL),(4,3,9,3,'2025-05-20 08:17:02',1,NULL),(7,7,10,9,'2025-05-23 13:26:46',1,'9a6e21cb-8cd4-48eb-ad71-929b4bfad5f1'),(8,7,10,9,'2025-05-23 13:42:38',1,'144d7e68-9a33-47be-8351-1298b131cf68'),(18,3,10,9,'2025-05-24 03:42:12',2,'111a7261-9357-4fc4-81fa-9d90f3a6838f');
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,6 +104,7 @@ CREATE TABLE `order_table` (
   `notes` text,
   `payment_invoice` varchar(45) DEFAULT NULL,
   `delivery_option` varchar(45) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   KEY `order_table_driver_id_foreign` (`driver_id`),
   KEY `order_table_user_id_foreign` (`user_id`),
@@ -110,7 +112,7 @@ CREATE TABLE `order_table` (
   CONSTRAINT `order_table_address_id_foreign` FOREIGN KEY (`address_id`) REFERENCES `user_address` (`address_id`),
   CONSTRAINT `order_table_driver_id_foreign` FOREIGN KEY (`driver_id`) REFERENCES `delivery_driver` (`driver_id`),
   CONSTRAINT `order_table_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +121,7 @@ CREATE TABLE `order_table` (
 
 LOCK TABLES `order_table` WRITE;
 /*!40000 ALTER TABLE `order_table` DISABLE KEYS */;
-INSERT INTO `order_table` VALUES (2,5,1,1,'Completed',12.99,'Success','Cash','2025-05-20 08:35:48','2025-05-20 08:35:48',NULL,'Fast delivery, Eco Mode','RF:0012345',NULL),(3,10,1,1,'Ready',12.99,'Success','Credit Card','2025-05-20 10:25:49','2025-05-20 10:25:49',NULL,'Delayed','RF:999999',NULL),(4,10,NULL,2,'OrderStatus.PENDING',20.99,'Success','Debit Card','2025-05-22 13:47:07',NULL,NULL,NULL,'102025-05-22 23:47:07',NULL),(5,10,NULL,2,'OrderStatus.PENDING',20.99,'Success','Debit Card','2025-05-22 13:47:47',NULL,NULL,NULL,'102025-05-22 23:47:47',NULL);
+INSERT INTO `order_table` VALUES (2,5,1,1,'Completed',12.99,'Success','Cash','2025-05-20 08:35:48','2025-05-20 08:35:48',NULL,'Fast delivery, Eco Mode','RF:0012345',NULL,NULL),(3,10,1,1,'Ready',12.99,'Success','Credit Card','2025-05-20 10:25:49','2025-05-20 10:25:49',NULL,'Delayed','RF:999999',NULL,NULL),(4,10,NULL,2,'Pending',20.99,'Success','Debit Card','2025-05-22 13:47:07',NULL,NULL,NULL,'102025-05-22 23:47:07',NULL,NULL),(5,10,NULL,2,'Pending',20.99,'Success','Debit Card','2025-05-22 13:47:47',NULL,NULL,NULL,'102025-05-22 23:47:47',NULL,NULL),(8,10,NULL,2,'Pending',31.96,'','Cash','2025-05-24 00:24:34',NULL,NULL,'Hungry na po','102025-05-24 10:24:34',NULL,'White House, Block 10, Small County, District of Col, Washington, 4000, USA'),(9,10,NULL,2,'Pending',5.98,'','Cash','2025-05-24 03:42:12',NULL,NULL,'pakibalot an lang po','102025-05-24 13:42:12',NULL,'White House, Block 10, Small County, District of Col, Washington, 4000, USA');
 /*!40000 ALTER TABLE `order_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,4 +358,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-23 14:46:08
+-- Dump completed on 2025-05-24 13:48:52
