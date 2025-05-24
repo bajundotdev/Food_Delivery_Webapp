@@ -44,6 +44,7 @@ def login():
                     'firstname': user.name,
                     'phone': user.phone,
                     'email': user.email,
+                    'address_id': "",
                 }
                 session['logged_in'] = True
                 session['role'] = user.role
@@ -56,8 +57,7 @@ def login():
                     user_id = session['user']['user_id']
                     cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
                     for item in cart_from_db:
-                        add_cart_item_from_db(item)
-                        print(item)    
+                        add_cart_item_from_db(item)  
                     return redirect(url_for('user.profile'))
         
     return render_template('login.html', form=form)
@@ -65,10 +65,12 @@ def login():
 @auth_bp.route('/logout')
 def logout():
     """User logout route."""
+    user_id = session['user']['user_id']
+    clear_cart_db(user_id)
     cart_items = session.get('shopping_cart')
     for item in cart_items.get('items', []):
         product_id = item['product']['id']
-        user_id = session['user']['user_id']
+        
         quantity = item['quantity']
         item_id = item['id']
         add_cart_item_to_db(product_id ,user_id, quantity, item_id)

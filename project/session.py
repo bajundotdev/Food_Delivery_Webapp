@@ -61,7 +61,6 @@ def remove_from_cart(item_id):
     print("removing from session")
     cart.remove_item(item_id)
     user_id = session['user']['user_id']
-    delete_cart_item_from_db(item_id, user_id)
     _save_basket_to_session(cart)
 
 def empty_basket():
@@ -70,11 +69,11 @@ def empty_basket():
     }
     #call db to delete items
 
-def convert_basket_to_order(basket):
+def convert_basket_to_order(cart):
     return Order(
         id=None,
         status=OrderStatus.PENDING,
         user_id=get_user().id,
-        total=basket.total_cost(),
-        items=basket.items
+        total=cart.total_cost(),
+        items=cart.items
     )

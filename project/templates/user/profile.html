@@ -146,7 +146,7 @@
                                     <td>
                                         <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="text-decoration-none"> {{order.id}} </a>
                                     </td>
-                                    <td>{{order.total}}</td>
+                                    <td>$ {{order.total}}</td>
                                     <td><span class="badge bg-success">{{order.status}}</span></td>
                                     <td>{{order.placed_at}}</td>
                                     <td>{{order.delivered_at}}</td>

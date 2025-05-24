@@ -146,6 +146,7 @@ def add_to_cart(product_id):
 @cart_bp.post('/clearbasket/')
 def clear_basket():
     empty_basket()
+    clear_cart_db(get_user().id)
     flash('Basket cleared.', 'primary')
     return redirect(url_for('cart.view_cart'))
 
@@ -168,17 +169,18 @@ def checkout_cart():
         return redirect(url_for('main.login'))
 
     form = CheckoutForm()
+    
     if request.method == 'POST':
         
         if form.validate_on_submit():
-            print(form.payment_method.data)
             order = convert_basket_to_order(cart)
-            add_order(order)
+            address_id = get_address_id_by_user_id(int(order.user_id))
+            print("address id: ", address_id)
+            add_order_to_db(order, form, address_id)
             empty_basket()
             flash('Your order has been placed!', 'success')
             return redirect(url_for('user.profile'))
         else:
-            print(form.validate_on_submit())
             flash('The provided information is missing or incorrect', 'error')
     
     return render_template('user/checkout.html', form=form, cart=cart, user_info=user_info, address = address)

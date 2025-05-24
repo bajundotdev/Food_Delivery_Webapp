@@ -742,22 +742,39 @@ def get_uncheckedout_cart_items_by_user_id(user_id):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])),  row['cart_id'], row['quantity']) for row in results
     ]
 
-def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
-    # IF PRODUCT ID EXISTS, ADD QUANTITY AND UPDATE TEMP ID
+def check_if_item_in_cart(product_id, user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
-        VALUES (%s, %s, %s, %s, %s)"""
-        , (product_id, user_id, current_timestamp, quantity, temp_id,))
+        SELECT 1 FROM cart_items WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+    """, (product_id, user_id,))
+    results = cur.fetchone()
+    cur.close()
+    return results
+
+def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
+    item_exists = check_if_item_in_cart(product_id, user_id)
+    cur = mysql.connection.cursor()
+    # IF PRODUCT ID EXISTS, ADD QUANTITY AND UPDATE TEMP ID
+    if item_exists:
+        cur.execute("""
+        UPDATE cart_items
+        SET quantity = %s, temp_id = %s
+        WHERE product_id = %s AND user_id = %s AND order_id IS NULL;
+        """, (quantity, temp_id, product_id, user_id))
+    else:
+        cur.execute("""
+            INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
+            VALUES (%s, %s, %s, %s, %s)"""
+            , (product_id, user_id, current_timestamp, quantity, str(temp_id),))
+        
     mysql.connection.commit()
     cur.close()
 
 def delete_cart_item_from_db(product_id, user_id,):
     cur = mysql.connection.cursor()
     cur.execute("""
-        DELETE FROM cart_items WHERE product_id = %s user_id = %s AND order_id IS NULL
-        """
-        , (product_id, user_id,))
+            DELETE FROM cart_items WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+            """, (product_id, user_id,))
     mysql.connection.commit()
     cur.close()
 
