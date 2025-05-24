@@ -23,7 +23,12 @@
             {% include 'driver/driver_header.html' %}
         {% elif session['role'] == "Customer" %}
             {% include 'user/user_header.html' %}
-        {% else %}           
+        {% else %} 
+            <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
+                <strong class="pe-4">We are looking for a delivery driver!</strong>
+                <button type="button" class="btn btn-outline-danger">Register now</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>          
             <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     <div class="d-flex d-block d-md-none">

@@ -196,9 +196,8 @@
                                 </div>
                                 <div class="card-body">
                                     <h5 class="card-title mb-1">{{ order.fullname }}</h5>
-                                    <p class="fs-6 mb-0">
-                                        <strong>Address:</strong> {{ order.address }}
-                                    </p>
+                                    <p class="fs-6 mb-0"><i class="bi bi-clock"></i> {{ order.placed_at }}</p>
+                                    <p><i class="bi bi-geo-alt me-1"></i> {{ order.address }}</p>
                                     <hr>
                                     <p class="card-text m-2">
                                         <strong>Items:</strong>
@@ -213,11 +212,13 @@
                                         <strong>Total:</strong> ${{ order.total }}
                                     </p>
                                     <div class="mt-auto d-flex gap-2">
-                                    <form method="POST" action="/" class="d-flex flex-grow-1">
-                                        <button type="submit" class="btn btn-danger w-100">Accept Order</button>
-                                    </form>
-                                    <a href="/" class="btn btn-outline-danger">Deny</a>
-                                </div>
+                                        <form method="POST" action="{{ url_for('admin.update_order_status') }}" class="d-flex flex-grow-1">
+                                            <input name="order_id" value="{{ order.id }}" hidden>
+                                            <input name="order_status" value="In Progress" hidden>
+                                            <button type="submit" class="btn btn-danger w-100">Accept Order</button>
+                                        </form>
+                                        <a href="/" class="btn btn-outline-danger">Deny</a>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
@@ -241,37 +242,41 @@
                         Recent Orders
                     </h4>
                     <!-- Search and Filter Form -->
-                    <form method="get" action="" class="row g-3 align-items-end my-3">
-                        <div class="col-md-4 position-relative">
-                            <input type="text" class="form-control ps-5" id="search_recent_order" name="search_recent_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_menu', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-search"></i>
-                            </span>
+                    <div class="card my-3">
+                        <div class="card-body">
+                            <form method="get" action="" class="row g-3 align-items-end">
+                                <div class="col-md-4 position-relative">
+                                    <input type="text" class="form-control ps-5" id="search_recent_order" name="search_recent_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_menu', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <select class="form-select ps-5" id="status" name="status">
+                                        <option value="">All Status</option>
+                                        <option value="Pending" {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                        <option value="On Delivery" {% if request.args.get('status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                    </select>
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <input type="datetime-local" class="form-control ps-5" id="order_date" name="order_date" value="{{ request.args.get('order_date', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <span class="bi bi-search me-1"></span> Search
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="col-md-3 position-relative">
-                            <select class="form-select ps-5" id="status" name="status">
-                                <option value="">All Status</option>
-                                <option value="Pending" {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
-                                <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                                <option value="On Delivery" {% if request.args.get('status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
-                            </select>
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-toggle-on"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-3 position-relative">
-                            <input type="datetime-local" class="form-control ps-5" id="order_date" name="order_date" value="{{ request.args.get('order_date', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-calendar-date"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <span class="bi bi-search me-1"></span> Search
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                     
                     <div class="table-responsive">
                         <table class="table table-striped align-middle">
@@ -330,73 +335,78 @@
                         Driver Status
                     </h4>
                     <!-- Search and Filter Form -->
-                    <form method="get" action="" class="row g-3 align-items-end my-3">
-                        <div class="col-md-4 position-relative">
-                            <input type="text" class="form-control ps-5" id="search_driver" name="search_driver" placeholder="Search Driver Name or ID" value="{{ request.args.get('search_driver', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-search"></i>
-                            </span>
+                     
+                    <div class="card my-3">
+                        <div class="card-body">
+                            <form method="get" action="" class="row g-3 align-items-end">
+                                <div class="col-md-4 position-relative">
+                                    <input type="text" class="form-control ps-5" id="search_driver" name="search_driver" placeholder="Search Driver Name or ID" value="{{ request.args.get('search_driver', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <select class="form-select ps-5" id="driver_status" name="driver_status">
+                                        <option value="">All Status</option>
+                                        <option value="Available" {% if request.args.get('driver_status') == 'Available' %}selected{% endif %}>Available</option>
+                                        <option value="On Delivery" {% if request.args.get('driver_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                        <option value="Offline" {% if request.args.get('driver_status') == 'Offline' %}selected{% endif %}>Offline</option>
+                                    </select>
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <input type="datetime-local" class="form-control ps-5" id="last_active" name="last_active" value="{{ request.args.get('last_active', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-calendar-date"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <span class="bi bi-search me-1"></span> Search
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="col-md-3 position-relative">
-                            <select class="form-select ps-5" id="driver_status" name="driver_status">
-                                <option value="">All Status</option>
-                                <option value="Available" {% if request.args.get('driver_status') == 'Available' %}selected{% endif %}>Available</option>
-                                <option value="On Delivery" {% if request.args.get('driver_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
-                                <option value="Offline" {% if request.args.get('driver_status') == 'Offline' %}selected{% endif %}>Offline</option>
-                            </select>
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-toggle-on"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-3 position-relative">
-                            <input type="datetime-local" class="form-control ps-5" id="last_active" name="last_active" value="{{ request.args.get('last_active', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-calendar-date"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <span class="bi bi-search me-1"></span> Search
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                     <div class="table-responsive">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th scope="col">Driver ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Last Active</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {% for driver in drivers %}
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">#{{ driver.id }}</a>
-                                    </td>
-                                    <td>{{ driver.fullname }}</td>
-                                    <td>
-                                        {% if driver.status == "Available" %}
-                                            <span class="badge bg-success">{{ driver.status }}</span>
-                                        {% elif driver.status == "En Route" %}
-                                            <span class="badge bg-warning text-black">{{ driver.status }}</span>
-                                        {% elif driver.status == "Offline" %}
-                                            <span class="badge bg-secondary">{{ driver.status }}</span>
-                                        {% else %}
-                                            <span class="badge bg-danger">{{ driver.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>2025-06-01 14:32</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-outline-primary"><span class="bi bi-eye me-1"></span> View</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        <table class="table table-striped align-middle">
+                            <thead>
+                            <tr>
+                                <th scope="col">Driver ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Last Active</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for driver in drivers %}
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="text-decoration-none">#{{ driver.id }}</a>
+                                        </td>
+                                        <td>{{ driver.fullname }}</td>
+                                        <td>
+                                            {% if driver.status == "Available" %}
+                                                <span class="badge bg-success">{{ driver.status }}</span>
+                                            {% elif driver.status == "En Route" %}
+                                                <span class="badge bg-warning text-black">{{ driver.status }}</span>
+                                            {% elif driver.status == "Offline" %}
+                                                <span class="badge bg-secondary">{{ driver.status }}</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">{{ driver.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>2025-06-01 14:32</td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-outline-primary"><span class="bi bi-eye me-1"></span> View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

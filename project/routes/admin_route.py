@@ -35,12 +35,6 @@ def admin_dashboard():
                                                 orders_by_status=orders_by_status,
                                                 drivers=drivers)
 
-@admin_bp.route('/admins')
-@login_required
-@admin_required
-def manage_admins():
-    return render_template('admin/manage_admins.html')
-
 #############################
 #   Manage CRUD Categories  #
 #############################
@@ -73,6 +67,7 @@ def manage_categories():
 #   Manage CRUD Orders    #
 ###########################
 
+# View All Orders
 @admin_bp.route('/orders')
 @login_required
 @admin_required
@@ -96,10 +91,8 @@ def manage_orders():
                                                 ready_orders=ready_orders,
                                                 drivers=drivers)
 
-## Change order status: set_order_status(order_id, status):
-
-
-@admin_bp.route('/order/<string:order_id>')
+# View Order by Order_ID
+@admin_bp.route('/order/<string:order_id>/update')
 @login_required
 @admin_required
 def view_order(order_id):
@@ -108,6 +101,26 @@ def view_order(order_id):
     return render_template('admin/orders/view_order.html', all_orders=all_orders)
     # return redirect(url_for('admin.manage_orders'))
 
+# Update Status of Order by ORDER_ID
+@admin_bp.route('/orders/update_order', methods=['POST'])
+@login_required
+@admin_required
+def update_order_status():
+    order_id = request.form.get('order_id')
+    status = request.form.get('order_status')
+
+    print(status, order_id)
+
+    result = set_order_status(order_id, status)
+
+    print(result)
+    # all_orders = get_all_orders()
+
+    return redirect(url_for('admin.manage_orders'))
+    # return redirect(url_for('admin.manage_orders'))
+
+
+# View All Orders
 @admin_bp.route('/orders/report')
 @login_required
 @admin_required
@@ -121,6 +134,7 @@ def manage_order_report():
         # orders = Order.get_all()
         orders = []
     return render_template('admin/orders/manage_order_report.html', all_orders=all_orders)
+
 
 ###########################
 #   Manage CRUD Products  #
@@ -144,6 +158,17 @@ def manage_product():
 @login_required
 @admin_required
 def add_product():
+    form_product = ProductForm()
+    if request.method == 'POST':
+        add_product_to_db(form_product)
+        return redirect(url_for('admin.manage_product'))
+    
+    return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
+
+@admin_bp.route('/menu/category/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def add_category():
     form_product = ProductForm()
     if request.method == 'POST':
         add_product_to_db(form_product)
@@ -179,30 +204,6 @@ def update_product(product_id):
             
     return redirect(url_for('admin.manage_product'))
 
-@admin_bp.route('/products', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def edit_product(product_id):
-    product = Product.get_by_id(product_id)
-    
-    if not product:
-        flash('Product not found.', 'danger')
-        return redirect(url_for('admin.manage_product'))
-    
-    if request.method == 'POST':
-        product.name = request.form['name']
-        product.price = float(request.form['price'])
-        product.stock = int(request.form['stock'])
-        product.description = request.form['description']
-        
-        if product.save():
-            flash('Product updated successfully.', 'success')
-            return redirect(url_for('admin.products'))
-        else:
-            flash('Failed to update product.', 'danger')
-    
-    return render_template('admin/edit_product.html', product=product)
-
 @admin_bp.route('/menu/save/', methods=('POST', 'GET'))
 @login_required
 @admin_required
@@ -228,7 +229,10 @@ def delete_product(product_id):
     delete_product_from_list(product_id)
     return redirect(url_for('admin.manage_product'))
 
-
+#########################
+#   Manage CRUD Users   #
+#########################
+ 
 @admin_bp.route('/users')
 @login_required
 @admin_required
@@ -242,18 +246,11 @@ def manage_users():
         orders = []
     return render_template('admin/users/manage_customers.html', orders=orders)
 
-@admin_bp.route('/restaurant')
+@admin_bp.route('/admins')
 @login_required
 @admin_required
-def manage_restaurant():
-    status_filter = request.args.get('status', '')
-    
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
-    return render_template('admin/restaurants/manage_restaurant.html', orders=orders)
+def manage_admins():
+    return render_template('admin/manage_admins.html')
 
 @admin_bp.route('/drivers')
 @login_required
@@ -267,3 +264,20 @@ def manage_drivers():
         # orders = Order.get_all()
         orders = []
     return render_template('admin/drivers/manage_drivers.html', orders=orders)
+
+##############################
+#   Manage CRUD Restaurants  #
+##############################
+
+@admin_bp.route('/restaurant')
+@login_required
+@admin_required
+def manage_restaurant():
+    status_filter = request.args.get('status', '')
+    
+    if status_filter:
+        orders = Order.get_orders_by_status(status_filter)
+    else:
+        # orders = Order.get_all()
+        orders = []
+    return render_template('admin/restaurants/manage_restaurant.html', orders=orders)

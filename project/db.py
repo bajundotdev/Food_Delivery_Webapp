@@ -705,7 +705,7 @@ def set_order_status(order_id, status):
         UPDATE order_table
         SET status = %s
         WHERE order_id = %s
-    """, (order_id, ))
+    """, (status,order_id,))
     mysql.connection.commit()
     cur.close()
 
