@@ -70,92 +70,71 @@
             </div>
         </section>
         
-        <!-- Recent Orders Section -->
+        <!-- Order Details Section -->
         <section>
             <div class="row mt-5">
-                <div class="col-12">
-                    <h4>
-                        <span class="bi bi-clock-history me-2"></span>
-                        Recent Orders
-                    </h4>
-                    <!-- Search and Filter Form -->
-                    <form method="get" action="" class="row g-3 align-items-end my-3">
-                        <div class="col-md-4 position-relative">
-                            <input type="text" class="form-control ps-5" id="search_recent_order" name="search_recent_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_menu', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-search"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-3 position-relative">
-                            <select class="form-select ps-5" id="status" name="status">
-                                <option value="">All Status</option>
-                                <option value="Pending" {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
-                                <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                                <option value="On Delivery" {% if request.args.get('status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
-                            </select>
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-toggle-on"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-3 position-relative">
-                            <input type="datetime-local" class="form-control ps-5" id="order_date" name="order_date" value="{{ request.args.get('order_date', '') }}">
-                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                <i class="bi bi-calendar-date"></i>
-                            </span>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <span class="bi bi-search me-1"></span> Search
-                            </button>
-                        </div>
-                    </form>
-                    
+            <div class="col-12">
+                <h4>
+                <span class="bi bi-receipt me-2"></span>
+                Order Details - # order.id }}
+                </h4>
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Customer Information</h5>
+                    <p class="mb-1"><strong>Name:</strong>  order.fullname }}</p>
+                    <p class="mb-1"><strong>Email:</strong>  order.email }}</p>
+                    <p class="mb-1"><strong>Phone:</strong>  order.phone }}</p>
+                    <p class="mb-1"><strong>Address:</strong>  order.address }}</p>
+                </div>
+                </div>
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Order Summary</h5>
+                    <p class="mb-1"><strong>Status:</strong>
+                     if order.status == "Pending" %}
+                        <span class="badge bg-warning text-black"> order.status }}</span>
+                     elif order.status == "Completed" %}
+                        <span class="badge bg-success"> order.status }}</span>
+                     elif order.status == "Cancelled" %}
+                        <span class="badge bg-danger"> order.status }}</span>
+                     elif order.status == "On Delivery" %}
+                        <span class="badge bg-warning text-black"> order.status }}</span>
+                     else %}
+                        <span class="badge bg-primary"> order.status }}</span>
+                    endif %}
+                    </p>
+                    <p class="mb-1"><strong>Placed At:</strong>  order.placed_at }}</p>
+                    <p class="mb-1"><strong>Total:</strong> $ order.total }}</p>
+                </div>
+                </div>
+                <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Order Items</h5>
                     <div class="table-responsive">
-                        <table class="table table-striped align-middle">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Order ID</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in all_orders %}
-                                    <tr>
-                                        <td>
-                                            <a href="{{ url_for('admin.view_order', order_id=1001) }}" class="text-decoration-none">#{{ order.id }}</a>
-                                        </td>
-                                        <td>{{ order.fullname }}</td>
-                                        <td>${{ order.total }}</td>
-                                        <td>
-                                            {% if order.status == "Pending" %}
-                                                <span class="badge bg-warning text-black">{{ order.status }}</span>
-                                            {% elif order.status == "Completed" %}
-                                                <span class="badge bg-success">{{ order.status }}</span>
-                                            {% elif order.status == "Cancelled" %}
-                                                <span class="badge bg-danger">{{ order.status }}</span>
-                                            {% elif order.status == "On Delivery" %}
-                                                <span class="badge bg-warning text-black">{{ order.status }}</span>
-                                            {% else %}
-                                                <span class="badge bg-primary">{{ order.status }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ order.placed_at }}</td>
-                                        <td>
-                                            <a href="{{ url_for('admin.view_order', order_id=1001) }}" class="btn btn-sm btn-outline-primary">
-                                                <span class="bi bi-eye me-1"></span> View
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit Price</th>
+                            <th scope="col">Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                         for item in order.items %}
+                            <tr>
+                            <td>item.name }}</td>
+                            <td> item.quantity }}</td>
+                            <td>$item.unit_price }}</td>
+                            <td>$item.subtotal }}</td>
+                            </tr>
+                         endfor %}
+                        </tbody>
+                    </table>
                     </div>
                 </div>
+                </div>
+            </div>
             </div>
         </section>
     </main>
