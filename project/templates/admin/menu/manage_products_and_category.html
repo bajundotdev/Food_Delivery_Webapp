@@ -162,12 +162,12 @@
                                     {% endif %}
                                     </td>
                                     <td>
-                                    <a href="{{ url_for('admin.update_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i> Update
-                                    </a>
-                                    <a href="{{ url_for('admin.delete_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </a>
+                                        <a href="{{ url_for('admin.update_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Update
+                                        </a>
+                                        <a href="{{ url_for('admin.delete_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </a>
                                     </td>
                                 </tr>
                                 {% else %}

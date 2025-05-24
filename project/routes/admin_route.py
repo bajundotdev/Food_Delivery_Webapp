@@ -225,8 +225,12 @@ def save_product():
 @login_required
 @admin_required
 def delete_product(product_id):
-    product_id = request.args.get('')
-    delete_product_from_list(product_id)
+
+    product_id = request.form.get('')
+    
+    if request.method == "POST":
+        delete_product_from_list(product_id)
+
     return redirect(url_for('admin.manage_product'))
 
 #########################
