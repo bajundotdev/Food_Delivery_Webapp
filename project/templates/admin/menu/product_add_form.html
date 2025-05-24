@@ -78,7 +78,7 @@
                     <h4 class="my-4">New Menu Details</h4>
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
+                            <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4" enctype="multipart/form-data">
                                 {{ form_product.csrf_token}}
                                 <div class="col-md-6">
                                     <div class="form-floating">
@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <input type="file" class="form-control" id="food_image_url" name="food_image_url" value="food.jpg" accept="image/*">
+                                        <input type="file" class="form-control" id="food_image_url" name="food_image_url" value="" accept="image/*">
                                         <label for="food_image_url">Menu Image</label>
                                     </div>
                                 </div>

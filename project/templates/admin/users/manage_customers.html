@@ -87,7 +87,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Dummy customer row -->
+                                
                                 <tr>
                                     <td>1001</td>
                                     <td>Jane Doe</td>
@@ -95,14 +95,12 @@
                                     <td>0412 345 678</td>
                                     <td><a href="#" class="btn btn-sm btn-outline-primary">Edit</a></td>
                                 </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>John Smith</td>
-                                    <td>john.smith@example.com</td>
-                                    <td>0422 987 654</td>
-                                    <td><a href="#" class="btn btn-sm btn-outline-primary">Edit</a></td>
-                                </tr>
-                                <!-- Add more dummy rows as needed -->
+
+                                { else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No customers found.</td>
+                                    </tr>
+                                { endfor %}
                             </tbody>
                         </table>
                     </div>

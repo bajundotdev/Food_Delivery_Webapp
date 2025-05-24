@@ -351,7 +351,7 @@ def add_product_to_db(form):
             VALUES (%s, %s, %s, %s, %s, 
                     %s, %s, %s, %s, %s, %s)"""
             , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
-            form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
+            form.prep_time_est.data, form.food_image_url.data.filename, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
         mysql.connection.commit()
         cur.close()
     except:
@@ -362,9 +362,9 @@ def update_product_table(form):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE product_table
-        SET product_name = %s,category = %s, price = %s, is_active = %s, description = %s
+        SET product_name = %s,category = %s, price = %s, is_active = %s, description = %s, food_image_url = %s
         WHERE  product_id = %s
-    """, (form.product_name.data, form.category.data, form.price.data, form.is_active.data, form.description.data, form.product_id.data,))
+    """, (form.product_name.data, form.category.data, form.price.data, form.is_active.data, form.description.data, form.food_image_url.data.filename, form.product_id.data, ))
 
     mysql.connection.commit()
     cur.close()

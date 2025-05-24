@@ -29,6 +29,7 @@ def allowed_file(filename):
 def profile():
     user_session = session.get('user')
     user_details = get_user_info_with_address_by_email(user_session['email'])
+
     if user_details:
         user_info = user_details[0]
         address = user_details[1]
@@ -57,7 +58,6 @@ def view_order():
 @user_bp.route('/user/save/', methods=('POST', 'GET'))
 @login_required
 def save_profile():
-
     if request.method == "POST":
         name = request.form.get('fullname')
         
@@ -65,7 +65,7 @@ def save_profile():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/profile_photos', filename))
 
         update_user_profile(name,request.form.get('phone'), filename,request.form.get('email'))
         flash('Profile saved!', 'success')

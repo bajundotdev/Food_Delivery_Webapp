@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, redirect, session, url_for, flash, request
+import os
+from flask import Blueprint, current_app, render_template, redirect, session, url_for, flash, request
 from project.decorators import login_required, admin_required
 from project.forms.admin_form import ProductForm
 from project.models import Product, Order
 from flask_mysqldb import MySQL
+from werkzeug.utils import secure_filename
 
 from project.db import *
+from project.routes.user_route import allowed_file
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -18,8 +21,13 @@ mysql = MySQL()
 @login_required
 @admin_required
 def admin_dashboard():
-    user_id = session['user']['user_id']
+    user_session = session['user']
+    user_id = user_session['user_id']
+    user_email = user_session['email']
+    user_details = get_user_info_with_address_by_user_id(user_id)
     admin_details = get_user_info_with_address_by_user_id(user_id)
+
+
     all_users = get_all_users()
     all_orders = get_all_orders()
     all_products = get_all_products()
@@ -43,7 +51,8 @@ def admin_dashboard():
         if clear:
             return redirect(url_for('admin.admin_dashboard'))
 
-    return render_template('admin/dashboard.html', admin_details=admin_details,
+    return render_template('admin/dashboard.html', user_details=user_details,
+                                                admin_details=admin_details,
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
@@ -108,7 +117,7 @@ def manage_orders():
                                                 drivers=drivers)
 
 # View Order by Order_ID
-@admin_bp.route('/order/<string:order_id>/update')
+@admin_bp.route('/order/<string:order_id>')
 @login_required
 @admin_required
 def view_order(order_id):
@@ -124,13 +133,7 @@ def view_order(order_id):
 def update_order_status():
     order_id = request.form.get('order_id')
     status = request.form.get('order_status')
-
-    print(status, order_id)
-
     result = set_order_status(order_id, status)
-
-    print(result)
-    # all_orders = get_all_orders()
 
     return redirect(url_for('admin.manage_orders'))
     # return redirect(url_for('admin.manage_orders'))
@@ -186,6 +189,22 @@ def add_product():
         flash('Product successfully added!', 'success')
         return redirect(url_for('admin.manage_product'))
     
+    if request.method == "POST":
+        file = request.files['food_image_url']
+
+        try:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
+                add_product_to_db(form_product)
+
+            flash('Menu successfully added!', 'success')
+            return redirect(url_for('admin.manage_product'))
+
+        except Exception as e:
+            print("Error:", e)
+            flash('Failed to add new menu.', 'danger')
+    
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
 
 @admin_bp.route('/menu/<int:product_id>', methods=['GET'])
@@ -195,17 +214,7 @@ def view_product(product_id):
     product_details = get_product_by_id(product_id)
     return render_template('admin/menu/product_details.html', product_details=product_details)
 
-@admin_bp.route('/menu/category/add', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def add_category():
-    form_product = ProductForm()
-    if request.method == 'POST':
-        add_product_to_db(form_product)
-        return redirect(url_for('admin.manage_product'))
-    
-    return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
-
+# Update Product/ Menu
 @admin_bp.route('/menu/update/<int:product_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -221,16 +230,23 @@ def update_product(product_id):
         return render_template('admin/menu/product_update_form.html', form_product=form_product, categories=ProductCategory)
     
     if request.method == 'POST':
-        print(form_product)
         form_product.name = request.form['name']
         form_product.price = float(request.form['price'])
         form_product.stock = int(request.form['stock'])
         form_product.description = request.form['description']
+        file = request.files.get('food_image_url')
         
-        if form_product.save():
+        print("File: ", file)
+
+        try:
+            result = update_product_table(form_product)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
+
             flash('Product updated successfully.', 'success')
-            return redirect(url_for('admin.products'))
-        else:
+            return redirect(url_for('admin.manage_product'))
+        except:
             flash('Failed to update product.', 'danger')
             
     return redirect(url_for('admin.manage_product'))
@@ -240,15 +256,21 @@ def update_product(product_id):
 @admin_required
 def save_product():
     update_form = ProductForm()
-    #form_product = get_product_by_id(product_id)
-    #update_product_table(form_product)
+
     if request.method == "POST":
-        update_product_table(update_form)
-        for info in update_form:
-            print(info.data)
-        flash('Product successfully updated!', 'success')
-        return redirect(url_for('admin.manage_product'))
-        # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+        file = request.files['food_image_url']
+        try:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
+
+            update_form.food_image_url
+            update_product_table(update_form)
+            flash('Menu successfully updated!', 'success')
+
+        except Exception as e:
+            print("Error:", e)
+            flash('Failed to update menu.', 'danger')
 
     return redirect(url_for('admin.manage_product'))
 
@@ -257,11 +279,10 @@ def save_product():
 @admin_required
 def delete_product(product_id):
     if request.method == "POST":
-        result = delete_product_from_list(product_id)
-
-        if result:
-            flash('Product successfully removed!', 'info')
-        else:
+        try:
+            result = delete_product_from_list(product_id)
+            flash('Product successfully removed!', 'success')
+        except:
             flash('Failed to remove product.', 'danger')
 
     return redirect(url_for('admin.manage_product'))
@@ -274,14 +295,8 @@ def delete_product(product_id):
 @login_required
 @admin_required
 def manage_users():
-    status_filter = request.args.get('status', '')
-    
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
-    return render_template('admin/users/manage_customers.html', orders=orders)
+    customers = get_all_users()
+    return render_template('admin/users/manage_customers.html', customers=customers)
 
 @admin_bp.route('/admins')
 @login_required
@@ -301,6 +316,13 @@ def manage_drivers():
         # orders = Order.get_all()
         orders = []
     return render_template('admin/drivers/manage_drivers.html', orders=orders)
+
+@admin_bp.route('/driver/<int:driver_id>', methods=['GET'])
+@login_required
+@admin_required
+def view_driver(driver_id):
+    driver_details = get_driver_by_id(driver_id)
+    return render_template('admin/drivers/view_driver.html', driver_details=driver_details)
 
 ##############################
 #   Manage CRUD Restaurants  #

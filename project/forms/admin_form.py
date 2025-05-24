@@ -40,7 +40,7 @@ class ProductForm(FlaskForm):
     restaurant_id = StringField('Restaurant')
     deleted = StringField('Deleted', default=0)
     food_image_url = FileField('Product Image', validators=[
-        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')], default="food.jpg")
+        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
     submit = SubmitField('Save Product')
 

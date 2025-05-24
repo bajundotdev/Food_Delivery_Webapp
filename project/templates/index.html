@@ -147,7 +147,7 @@
                 {% for product in products %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4">
                         <div class="card h-100">
-                            <img src="{{ url_for('static', filename='img/'+product.image_url) }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="..." />
+                            <img src="{{ url_for('static', filename='img/products/'+product.image_url) }}" class="card-img-top img-fluid object-fit-cover card-img-deal" alt="..." />
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title mt-2">{{ product.name }}</h5>
                                 <p class="card-title mt-2">{{ product.description }}</p>

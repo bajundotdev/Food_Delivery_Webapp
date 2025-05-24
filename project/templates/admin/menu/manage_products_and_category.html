@@ -135,7 +135,7 @@
                             <tbody>
                             {% for menu in menus %}
                                 <tr>
-                                    <td><img src="{{ url_for('static', filename='img/pexels-pedrofurtadoo-31450853.jpg') }}" alt="Margherita Pizza" class="img-thumbnail me-2" style="width: 50px;" /></td>
+                                    <td><img src="{{ url_for('static', filename='img/products/'+menu.image_url) }}" alt="{{menu.image_url}}" class="img-thumbnail me-2" style="width: 50px;" /></td>
                                     <td>{{ menu.name }}</td>
                                     <td>{{ menu.category }}</td>
                                     <td>${{ menu.price }}</td>
