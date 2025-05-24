@@ -44,6 +44,9 @@
                         </div>  
                     </div>
                     <div class="col-md-3 col-sm-12 text-center p-2">
+                        <a href="#" class="btn btn-outline-success">
+                            <span class="bi bi-circle-fill me-1"></span> {{ driver[0]['status'].value}}
+                        </a>
                         <a href="#" class="btn btn-outline-primary">
                             <span class="bi bi-pencil me-1"></span> Edit Profile
                         </a>
@@ -98,6 +101,7 @@
 
         <!-- Orders Section -->
         <section>
+            {{ driver }}
             <div class="row mt-5">
                 <div class="col-12">
                     <h4>Recent Orders</h4>

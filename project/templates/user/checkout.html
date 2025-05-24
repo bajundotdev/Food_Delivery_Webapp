@@ -32,10 +32,8 @@
         <div class="row">
         <!-- Checkout Form (Delivery details + Payment) -->
         <div class="col-lg-8 mb-4">
-            <form action="{{url_for('cart.checkout_cart')}}" method="post">
-                
+            <form action="{{url_for('cart.checkout_cart')}}" method="post">               
                 <h2 class="h5 mb-3">Delivery Details</h2>
-                
                 <div class="mb-3">
                     <label for="fullname" class="form-label">Full Name</label>
                     <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Enter your name" value="{{ user_info.name }}"/>
