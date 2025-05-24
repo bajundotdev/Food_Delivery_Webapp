@@ -116,11 +116,8 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top" style="top: 56px; z-index: 1020;">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">Categories</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#categoriesNavbar" aria-controls="categoriesNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="categoriesNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div class="flex-grow-1" id="categoriesNavbar">
+                <ul class="nav nav-pills nav-fill w-100">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.index', category='all') }}">All</a>
                     </li>
@@ -131,7 +128,7 @@
                         <a class="nav-link" href="{{ url_for('main.index', category='dessert') }}">Dessert</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='drink') }}">Drink</a>
+                        <a class="nav-link" href="{{ url_for('main.index', category='beverage') }}">Beverage</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.index', category='snack') }}">Snack</a>
