@@ -69,12 +69,13 @@ def logout():
         user_id = session['user']['user_id']
         clear_cart_db(user_id)
         cart_items = session.get('shopping_cart')
-        for item in cart_items.get('items', []):
-            product_id = item['product']['id']
-            
-            quantity = item['quantity']
-            item_id = item['id']
-            add_cart_item_to_db(product_id ,user_id, quantity, item_id)
+        if cart_items:
+            for item in cart_items.get('items', []):
+                product_id = item['product']['id']
+                
+                quantity = item['quantity']
+                item_id = item['id']
+                add_cart_item_to_db(product_id ,user_id, quantity, item_id)
 
     clear_user_session()
     flash('You have been logged out', 'primary')

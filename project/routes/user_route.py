@@ -57,7 +57,7 @@ def profile():
 def view_order():
     order_id = request.args.get('order_id')
     laman = get_products_from_order_id(order_id)
-    return render_template('user/view_order.html', laman = laman,)
+    return render_template('user/view_order.html', laman = laman, order_id = order_id)
 
 # def profile():
 #     """View and edit user profile on the same page."""
