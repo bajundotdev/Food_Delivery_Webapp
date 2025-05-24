@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.decorators import login_required
 from project.forms import LoginForm
+from project.forms.customer_form import UserForm
 from project.session import *
 
 # Import dummy database db.py
@@ -30,10 +31,10 @@ def profile():
     inordermo = get_all_orders_by_user_id(user_id)
     return render_template('user/profile.html', user_details=user_details, inordermo = inordermo, user_info=user_info, address = address)
 
-@user_bp.route('/profile/update/<int:user_id>', methods=['GET', 'POST'])
+@user_bp.route('/profile/update/<string:email>', methods=['GET', 'POST'])
 @login_required
-def update_profile(user_id):
-    user_details = get_user_info_with_address_by_email(user_id)
+def update_profile(email):
+    user_details = get_user_info_with_address_by_email(email)
     return render_template('user/profile/update_profile.html', user_details=user_details)
 
 @user_bp.route('/view_order', methods=['GET', 'POST'])
@@ -42,6 +43,18 @@ def view_order():
     order_id = request.args.get('order_id')
     laman = get_products_from_order_id(order_id)
     return render_template('user/view_order.html', laman = laman, order_id = order_id)
+
+@user_bp.route('/user/save/', methods=('POST', 'GET'))
+@login_required
+def save_profile():
+    if request.method == "POST":
+        update_user_profile(request.form.get('fullname'),request.form.get('phone'),request.form.get('email'))
+        
+        flash('Profile saved!', 'success')
+        return redirect(url_for('user.profile'))
+        # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
+
+    return redirect(url_for('user.profile'))
 
 # def profile():
 #     """View and edit user profile on the same page."""

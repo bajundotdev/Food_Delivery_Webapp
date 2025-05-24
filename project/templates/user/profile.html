@@ -70,7 +70,7 @@
                                 {% endif %}
                             </button>
                         </form>
-                        <a href="{{ url_for('user.update_profile', user_id=user_info.id) }}" class="btn btn-outline-primary">
+                        <a href="{{ url_for('user.update_profile', email=user_info.email) }}" class="btn btn-outline-primary">
                             <span class="bi bi-pencil me-1"></span> Edit Profile
                         </a>
                     </div>
