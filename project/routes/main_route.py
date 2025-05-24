@@ -18,7 +18,7 @@ def index():
         
     if request.method == 'POST':
         query = request.form.get('search_food')
-        searched = search_product_by_name(query)
+        searched = search_product(query)
         return render_template('index.html', 
                            products=searched,
                            cart_form=cart_form)

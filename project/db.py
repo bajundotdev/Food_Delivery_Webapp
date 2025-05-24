@@ -252,15 +252,32 @@ def get_product_by_id(product_id):
     else:
         return []
 
-def search_product_by_name(search_str):
+def search_product(search_str):
     like_str = "%" + str(search_str) + "%"
     print(like_str)
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
         FROM product_table
-        WHERE product_name LIKE %s OR description LIKE %s
-    """ , (like_str, like_str))
+        WHERE product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s
+    """ , (like_str, like_str, like_str, like_str, ))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+    ]
+
+def search_users(search_str):
+    like_str = "%" + str(search_str) + "%"
+    print(like_str)
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM user_table
+        WHERE fullname LIKE %s OR user_type LIKE %s OR email LIKE %s
+    """ , (like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
     return [
