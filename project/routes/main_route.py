@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.db import *
 from project.session import *
 from project.forms import CartForm
-
 # Create blueprints for different sections of the application
 main_bp = Blueprint('main', __name__)
 
@@ -10,51 +9,35 @@ main_bp = Blueprint('main', __name__)
 # Main Routes
 ###################
 
-@main_bp.route('/', methods=['POST', 'GET'])
+@main_bp.route('/',methods=('POST', 'GET'))
 def index():
     """Homepage route."""
-    try:
-        cart_form = CartForm()
-        # Get featured products
-        featured_products = get_all_products()
+    cart_form = CartForm()
+    # Get featured products and restaurants
+    #if request.method == 'POST':
         
-        return render_template('index.html',
-                             products=featured_products,
-                             cart_form=CartForm)
-    except Exception as e:
-        flash('Error loading homepage', 'danger')
-        return render_template('index.html', products=[], cart_form=CartForm())
+    if request.method == 'POST':
+        query = request.form.get('search_food')
+        searched = search_product(query)
+        return render_template('index.html', 
+                           products=searched,
+                           cart_form=cart_form)
+    
+    featured_products = get_all_products()
+    return render_template('index.html', 
+                           products=featured_products,
+                           cart_form=cart_form)
 
-@main_bp.route('/cart', methods=['POST', 'GET'])
-def view_cart():
-    """View cart page."""
-    try:
-        cart_form = CartForm()
-        # Get cart items for current user
-        cart_items = get_cart_items() if 'get_cart_items' in globals() else []
-        
-        return render_template('cart.html',
-                             cart_items=CartItem,
-                             cart_form=CartForm)
-    except Exception as e:
-        flash('Error loading cart', 'danger')
-        return render_template('cart.html', cart_items=[], cart_form=CartForm())
-
-@main_bp.route('/cart/add/<int:product_id>')
-def add_to_cart_route(product_id):
-    """Add product to cart."""
-    try:
-        add_to_cart(product_id)
-        flash('Product added to cart!', 'success')
-    except Exception as e:
-        flash('Error adding to cart', 'danger')
+@main_bp.post('/cart/<int:product_id>/')
+def adding_to_cart(product_id):
+    add_to_cart(product_id)
     return redirect(url_for('main.index'))
 
-@main_bp.route('/about') # Consider removing
+@main_bp.route('/about')
 def about():
     return render_template('about.html')  # Assuming you have an about.html template
 
-@main_bp.route('/contact') #Consider removing 
+@main_bp.route('/contact')
 def contact():
     return render_template('contact.html')  # Assuming you have a contact.html template
 
@@ -79,7 +62,7 @@ def order_list():
     cart_items = get_uncheckedout_cart_items_by_user_id(5)
     user_items = get_all_cart_items_by_user_id(9)
     driver_orders = get_all_orders_by_driver_id_status(driver_id, "Ready")
-    completed_orders = get_all_orders_by_status("Completed")
+    completed_orders = get_all_orders_by_status("Ready")
     set_driver_status(driver_id, "Unavailable")
     delete_cart_item_from_db(6,9)
     return render_template('/test.html',

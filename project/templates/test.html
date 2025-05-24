@@ -16,7 +16,18 @@
 {{ completed_orders }}
 
 <h1>Get orders and products</h1>
-{{ orderered_products }}
+
+{% for order in orderered_products %}
+    {{ order }}
+    <hr>
+    <div class="col-3 card">
+        <h2>Order #{{ order.order_id}}</h2>
+        <hr>
+        <h5>Items</h5>
+        <p>{{ order.product_name }} x{{ order.quantity }}</p>
+    </div>
+{% endfor %}
+
 
 <h1>Get order details</h1>
 {{ orders_users }}

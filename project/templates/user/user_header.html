@@ -8,7 +8,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">{{ session['user']['firstname'] }}</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        
                         <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Manage Profile</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
@@ -27,8 +27,8 @@
                         <i class="bi bi-person-circle"></i> {{ session['user']['firstname'] }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                        <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Manage Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">My Orders</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </li>
@@ -37,18 +37,19 @@
                         <i class="bi bi-cart"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             {% block carts %}
-                                        {% if session.get('shopping_cart') != None %}
-                                            {{ session.get('shopping_cart').get('items') | length }}
-                                        {% else %}
-                                            0
-                                        {% endif %}
-                                        {% endblock %}
+                                {% if session.get('shopping_cart') != None %}
+                                    {{ session.get('shopping_cart').get('items') | length }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            {% endblock %}
                         </span>
                     </a>
                 </li>
             </ul>
         </div>
 
+        <!-- flex navbars when screensize is small -->
         <div class="d-flex d-block d-md-none">
             <ul class="nav nav-pills">
                 <li class="nav-item">

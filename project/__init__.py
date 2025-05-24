@@ -1,8 +1,7 @@
 # __init__.py
 from flask import Flask
 from flask_mysqldb import MySQL
-from .views import register_views
-#from .routes import all_blueprints
+from .routes import all_blueprints
 from .routes.error_handlers_route import not_found_error, internal_error
 
 mysql = MySQL()
@@ -17,7 +16,7 @@ def create_app():
     # Change to the actual database name once saved in the folder
     app.config['MYSQL_HOST'] = 'localhost'        # Database host (usually localhost)
     app.config['MYSQL_USER'] = 'root'         # Your MySQL username
-    app.config['MYSQL_PASSWORD'] = 'new_password'     # Your MySQL password
+    app.config['MYSQL_PASSWORD'] = 'n12333492'     # Your MySQL password
     app.config['MYSQL_DB'] = 'foodah_database'      # Name of the database you created. Change the file name to match your database name.
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     
@@ -25,10 +24,8 @@ def create_app():
     mysql.init_app(app)
 
     # Register all blueprints
- #   for bp in all_blueprints:
- #       app.register_blueprint(bp)
-
-    register_views(app)
+    for bp in all_blueprints:
+        app.register_blueprint(bp)
 
     app.register_error_handler(404, not_found_error)
     app.register_error_handler(500, internal_error)

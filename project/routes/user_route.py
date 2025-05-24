@@ -1,51 +1,48 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from project.decorators import login_required
 from project.forms import LoginForm
+from project.session import *
 
 # Import dummy database db.py
-from project.db import (get_all_products, 
-                get_product_by_id,
-                get_all_restaurants, 
-                check_user, 
-                add_user)
+from project.db import *
 
 from project.models import Order, User, UserAddress
 
 # Create blueprints for different sections of the application
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
-##########################
-# Session Management     #
-##########################
-
-def is_logged_in():
-    """Check if user is logged in."""
-    return 'user_id' in session
-
-def get_user_id():
-    """Get the logged-in user's ID."""
-    return session.get('user_id')
-
-def get_user_role():
-    """Get the logged-in user's role."""
-    return session.get('user_role')
-
-def set_user_role(role):
-    """Set the logged-in user's role."""
-    session['user_role'] = role
-
-def clear_user_session():
-    """Clear user session data."""
-    session.pop('user_id', None)
-    session.pop('user_role', None)
-
-
 # ###################
 # # User Routes     #
 # ###################
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
-    return render_template('user/profile.html')
+    user_session = session.get('user')
+    user_details = get_user_info_with_address_by_email(user_session['email'])
+    if user_details:
+        user_info = user_details[0]
+        address = user_details[1]
+    else:
+        user_info = ""
+        address = ""
+    user_id = session.get('user').get('user_id')
+    inordermo = get_all_orders_by_user_id(user_id)
+    return render_template('user/profile.html', user_details=user_details, inordermo = inordermo, user_info=user_info, address = address)
+
+@user_bp.route('/profile/update/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def update_profile(user_id):
+    user_details = get_user_info_with_address_by_email(user_id)
+    return render_template('user/profile/update_profile.html', user_details=user_details)
+
+@user_bp.route('/view_order', methods=['GET', 'POST'])
+@login_required
+def view_order():
+    order_id = request.args.get('order_id')
+    laman = get_products_from_order_id(order_id)
+    return render_template('user/view_order.html', laman = laman, order_id = order_id)
+
 # def profile():
 #     """View and edit user profile on the same page."""
 #     if not is_logged_in():
@@ -84,41 +81,6 @@ def profile():
 #                           addresses=addresses,
 #                           form=form)
 
-
-# from flask import render_template, redirect, url_for, flash
-# from project import app
-# from project.models.user import Admin, Driver, Customer
-# from forms import RegistrationForm, LoginForm
-# from models import modelslist
-
-# # Registration route
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         # Depending on the role, create the appropriate user instance
-#         if form.role.data == 'Admin':
-#             user = Admin(name=form.name.data, email=form.email.data, password=form.password.data)
-#         elif form.role.data == 'Driver':
-#             user = Driver(name=form.name.data, email=form.email.data, password=form.password.data, phone=form.phone.data, address=form.address.data)
-#         else:
-#             user = Customer(name=form.name.data, email=form.email.data, password=form.password.data, phone=form.phone.data, address=form.address.data)
-        
-#         user.save()
-#         flash('Registration successful!', 'success')
-#         return redirect(url_for('login'))
-    
-#     return render_template('register.html', form=form)
-
-# # Login route
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         # Login logic here
-#         flash('Login successful!', 'success')
-#         return redirect(url_for('dashboard'))
-#     return render_template('login.html', form=form)
 
 # # Admin creation route
 # @app.route('/admin/create', methods=['GET', 'POST'])

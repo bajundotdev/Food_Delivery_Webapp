@@ -45,7 +45,7 @@ A2_Group_72_582_A2.zip
 1. **(Optional) Create and activate a virtual environment:**
 
    ```bash
-   python -m venv venv # On MacOS: python3 -m venv venv
+   python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 

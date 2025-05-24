@@ -15,9 +15,9 @@
                     <p class="text-white">Support local businesses while enjoying fresh meals</p>
                     <div class="my-4">
                         <div class="card p-3">
-                            <form class="d-flex">
+                            <form class="d-flex" action="{{ url_for('main.index', search_string='search_food')}}" method="post">
                                 <div class="flex-grow-1 me-2">
-                                    <input type="search" class="form-control" placeholder="Search foods...">
+                                    <input type="search" name="search_food" id="search_food" class="form-control" placeholder="Search foods...">
                                 </div>
                                 <button class="btn btn-danger">Find food</button>
                             </form>
@@ -112,6 +112,32 @@
         </div>
     </div>
 
+    <!-- Product Categories Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top" style="top: 56px; z-index: 1020;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Categories</a>
+            <div class="flex-grow-1" id="categoriesNavbar">
+                <ul class="nav nav-pills nav-fill w-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index', category='all') }}">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index', category='main') }}">Main</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index', category='dessert') }}">Dessert</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index', category='beverage') }}">Beverage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index', category='snack') }}">Snack</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <!-- Main container -->
     <main class="container my-4">
         <!-- Featured Food Menu Section -->
@@ -126,7 +152,10 @@
                                 <h5 class="card-title mt-2">{{ product.name }}</h5>
                                 <p class="card-title mt-2">{{ product.description }}</p>
                                 <p class="card-text m-0"><small>4.5 <i class="bi bi-star-fill text-warning"></i></small> (100k+)</p>
-                                <p class="card-text"><small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small></p>
+                                <p class="card-text">
+                                    <small class="text-muted"><i class="bi bi-clock"></i> 10-25 min</small> 
+                                    <small class="text-danger"><i class="bi bi-bicycle"></i> Free</small>
+                                </p>
                                 <div class="mt-auto d-flex gap-2">
                                     <form method="POST" action="{{ url_for('main.adding_to_cart', product_id = product.id) }}" class="d-flex flex-grow-1">
                                         <button type="submit" class="btn btn-danger w-100">Add to Cart</button>

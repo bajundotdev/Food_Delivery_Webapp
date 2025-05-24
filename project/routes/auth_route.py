@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.forms.authentication_form import LoginForm, RegistrationForm
-from project.db import check_user, add_user, get_user_by_email
+from project.db import check_user, add_user, get_user_by_email, add_cart_item_to_db, get_uncheckedout_cart_items_by_user_id
 from project.routes.utils import clear_user_session
-from project.models import *
-
+from project.session import *
 auth_bp = Blueprint('auth', __name__, url_prefix='/')
 
 ###################
@@ -28,7 +27,7 @@ def register():
 
     return render_template('register.html', form=form)
 
-@auth_bp.route('/login', methods=('POST', 'GET'))
+@auth_bp.route('/login/', methods=('POST', 'GET'))
 def login():
     
     form = LoginForm()
@@ -45,6 +44,7 @@ def login():
                     'firstname': user.name,
                     'phone': user.phone,
                     'email': user.email,
+                    'address_id': "",
                 }
                 session['logged_in'] = True
                 session['role'] = user.role
@@ -54,6 +54,10 @@ def login():
                 elif session['role'] == "Delivery Driver":
                     return redirect(url_for('driver.driver_dashboard'))
                 elif session['role'] == "Customer":
+                    user_id = session['user']['user_id']
+                    cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
+                    for item in cart_from_db:
+                        add_cart_item_from_db(item)  
                     return redirect(url_for('user.profile'))
         
     return render_template('login.html', form=form)
@@ -61,6 +65,18 @@ def login():
 @auth_bp.route('/logout')
 def logout():
     """User logout route."""
-    session.clear()
+    if session['role'] == "Customer":
+        user_id = session['user']['user_id']
+        clear_cart_db(user_id)
+        cart_items = session.get('shopping_cart')
+        if cart_items:
+            for item in cart_items.get('items', []):
+                product_id = item['product']['id']
+                
+                quantity = item['quantity']
+                item_id = item['id']
+                add_cart_item_to_db(product_id ,user_id, quantity, item_id)
+
+    clear_user_session()
     flash('You have been logged out', 'primary')
     return redirect(url_for('main.index'))

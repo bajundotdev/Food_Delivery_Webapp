@@ -14,9 +14,16 @@ class DeliveryOption(Enum):
 class OrderStatus(Enum):
     PENDING = "Pending"
     IN_PROGRESS = "In Progress"
+    READY = "Ready"
+    DELIVERY_IN_PROGRESS = "Delivery in Progress"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
-    READY = "Ready"
+
+# Customer view: upon checkout: status order = Pending (admin)
+# Admin: once received order status = Pending, change the status = if accept ("In Progress -- Cooking")
+# Admin: once order is READY, it will trigger the Driver side, status = "READY" na naay ready for delivery
+# Driver: 
+
 class PaymentMethod(Enum):
     CASH = "Cash"
     CREDIT_CARD = "Credit Card"
@@ -26,17 +33,18 @@ class PaymentMethod(Enum):
 # Order Models      #
 #####################
 
-# @dataclass
-# class OrderItem:
-#     id: str
-#     product_id: str
-#     #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
-#     quantity: int = 1
-#     price: float = 0.0  # Store the price at the time of order
-    
-#     def get_subtotal(self):
-#         """Calculate subtotal for this item."""
-#         return self.price * self.quantity
+@dataclass
+class OrderItem:
+    order_id: str
+    product_id: str
+    user_id: str
+    #products: list = field(default_factory=list)  # Use plain list to avoid needing Product at import time
+    quantity: int = 1
+    price: float = 0.0  # Store the price at the time of order
+
+    def get_subtotal(self):
+        """Calculate subtotal for this item."""
+        return self.price * self.quantity
 
 @dataclass
 class Order:
@@ -57,7 +65,7 @@ class Order:
     email: str = ""
     phone_number: str = ""
     address: str = ""
-    
+    items: List[OrderItem] = field(default_factory=lambda: [])
     def get_url(self):
         """Return URL to order detail page."""
         return f"/order/{self.id}"

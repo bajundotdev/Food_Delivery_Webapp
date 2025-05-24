@@ -24,7 +24,7 @@ class User:
     name: str
     email: str
     phone: str
-    password: str
+    password: str = ""
     profile_picture_url: str = ""
     role: UserRole = UserRole.CUSTOMER
     is_active: bool = True

@@ -1,5 +1,5 @@
 # dummyDb.py
-from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole
+#from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole, Order, OrderItem
 from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -26,6 +26,26 @@ def check_user(email, password):
 #####################
 #    USER QUERIES   #
 #####################
+
+def get_all_users():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+    """, )
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login'])
+        ]
+    else:
+        return []
+
 def get_user_by_email(email):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -62,6 +82,48 @@ def get_user_by_id(user_id):
             User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
                 row['password_hash'], row['profile_picture_url'],
                 row['user_type'], bool(row['is_active']), row['last_login'])
+        ]
+    else:
+        return None
+    
+def get_user_info_with_address_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_table.user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login,
+                CONCAT(addt.user_id, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM user_table, user_address addt
+        WHERE user_table.user_id = %s
+    """, (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']), row['address']
+        ]
+    else:
+        return None
+    
+def get_user_info_with_address_by_email(email):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_table.user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM user_table, user_address addt
+        WHERE user_table.email = %s AND user_table.user_id = addt.user_id
+    """, (email,))
+    row = cur.fetchone()
+    cur.close()
+    if row is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']), row['address']
         ]
     else:
         return None
@@ -121,6 +183,20 @@ def get_address_by_user_id(user_id):
              row['created_at'], row['updated_at']
             )
     ]
+
+def get_address_id_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT address_id
+        FROM user_address
+        WHERE user_id = %s
+    """, (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    if row:
+        return row['address_id']
+    else:
+        return ""
    
 def add_address_by_user_id(form):
     pass
@@ -148,6 +224,7 @@ def get_all_products():
     cur.execute("""
         SELECT *
         FROM product_table
+        WHERE deleted = 0
     """)
     results = cur.fetchall()
     cur.close()
@@ -168,19 +245,39 @@ def get_product_by_id(product_id):
     row = cur.fetchone()
     #print("id: ", product_id)
     cur.close()
+    if row is not None:
+        return Product(row['product_id'], row['product_name'], row['description'],
+                row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+                row['food_image_url'], row['is_active'], str(row['restaurant_id']))
+    else:
+        return []
 
-    return Product(row['product_id'], row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id']))
-
-def search_product_by_name(search_str):
-    str = "%" + str(search_str) + "%"
+def search_product(search_str):
+    like_str = "%" + str(search_str) + "%"
+    print(like_str)
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
         FROM product_table
-        WHERE product_id LIKE %s
-    """ % str)
+        WHERE product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s
+    """ , (like_str, like_str, like_str, like_str, ))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Product(str(row['product_id']), row['product_name'], row['description'],
+             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+    ]
+
+def search_users(search_str):
+    like_str = "%" + str(search_str) + "%"
+    print(like_str)
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT *
+        FROM user_table
+        WHERE fullname LIKE %s OR user_type LIKE %s OR email LIKE %s
+    """ , (like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
     return [
@@ -220,9 +317,30 @@ def add_product_to_db(form):
     except:
         return
 
-    
+def update_product_table(form):
 
-#update
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE product_table
+        SET product_name = %s,category = %s, price = %s, is_active = %s, description = %s
+        WHERE  product_id = %s
+    """, (form.product_name.data, form.category.data, form.price.data, form.is_active.data, form.description.data, form.product_id.data,))
+
+    mysql.connection.commit()
+    cur.close()
+
+def delete_product_from_list(product_id):
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE product_table
+        SET deleted = 1
+        WHERE  product_id = %s
+    """, ( product_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
 #delete
 ##################
 #    RESTAURANT QUERIES   
@@ -387,6 +505,7 @@ def get_available_driver():
         return []
     
 def set_driver_status(driver_id, status):
+    stat = 0
     if status == "Available":
         stat = 1
     elif status == "Unavailable":
@@ -448,6 +567,42 @@ def get_all_orders_and_products():
     #          row['email'], row['website'], row['description'], row['image_url']) for row in results
     # ]
     return results
+
+def get_products_from_order_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT cart.quantity, ot.status, ot.total_price, ot.placed_at, pt.*
+        FROM product_table pt
+        JOIN cart_items cart ON cart.product_id = pt.product_id
+        JOIN order_table ot ON ot.order_id = cart.order_id
+        WHERE cart.order_id = %s
+    """, (order_id, ))
+    results = cur.fetchall()
+    cur.close()
+    if results:
+        return results
+    else:
+        return []
+
+def get_all_order_items_by_order_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ot.*, cart.*, pt.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE ot.order_id = %s
+    """, (order_id, ))
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return [
+            # OrderItem(str(row['order_id']), row['product_id'], row['restaurant_name'],
+            #     bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
+            #     row['email'], row['website'], row['description'], row['image_url']) for row in results
+        ]
+    else:
+        return []
 
 def get_all_orders():
     cur = mysql.connection.cursor()
@@ -568,15 +723,7 @@ def set_order_status(order_id, status):
         UPDATE order_table
         SET status = %s
         WHERE order_id = %s
-    """, (order_id, ))
-    mysql.connection.commit()
-
-def add_order_to_db(user_id, address_id, status, total_price, payment_status ,payment_method):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        INSERT INTO order_table (user_id, address_id, status, total_price, payment_status ,payment_method, placed_at, payment_invoice)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        , (user_id, address_id ,status, total_price, payment_status, payment_method, current_timestamp, str(str(user_id)+str(current_timestamp)),))
+    """, (status,order_id,))
     mysql.connection.commit()
     cur.close()
 
@@ -633,20 +780,72 @@ def get_uncheckedout_cart_items_by_user_id(user_id):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])),  row['cart_id'], row['quantity']) for row in results
     ]
 
-def add_cart_item_to_db(product_id, user_id, quantity):
+def check_if_item_in_cart(product_id, user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        INSERT INTO cart_items (product_id, user_id, created_at, quantity)
-        VALUES (%s, %s, %s, %s)"""
-        , (product_id, user_id, current_timestamp, quantity))
+        SELECT 1 FROM cart_items WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+    """, (product_id, user_id,))
+    results = cur.fetchone()
+    cur.close()
+    return results
+
+def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
+    item_exists = check_if_item_in_cart(product_id, user_id)
+    cur = mysql.connection.cursor()
+    # IF PRODUCT ID EXISTS, ADD QUANTITY AND UPDATE TEMP ID
+    if item_exists:
+        cur.execute("""
+        UPDATE cart_items
+        SET quantity = %s, temp_id = %s
+        WHERE product_id = %s AND user_id = %s AND order_id IS NULL;
+        """, (quantity, temp_id, product_id, user_id))
+    else:
+        cur.execute("""
+            INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
+            VALUES (%s, %s, %s, %s, %s)"""
+            , (product_id, user_id, current_timestamp, quantity, str(temp_id),))
+        
     mysql.connection.commit()
     cur.close()
 
-def delete_cart_item_from_db(cart_id, user_id,):
+def delete_cart_item_from_db(product_id, user_id,):
     cur = mysql.connection.cursor()
     cur.execute("""
-        DELETE FROM cart_items WHERE cart_id = %s AND user_id = %s
+            DELETE FROM cart_items WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+            """, (product_id, user_id,))
+    mysql.connection.commit()
+    cur.close()
+
+def clear_cart_db(user_id,):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        DELETE FROM cart_items WHERE user_id = %s AND order_id IS NULL
         """
-        , (cart_id, user_id,))
+        , (user_id,))
+    mysql.connection.commit()
+    cur.close()
+
+################################    CHECK OUT QUERIES       #####
+def add_order_to_db(order, form, address_id):
+    cur = mysql.connection.cursor() 
+    cur.execute("""
+        INSERT INTO
+                order_table (user_id, address_id, status, total_price, payment_status,
+                                payment_method, placed_at, notes, payment_invoice, address
+                )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        , (order.user_id, address_id ,OrderStatus.PENDING.value, order.total, order.payment_status,
+           form.payment_method.data, current_timestamp, form.notes.data ,
+           str(str(order.user_id)+str(current_timestamp)), form.address.data, ))
+    order_id = cur.lastrowid
+
+    for item in order.items:
+        #update order_id in cart_items where product_id = product_id and user_id = user_id
+        cur.execute("""
+            UPDATE cart_items
+            SET order_id = %s
+            WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+        """, (order_id, item.product.id, order.user_id, ))
+        
     mysql.connection.commit()
     cur.close()
