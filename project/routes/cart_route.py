@@ -173,6 +173,17 @@ def checkout_cart():
     if request.method == 'POST':
         
         if form.validate_on_submit():
+            user_id = session['user']['user_id']
+            clear_cart_db(user_id)
+            cart_items = session.get('shopping_cart')
+            for item in cart_items.get('items', []):
+                product_id = item['product']['id']
+                
+                quantity = item['quantity']
+                item_id = item['id']
+                add_cart_item_to_db(product_id ,user_id, quantity, item_id)
+
+
             order = convert_basket_to_order(cart)
             address_id = get_address_id_by_user_id(int(order.user_id))
             print("address id: ", address_id)

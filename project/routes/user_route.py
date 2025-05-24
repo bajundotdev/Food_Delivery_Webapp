@@ -52,6 +52,13 @@ def profile():
     user_id = session.get('user').get('user_id')
     inordermo = get_all_orders_by_user_id(user_id)
     return render_template('user/profile.html', inordermo = inordermo, user_info=user_info, address = address)
+
+@user_bp.route('/view_order', methods=['GET', 'POST'])
+def view_order():
+    order_id = request.args.get('order_id')
+    laman = get_products_from_order_id(order_id)
+    return render_template('user/view_order.html', laman = laman,)
+
 # def profile():
 #     """View and edit user profile on the same page."""
 #     if not is_logged_in():
