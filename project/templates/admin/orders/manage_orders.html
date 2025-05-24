@@ -112,7 +112,9 @@
                                                     <strong>Total:</strong> ${{ order.total }}
                                                 </p>
                                                 <div class="mt-auto d-flex gap-2">
-                                                    <form method="POST" action="/" class="d-flex flex-grow-1">
+                                                    <form method="POST" action="{{ url_for('admin.update_order_status') }}" class="d-flex flex-grow-1">
+                                                        <input name="order_id" value="{{ order.id }}" hidden>
+                                                        <input name="order_status" value="In Progress" hidden>
                                                         <button type="submit" class="btn btn-danger w-100">Prepare Order</button>
                                                     </form>
                                                 </div>
@@ -169,8 +171,10 @@
                                                     <strong>Total:</strong> ${{ order.total }}
                                                 </p>
                                                 <div class="mt-auto d-flex gap-2">
-                                                    <form method="POST" action="/" class="d-flex flex-grow-1">
-                                                        <button type="submit" class="btn btn-warning w-100">Accept Order</button>
+                                                    <form method="POST" action="{{ url_for('admin.update_order_status') }}" class="d-flex flex-grow-1">
+                                                        <input name="order_id" value="{{ order.id }}" hidden>
+                                                        <input name="order_status" value="Ready" hidden>
+                                                        <button type="submit" class="btn btn-warning w-100">Ready to Server</button>
                                                     </form>
                                                 </div>
                                             </div>
