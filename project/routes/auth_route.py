@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from project.forms.authentication_form import LoginForm, RegistrationForm
+from project.forms.authentication_form import LoginForm, RegistrationForm, DriverRegistrationForm
 from project.db import check_user, add_user, get_user_by_email, add_cart_item_to_db, get_uncheckedout_cart_items_by_user_id
 from project.routes.utils import clear_user_session
 from project.session import *
@@ -27,6 +27,24 @@ def register():
 
     return render_template('register.html', form=form)
 
+@auth_bp.route('/driver_register/', methods=('POST', 'GET'))
+def driver_register():
+    form = DriverRegistrationForm()
+    
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # Check if the user already exists
+            user = get_user_by_email(form.email.data)
+            if user:
+                flash('Email address already exists', 'error')
+                return redirect(url_for('auth.driver_register'))
+
+            add_driver(form)
+            flash('Registration successful!', 'success')
+            return redirect(url_for('auth.login'))
+
+    return render_template('driver_register.html', form=form)
+
 @auth_bp.route('/login/', methods=('POST', 'GET'))
 def login():
     
@@ -45,6 +63,7 @@ def login():
                     'phone': user.phone,
                     'email': user.email,
                     'address_id': "",
+    
                 }
                 session['logged_in'] = True
                 session['role'] = user.role
