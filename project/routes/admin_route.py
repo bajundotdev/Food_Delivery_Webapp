@@ -165,19 +165,13 @@ def manage_order_report():
 @admin_required
 def manage_product():
 
-    print(request.args.get)
-    status_filter = request.args.get('search_menu', '')
-    filter_search_menu = request.args.get('search_menu', '')
-    filter_category = request.args.get('category', '')
-    filter_status = request.args.get('status', '')
+    search_menu = request.args.get('search_menu', '')
+    menu_status = request.args.get('menu_status', '')
+    clear = request.args.get('status', '')
 
-    if filter_search_menu or filter_category or filter_status:
-        print("STATUS")
-        # menus = Product.get_orders_by_status(status_filter)
-        menus = get_all_products()
+    if search_menu or menu_status:
+        menus = search_product(search_menu)
     else:
-        # menus = Product.get_url()
-        print("No search query")
         menus = get_all_products()
 
     return render_template('admin/menu/manage_products_and_category.html', menus=menus)
