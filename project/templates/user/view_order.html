@@ -76,33 +76,30 @@
             <div class="col-12">
                 <h4>
                 <span class="bi bi-receipt me-2"></span>
-                Order Details - # order.id }}
+                Order Details - {{ order_id }}
                 </h4>
 
                 <ul>
-                    {% for product in laman %}
-                        <li>{{product}}</li>
-                    {% endfor %}
+                    
                 </ul>
-   
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3">Order Summary</h5>
                         <p class="mb-1"><strong>Status:</strong>
-                        if order.status == "Pending" %}
-                            <span class="badge bg-warning text-black"> order.status }}</span>
-                        elif order.status == "Completed" %}
-                            <span class="badge bg-success"> order.status }}</span>
-                        elif order.status == "Cancelled" %}
-                            <span class="badge bg-danger"> order.status }}</span>
-                        elif order.status == "On Delivery" %}
-                            <span class="badge bg-warning text-black"> order.status }}</span>
-                        else %}
-                            <span class="badge bg-primary"> order.status }}</span>
-                        endif %}
+                        {% if laman[0].status == "Pending" %}
+                            <span class="badge bg-warning text-black">{{  laman[0].status }}</span>
+                        {%elif laman[0].status == "Completed" %}
+                            <span class="badge bg-success">{{ laman[0].status }}</span>
+                        {%elif laman[0].status == "Cancelled" %}
+                            <span class="badge bg-danger">{{  laman[0].status }}</span>
+                        {%elif laman[0].status == "On Delivery" %}
+                            <span class="badge bg-warning text-black">{{  laman[0].status }}</span>
+                        {%else %}
+                            <span class="badge bg-primary">{{  laman[0].status }}</span>
+                        {% endif %}
                         </p>
-                        <p class="mb-1"><strong>Placed At:</strong>  order.placed_at }}</p>
-                        <p class="mb-1"><strong>Total:</strong> $ order.total }}</p>
+                        <p class="mb-1"><strong>Placed At:</strong>{{   laman[0].placed_at }}</p>
+                        <p class="mb-1"><strong>Total:</strong> $ {{ laman[0].total_price }}</p>
                     </div>
                 </div>
                 <div class="card">
@@ -119,14 +116,15 @@
                             </tr>
                             </thead>
                             <tbody>
-                            for item in order.items %}
+                             
+                            {%for item in laman %}
                                 <tr>
-                                <td>item.name }}</td>
-                                <td> item.quantity }}</td>
-                                <td>$item.unit_price }}</td>
-                                <td>$item.subtotal }}</td>
+                                <td>{{ item.product_name }}</td>
+                                <td>{{  item.quantity }}</td>
+                                <td>$ {{ item.price }}</td>
+                                <td>$ {{ item.price * item.quantity }}</td>
                                 </tr>
-                            endfor %}
+                            {% endfor %}
                             </tbody>
                         </table>
                         </div>
