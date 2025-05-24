@@ -163,6 +163,20 @@ def get_address_by_user_id(user_id):
              row['created_at'], row['updated_at']
             )
     ]
+
+def get_address_id_by_user_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT address_id
+        FROM user_address
+        WHERE user_id = %s
+    """, (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    if row:
+        return row['address_id']
+    else:
+        return ""
    
 def add_address_by_user_id(form):
     pass
@@ -516,6 +530,22 @@ def get_all_orders_and_products():
     # ]
     return results
 
+def get_products_from_order_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT pt.*, ot.*
+        FROM product_table pt
+        JOIN cart_items cart ON cart.product_id = pt.product_id
+        JOIN order_table ot ON ot.order_id = cart.order_id
+        WHERE cart.order_id = %s
+    """, (order_id, ))
+    results = cur.fetchall()
+    cur.close()
+    if results:
+        return results
+    else:
+        return []
+
 def get_all_order_items_by_order_id(order_id):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -657,14 +687,6 @@ def set_order_status(order_id, status):
         WHERE order_id = %s
     """, (order_id, ))
     mysql.connection.commit()
-
-def add_order_to_db(user_id, address_id, status, total_price, payment_status ,payment_method):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        INSERT INTO order_table (user_id, address_id, status, total_price, payment_status ,payment_method, placed_at, payment_invoice)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        , (user_id, address_id ,status, total_price, payment_status, payment_method, current_timestamp, str(str(user_id)+str(current_timestamp)),))
-    mysql.connection.commit()
     cur.close()
 
 
@@ -721,6 +743,7 @@ def get_uncheckedout_cart_items_by_user_id(user_id):
     ]
 
 def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
+    # IF PRODUCT ID EXISTS, ADD QUANTITY AND UPDATE TEMP ID
     cur = mysql.connection.cursor()
     cur.execute("""
         INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
@@ -729,30 +752,45 @@ def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
     mysql.connection.commit()
     cur.close()
 
-def delete_cart_item_from_db(temp_id, user_id,):
+def delete_cart_item_from_db(product_id, user_id,):
     cur = mysql.connection.cursor()
     cur.execute("""
-        DELETE FROM cart_items WHERE temp_id = %s AND user_id = %s
+        DELETE FROM cart_items WHERE product_id = %s user_id = %s AND order_id IS NULL
         """
-        , (temp_id, user_id,))
+        , (product_id, user_id,))
+    mysql.connection.commit()
+    cur.close()
+
+def clear_cart_db(user_id,):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        DELETE FROM cart_items WHERE user_id = %s AND order_id IS NULL
+        """
+        , (user_id,))
     mysql.connection.commit()
     cur.close()
 
 ################################    CHECK OUT QUERIES       #####
-def add_order(order):
-    cur = mysql.connection.cursor()
+def add_order_to_db(order, form, address_id):
+    cur = mysql.connection.cursor() 
     cur.execute("""
-        INSERT INTO orders (user_id, order_status, total_cost, customer_name, customer_email, customer_phone)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """, (order.user.id, order.status.value, order.total_cost,
-          f"{order.user.firstname} {order.user.surname}",
-          order.user.email, order.user.phone))
+        INSERT INTO
+                order_table (user_id, address_id, status, total_price, payment_status,
+                                payment_method, placed_at, notes, payment_invoice, address
+                )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        , (order.user_id, address_id ,OrderStatus.PENDING.value, order.total, order.payment_status,
+           form.payment_method.data, current_timestamp, form.notes.data ,
+           str(str(order.user_id)+str(current_timestamp)), form.address.data, ))
     order_id = cur.lastrowid
 
     for item in order.items:
         #update order_id in cart_items where product_id = product_id and user_id = user_id
-    #     cur.execute("INSERT INTO order_items (order_id, tour_id, quantity) VALUES (%s, %s, %s)",
-    #                 (order_id, item.tour.id, item.quantity))
-        pass
+        cur.execute("""
+            UPDATE cart_items
+            SET order_id = %s
+            WHERE product_id = %s AND user_id = %s AND order_id IS NULL
+        """, (order_id, item.product.id, order.user_id, ))
+        
     mysql.connection.commit()
     cur.close()
