@@ -48,7 +48,7 @@ def login():
                 }
                 session['logged_in'] = True
                 session['role'] = user.role
-                flash('Login successful!', 'primary')
+                flash('Login successful!', 'success')
                 if session['role'] == "Admin":
                     return redirect(url_for('admin.admin_dashboard'))
                 elif session['role'] == "Delivery Driver":

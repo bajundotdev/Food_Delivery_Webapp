@@ -224,7 +224,7 @@
                         {% endfor %}
                     </div>
                 </div>
-
+                <!-- Go to Manage Orders Page -->
                 <div class="mt-3 d-flex justify-content-end">
                     <a href="{{ url_for('admin.manage_orders') }}" class="btn btn-danger">
                         Go to Orders <i class="bi bi-arrow-right"></i>
@@ -233,46 +233,41 @@
             </div>
         </section>
 
+        <hr> 
         <!-- Recent Orders Section -->
-        <section>
+        <section id="recent_orders_section">
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4>
-                        <span class="bi bi-clock-history me-2"></span>
-                        Recent Orders
-                    </h4>
+                    <h4><span class="bi bi-clock-history me-2"></span>Recent Orders</h4>
                     <!-- Search and Filter Form -->
                     <div class="card my-3">
                         <div class="card-body">
                             <form method="get" action="" class="row g-3 align-items-end">
-                                <div class="col-md-4 position-relative">
-                                    <input type="text" class="form-control ps-5" id="search_recent_order" name="search_recent_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_menu', '') }}">
+                                <div class="col-md-5 position-relative">
+                                    <input type="text" class="form-control ps-5" id="search_order" name="search_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_order', '') }}">
                                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
                                         <i class="bi bi-search"></i>
                                     </span>
                                 </div>
                                 <div class="col-md-3 position-relative">
-                                    <select class="form-select ps-5" id="status" name="status">
+                                    <select class="form-select ps-5" id="order_status" name="order_status">
                                         <option value="">All Status</option>
-                                        <option value="Pending" {% if request.args.get('status') == 'Pending' %}selected{% endif %}>Pending</option>
-                                        <option value="Completed" {% if request.args.get('status') == 'Completed' %}selected{% endif %}>Completed</option>
-                                        <option value="Cancelled" {% if request.args.get('status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                                        <option value="On Delivery" {% if request.args.get('status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                        <option value="Pending" {% if request.args.get('order_status') == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Completed" {% if request.args.get('order_status') == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <option value="Cancelled" {% if request.args.get('order_status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                        <option value="On Delivery" {% if request.args.get('order_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
                                     </select>
                                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
                                         <i class="bi bi-toggle-on"></i>
                                     </span>
                                 </div>
-                                <div class="col-md-3 position-relative">
-                                    <input type="datetime-local" class="form-control ps-5" id="order_date" name="order_date" value="{{ request.args.get('order_date', '') }}">
-                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                        <i class="bi bi-calendar-date"></i>
-                                    </span>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <span class="bi bi-search me-1"></span> Search
-                                    </button>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <span class="bi bi-search me-1"></span> Search
+                                        </button>
+                                        <input type="submit" name="clear" class="btn btn-outline-secondary w-50" value="Clear">
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -326,6 +321,8 @@
             </div>
         </section>
 
+        <hr>
+
         <!-- Driver Status Section -->
         <section>
             <div class="row mt-5">
@@ -334,12 +331,12 @@
                         <span class="bi bi-truck me-2"></span>
                         Driver Status
                     </h4>
+
                     <!-- Search and Filter Form -->
-                     
                     <div class="card my-3">
                         <div class="card-body">
                             <form method="get" action="" class="row g-3 align-items-end">
-                                <div class="col-md-4 position-relative">
+                                <div class="col-md-5 position-relative">
                                     <input type="text" class="form-control ps-5" id="search_driver" name="search_driver" placeholder="Search Driver Name or ID" value="{{ request.args.get('search_driver', '') }}">
                                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
                                         <i class="bi bi-search"></i>
@@ -356,16 +353,13 @@
                                         <i class="bi bi-toggle-on"></i>
                                     </span>
                                 </div>
-                                <div class="col-md-3 position-relative">
-                                    <input type="datetime-local" class="form-control ps-5" id="last_active" name="last_active" value="{{ request.args.get('last_active', '') }}">
-                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
-                                        <i class="bi bi-calendar-date"></i>
-                                    </span>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <span class="bi bi-search me-1"></span> Search
-                                    </button>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <span class="bi bi-search me-1"></span> Search
+                                        </button>
+                                        <input type="submit" name="clear" class="btn btn-outline-secondary w-50" value="Clear">
+                                    </div>
                                 </div>
                             </form>
                         </div>

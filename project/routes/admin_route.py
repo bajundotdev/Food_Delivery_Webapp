@@ -27,6 +27,22 @@ def admin_dashboard():
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
+    search_order = request.args.get('search_order')
+    order_status = request.args.get('order_status')
+    search_driver = request.args.get('search_driver')
+    driver_status = request.args.get('driver_status')
+    clear = request.args.get('clear')
+
+    if request.method == "GET":
+        if search_order or order_status:
+            all_orders = search_order_name_id_status(search_order, order_status)
+
+        if search_driver or driver_status:
+            all_orders = search_order_name_id_status(search_driver, driver_status)
+
+        if clear:
+            return redirect(url_for('admin.admin_dashboard'))
+
     return render_template('admin/dashboard.html', admin_details=admin_details,
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
@@ -125,14 +141,18 @@ def update_order_status():
 @login_required
 @admin_required
 def manage_order_report():
-    status_filter = request.args.get('status', '')
     all_orders = get_all_orders()
-    
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
+    search_order = request.args.get('search_order')
+    order_status = request.args.get('order_status')
+    clear = request.args.get('clear')
+
+    if request.method == "GET":
+        if search_order or order_status:
+            all_orders = search_order_name_id_status(search_order, order_status)
+        if clear:
+            return redirect(url_for('admin.manage_order_report'))
+
+
     return render_template('admin/orders/manage_order_report.html', all_orders=all_orders)
 
 
@@ -173,6 +193,13 @@ def add_product():
         return redirect(url_for('admin.manage_product'))
     
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
+
+@admin_bp.route('/menu/<int:product_id>', methods=['GET'])
+@login_required
+@admin_required
+def view_product(product_id):
+    product_details = get_product_by_id(product_id)
+    return render_template('admin/menu/product_details.html', product_details=product_details)
 
 @admin_bp.route('/menu/category/add', methods=['GET', 'POST'])
 @login_required

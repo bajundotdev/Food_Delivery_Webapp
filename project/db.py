@@ -278,9 +278,41 @@ def search_product(search_str):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
+def search_order_name_id_status(search_str, status):
+    like_str = "%" + str(search_str) + "%"
+    like_status = "%" + str(status) + "%"
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
+                AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s)
+        ORDER BY ordert.status
+    """, (like_str, like_str, like_status))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+    cur.execute("""
+        SELECT *
+        FROM order_table
+        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0
+    """ , (like_str, like_str, like_str, like_str, ))
+    
+
 def search_users(search_str):
     like_str = "%" + str(search_str) + "%"
-    print(like_str)
+    
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
@@ -605,11 +637,12 @@ def get_all_order_items_by_order_id(order_id):
     results = cur.fetchall()
     cur.close()
     if results is not None:
-        return [
+        return results
+        #[
             # OrderItem(str(row['order_id']), row['product_id'], row['restaurant_name'],
             #     bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
             #     row['email'], row['website'], row['description'], row['image_url']) for row in results
-        ]
+        #]
     else:
         return []
 
