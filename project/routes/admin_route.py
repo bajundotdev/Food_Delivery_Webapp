@@ -96,6 +96,9 @@ def manage_orders():
                                                 ready_orders=ready_orders,
                                                 drivers=drivers)
 
+## Change order status: set_order_status(order_id, status):
+
+
 @admin_bp.route('/order/<string:order_id>')
 @login_required
 @admin_required
