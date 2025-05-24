@@ -158,13 +158,13 @@ def add_user(form):
     mysql.connection.commit()
     cur.close()
 
-def update_user_profile(fullname, phone, email):
+def update_user_profile(fullname, phone, profile_picture_url, email):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE user_table
-        SET fullname = %s, phone_number = %s
+        SET fullname = %s, phone_number = %s, profile_picture_url = %s
         WHERE  email = %s
-    """, (fullname, phone, email))
+    """, (fullname, phone, profile_picture_url,email,))
 
     mysql.connection.commit()
     cur.close()

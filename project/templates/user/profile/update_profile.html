@@ -107,6 +107,10 @@
                             </div>
                         
                         </form>
+                        {% if name and photo %}
+                            <h3>{{ name }}'s Profile Photo:</h3>
+                            <img src="{{ url_for('static', filename='img/profile_photos' + photo) }}" width="200">
+                        {% endif %}
                     </div>
                     </div>
                 </div>
