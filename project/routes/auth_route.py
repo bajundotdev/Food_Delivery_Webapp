@@ -77,7 +77,7 @@ def login():
                     cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
                     for item in cart_from_db:
                         add_cart_item_from_db(item)  
-                    return redirect(url_for('user.profile'))
+                    return redirect(url_for('main.index'))
         
     return render_template('login.html', form=form)
 

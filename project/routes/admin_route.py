@@ -168,14 +168,17 @@ def manage_order_report():
 @admin_required
 def manage_product():
 
+    menus = get_all_products()
     search_menu = request.args.get('search_menu', '')
     menu_status = request.args.get('menu_status', '')
-    clear = request.args.get('status', '')
+    clear = request.args.get('clear', '')
 
-    if search_menu or menu_status:
-        menus = search_product(search_menu)
-    else:
-        menus = get_all_products()
+    if request.method == "GET":
+        if search_menu or menu_status:
+            menus = search_product(search_menu)
+            
+        if clear:
+            return redirect(url_for('admin.manage_product'))
 
     return render_template('admin/menu/manage_products_and_category.html', menus=menus)
 
@@ -184,14 +187,10 @@ def manage_product():
 @admin_required
 def add_product():
     form_product = ProductForm()
-    if request.method == 'POST':
-        add_product_to_db(form_product)
-        flash('Product successfully added!', 'success')
-        return redirect(url_for('admin.manage_product'))
-    
+
     if request.method == "POST":
         file = request.files['food_image_url']
-
+    
         try:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)

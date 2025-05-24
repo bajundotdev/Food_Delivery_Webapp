@@ -159,14 +159,13 @@
 
                     <!-- Orders table -->
                     <div class="table-responsive">
-                        <table class="table table-striped align-middle">
+                        <table class="table table-striped table-hover align-middle">
                             <thead>
                                 <tr>
                                     <th scope="col">Order ID</th>
-                                    <th scope="col">Total</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Date of order</th>
-                                    <th scope="col">Completion date</th>
+                                    <th scope="col">Total</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -176,16 +175,18 @@
                                     <td>
                                         <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="text-decoration-none"> {{order.id}} </a>
                                     </td>
-                                    <td>$ {{order.total}}</td>
                                     <td><span class="badge bg-success">{{order.status}}</span></td>
                                     <td>{{order.placed_at}}</td>
-                                    <td>{{order.delivered_at}}</td>
+                                    <td>$ {{order.total}}</td>
                                     <td>
                                         <a href="{{ url_for('user.view_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">View</a>
                                     </td>
                                 </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No orders found.</td>
+                                    </tr>
                                 {% endfor %}
-                                
                             </tbody>
                         </table>
                     </div>
