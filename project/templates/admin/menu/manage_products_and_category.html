@@ -93,7 +93,7 @@
                     
                     <div class="card my-3">
                         <div class="card-body">
-                            <form method="get" action="/" class="row g-3 align-items-end">
+                            <form method="get" action="{{ url_for('admin.manage_product') }}" class="row g-3 align-items-end">
                                 <div class="col-md-4 position-relative">
                                     <input type="text" class="form-control ps-5" id="search_menu" name="search_menu" placeholder="Search Menu Name or ID" value="{{ request.args.get('search_menu', '') }}">
                                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
@@ -132,7 +132,7 @@
 
                     <!-- Menus Table -->
                     <div class="table-responsive mb-5">
-                        <table class="table table-striped align-middle">
+                        <table class="table table-striped table-hover align-middle">
                             <thead>
                             <tr>
                                 <th scope="col">Menu ID</th>
@@ -165,9 +165,11 @@
                                         <a href="{{ url_for('admin.update_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i> Update
                                         </a>
-                                        <a href="{{ url_for('admin.delete_product', product_id=menu.id) }}" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i> Remove
-                                        </a>
+                                        <form method="post" action="{{ url_for('admin.delete_product', product_id=menu.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% else %}
