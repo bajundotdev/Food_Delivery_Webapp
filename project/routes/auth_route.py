@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from project.forms.authentication_form import LoginForm, RegistrationForm
 from project.db import check_user, add_user, get_user_by_email, add_cart_item_to_db, get_uncheckedout_cart_items_by_user_id
 from project.routes.utils import clear_user_session
-from project.session import *
+from project.session import add_cart_item_from_db
+import logging
+
 auth_bp = Blueprint('auth', __name__, url_prefix='/')
 
 ###################

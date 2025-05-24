@@ -1,5 +1,6 @@
 from project.db import *
 from project.models.cart_model import Cart, CartItem
+import logging
 #from project.models import UserInfo, Order, OrderStatus
 
 from flask import session

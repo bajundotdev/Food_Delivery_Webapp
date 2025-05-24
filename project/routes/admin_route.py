@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, session, url_for, flash, request
+from flask import Blueprint, render_template, redirect, session, url_for, flash, jsonify, request
 from project.decorators import login_required, admin_required
 from project.forms.admin_form import ProductForm
 from project.models import Product, Order
 from flask_mysqldb import MySQL
+import logging
 
 from project.db import *
 
@@ -18,6 +19,12 @@ mysql = MySQL()
 @login_required
 @admin_required
 def admin_dashboard():
+    '''
+    Dashboard shows all users, orders, products, and drivers. 
+    Pending stock showing incoming deliveries and are determined by order status.
+    Drivers and Orders are managed by status/availability. 
+    Search bar to allow for products to do stock update on dashboard by category or product.
+    '''
     user_id = session['user']['user_id']
     admin_details = get_user_info_with_address_by_user_id(user_id)
     all_users = get_all_users()
