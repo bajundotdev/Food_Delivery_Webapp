@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+    <!-- Main container -->
+    <main class="container my-4">
+        <!-- Signup Function Modal -->
+        <h1>Join our growing logistics team as a professional
+            <span class="badge bg-warning text-wrap style="width: 8rem;">
+            delivery partner!
+            </span>
+        </h1>
+        <div class="d-grid gap-3">
+            <!-- Form -->
+            <form action="{{ url_for('auth.driver_register') }}" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Full Name" required>
+                    <label for="fullname">Full Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone number" required>
+                    <label for="phone_number">Phone number</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+                    <label for="email">Email Address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" placeholder="Type of vehicle (e.g. Bicycle, Scooter, Car)" required>
+                    <label for="vehicle_type">Type of vehicle</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="vehicle_plate" name="vehicle_plate" placeholder="Vehicle Plate Number" required>
+                    <label for="vehicle_plate">Vehicle Plate Number</label>
+                </div>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Driving License Number" required>
+                    <label for="license_number">Driving License Number</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password" placeholder="Confirm Password" required>
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Join us today</button>
+                {{ form.csrf_token }}
+            </form>
+            
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-dark">Login instead</a>
+            <p>By signing up, you agree to our <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+    </main>
+
+{% endblock %}

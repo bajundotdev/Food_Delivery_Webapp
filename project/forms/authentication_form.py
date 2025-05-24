@@ -19,3 +19,14 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
+
+class DriverRegistrationForm(FlaskForm):
+    fullname = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    phone_number = StringField('Name', validators=[DataRequired(), Length(min=2, max=14)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    vehicle_type = StringField('Vehicle Type', validators=[DataRequired(), Length(min=2, max=100)])
+    vehicle_plate = StringField('Vehicle Plate', validators=[DataRequired(), Length(min=2, max=100)])
+    license_number = StringField('License Number', validators=[DataRequired(), Length(min=2, max=100)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')

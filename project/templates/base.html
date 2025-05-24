@@ -26,7 +26,7 @@
         {% else %} 
             <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
                 <strong class="pe-4">We are looking for a delivery driver!</strong>
-                <button type="button" class="btn btn-outline-danger"><i class="bi bi-bicycle"></i> Register now</button>
+                <a href="{{ url_for('auth.driver_register') }}"><button type="button" class="btn btn-outline-danger">Register now</button></a>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>          
             <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">

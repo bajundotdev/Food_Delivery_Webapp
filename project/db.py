@@ -436,6 +436,26 @@ def get_restaurant_by_name(restaurant_name):
 ##################
 #    DRIVER QUERIES   
 ##################
+def add_driver(form):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO user_table (email, password_hash, fullname, phone_number, user_type,
+                is_active, is_verified, created_at, updated_at, last_login, profile_picture_url)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)""", (form.email.data, str(generate_password_hash(form.password.data)),
+           form.fullname.data, form.phone_number.data, "Delivery Driver",
+           int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"zoro.jpg"))
+    
+    user_id = cur.lastrowid
+    cur.execute("""
+        INSERT INTO delivery_driver (user_id, vehicle_type, license_number, vehicle_plate,
+                is_available, created_at, updated_at, driver_rating, total_deliveries)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""", (str(user_id), form.vehicle_type.data,
+                                                 form.license_number.data, form.vehicle_plate.data,
+           int(1), current_timestamp, current_timestamp, int(5), int(0)))
+
+    mysql.connection.commit()
+    cur.close()
+
 def get_driver_details_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
