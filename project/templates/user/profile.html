@@ -25,7 +25,7 @@
 {% block main %}
     <!-- Main container -->
     <main class="container my-4">
-
+        
         <!-- User Profile Section -->
         <section class="mb-4">
             <div class="card shadow-sm">
@@ -35,18 +35,42 @@
                             <img src="{{ url_for('static', filename='img/icon-7797704_1280.png') }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
                         </div>
                     </div>
-                    <div class="col-md-6 text-md-start text-center">
+                    <div class="col-md-5 text-md-start text-center">
                         <div class="card-body">
-                            <h4 class="card-title mb-1">Hi, {{ session['user']['firstname'] }}!</h4>
-                            <p class="card-text mb-1 text-muted">{{ session['user']['email'] }}</p>
+                            <h4 class="card-title mb-1">
+                                Hi, {{ user_details[0].name }}!
+                                {% if user_details[0].is_active %}
+                                    <span class="badge text-success ms-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-danger ms-2">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Inactive
+                                    </span>
+                                {% endif %}
+                            </h4>
+                            <p class="card-text mb-1 text-muted">{{ user_details[0].email }}</p>
                             <p class="card-text mb-0">
-                                <span class="me-3"><i class="bi bi-geo-alt"></i> {{address}}</span></br>
-                                <span><i class="bi bi-telephone"></i> {{user_info.phone}} </span>
+                                <span class="me-3"><i class="bi bi-geo-alt"></i> {{ user_details[1] }}</span>
+                            </p>
+                            <p class="card-text mb-0">
+                                <span><i class="bi bi-telephone"></i> {{ user_details[0].phone }}</span>
                             </p>
                         </div>  
                     </div>
-                    <div class="col-md-3 col-sm-12 text-center p-2">
-                        <a href="#" class="btn btn-outline-primary">
+                    
+                    <div class="col-md-4 col-sm-12 text-center p-2">
+                        <form method="post" action="/" class="d-inline">
+                            <input type="hidden" name="admin_id" value="{{ user_info['id'] }}">
+                            <button type="submit" class="btn btn-primary">
+                                {% if user_details[0]['is_active'] %}
+                                    <i class="bi bi-x-circle-fill me-1"></i> Change Status
+                                {% else %}
+                                    <i class="bi bi-check-circle-fill me-1"></i> Change Status
+                                {% endif %}
+                            </button>
+                        </form>
+                        <a href="{{ url_for('user.update_profile', user_id=user_info.id) }}" class="btn btn-outline-primary">
                             <span class="bi bi-pencil me-1"></span> Edit Profile
                         </a>
                     </div>
@@ -102,7 +126,9 @@
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4>Recent Orders</h4>
+                    <h4 class="my-4">
+                        <i class="bi bi-clock-history me-2"></i> Recent Orders
+                    </h4>
                     <!-- Search and Filter Form -->
                     <form method="get" action="" class="row g-3 align-items-end mb-3">
                         <div class="col-md-4">
