@@ -28,7 +28,8 @@ class Product:
     prep_time: int = 5
     image_url: str = ""
     is_active: bool = True
-    restaurant_id: str = ""
+    restaurant_id: str = 1
+    deleted: str = ""
     
     def get_url(self):
         """Return URL to product detail page."""

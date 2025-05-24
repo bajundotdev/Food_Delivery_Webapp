@@ -145,11 +145,19 @@ def manage_order_report():
 @admin_required
 def manage_product():
 
-    status_filter = request.args.get('status', '')
-    
-    if status_filter:
-        menus = Product.get_orders_by_status(status_filter)
+    print(request.args.get)
+    status_filter = request.args.get('search_menu', '')
+    filter_search_menu = request.args.get('search_menu', '')
+    filter_category = request.args.get('category', '')
+    filter_status = request.args.get('status', '')
+
+    if filter_search_menu or filter_category or filter_status:
+        print("STATUS")
+        # menus = Product.get_orders_by_status(status_filter)
+        menus = get_all_products()
     else:
+        # menus = Product.get_url()
+        print("No search query")
         menus = get_all_products()
 
     return render_template('admin/menu/manage_products_and_category.html', menus=menus)
@@ -161,6 +169,7 @@ def add_product():
     form_product = ProductForm()
     if request.method == 'POST':
         add_product_to_db(form_product)
+        flash('Product successfully added!', 'success')
         return redirect(url_for('admin.manage_product'))
     
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
@@ -191,6 +200,7 @@ def update_product(product_id):
         return render_template('admin/menu/product_update_form.html', form_product=form_product, categories=ProductCategory)
     
     if request.method == 'POST':
+        print(form_product)
         form_product.name = request.form['name']
         form_product.price = float(request.form['price'])
         form_product.stock = int(request.form['stock'])
@@ -215,21 +225,23 @@ def save_product():
         update_product_table(update_form)
         for info in update_form:
             print(info.data)
-        flash('Product successfully updated!')
+        flash('Product successfully updated!', 'success')
         return redirect(url_for('admin.manage_product'))
         # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
 
-@admin_bp.route('/menu/delete', methods=['POST'])
+@admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_product(product_id):
-
-    product_id = request.form.get('')
-    
     if request.method == "POST":
-        delete_product_from_list(product_id)
+        result = delete_product_from_list(product_id)
+
+        if result:
+            flash('Product successfully removed!', 'info')
+        else:
+            flash('Failed to remove product.', 'danger')
 
     return redirect(url_for('admin.manage_product'))
 

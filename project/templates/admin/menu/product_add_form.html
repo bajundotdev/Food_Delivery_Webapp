@@ -70,15 +70,16 @@
                 </div>
             </div>
         </section>
-        <hr>
+        
         <!-- Add Menu Section -->
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4 class="my-4">Add New Menu</h4>
+                    <h4 class="my-4">New Menu Details</h4>
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
+                                {{ form_product.csrf_token}}
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Menu Name" required>
@@ -124,6 +125,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 mt-4">
+                                    <input name="restaurant_id" value="1" hidden readonly>
                                     <button type="submit" class="btn btn-success">Save Menu</button>
                                 </div>
                             </form>
