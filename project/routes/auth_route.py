@@ -97,5 +97,5 @@ def logout():
                 add_cart_item_to_db(product_id ,user_id, quantity, item_id)
 
     clear_user_session()
-    flash('You have been logged out', 'primary')
+    flash('You have been logged out', 'success')
     return redirect(url_for('main.index'))
