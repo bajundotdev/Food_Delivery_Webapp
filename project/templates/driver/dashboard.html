@@ -141,7 +141,7 @@
                                             <strong>Items:</strong>
                                             <ul>
                                                 {% for item in order.items %}
-                                                    <li>{{ item.product_name }}</li>
+                                                    <li>x{{ item.quantity }} {{ item.product_name }}</li>
                                                 {% endfor %}
                                             </ul>
                                             <strong>Total:</strong> {{order.total}}

@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, current_app, render_template, redirect, session, url_for, flash, request
 from project.decorators import login_required, admin_required
-from project.forms.admin_form import ProductForm
+from project.forms import ProductForm, DriverForm
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
@@ -31,9 +31,12 @@ def admin_dashboard():
     all_users = get_all_users()
     all_orders = get_all_orders()
     all_products = get_all_products()
-    orders_with_products = get_all_orders_and_products()[:10]
-    orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
+
+    orders_by_status = get_all_orders_by_status('Pending')
+
+    for order in orders_by_status:
+        order.items = get_all_order_items_by_order_id_status(order.id, 'Pending')
 
     search_order = request.args.get('search_order')
     order_status = request.args.get('order_status')
@@ -56,7 +59,6 @@ def admin_dashboard():
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
-                                                orders_with_products=orders_with_products,
                                                 orders_by_status=orders_by_status,
                                                 drivers=drivers)
 
@@ -303,27 +305,25 @@ def manage_users():
 @login_required
 @admin_required
 def manage_admins():
-    return render_template('admin/manage_admins.html')
+    return render_template('admin/admins/manage_admins.html')
 
 @admin_bp.route('/drivers')
 @login_required
 @admin_required
 def manage_drivers():
-    status_filter = request.args.get('status', '')
-    
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
-    return render_template('admin/drivers/manage_drivers.html', orders=orders)
+    drivers = get_all_driver()
+    return render_template('admin/drivers/manage_drivers.html', drivers=drivers)
 
-@admin_bp.route('/driver/<int:driver_id>', methods=['GET'])
+@admin_bp.route('/drivers/<int:driver_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def view_driver(driver_id):
-    driver_details = get_driver_by_id(driver_id)
-    return render_template('admin/drivers/view_driver.html', driver_details=driver_details)
+def update_driver(driver_id):
+    driver_form = DriverForm()
+    driver = get_driver_by_id(driver_id)
+    driver_details = driver[0]
+
+    return render_template('admin/drivers/update_driver.html', driver_form=driver_form,
+                                                        driver_details=driver_details)
 
 ##############################
 #   Manage CRUD Restaurants  #

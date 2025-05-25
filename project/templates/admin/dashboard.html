@@ -192,7 +192,7 @@
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         {% for order in orders_by_status %}
-                            <div class="card shadow-sm incoming-order-card">
+                            <div class="card h-100 shadow-sm incoming-order-card">
                                 <div class="card-header bg-danger d-flex justify-content-between align-items-center">
                                     <span class="text-white">
                                         <i class="bi bi-bag-check me-2"></i> Incoming Order #{{ order.id }}
@@ -207,8 +207,8 @@
                                     <p class="card-text m-2">
                                         <strong>Items:</strong>
                                         <ul>
-                                            {% for product in orders_with_products %}
-                                                <li>x{{ product.quantity }} {{ product.product_name }}</li>
+                                            {% for item in order.items %}
+                                                <li>x{{ item.quantity }} {{ item.product_name }}</li>
                                             {% endfor %}
                                         </ul>
                                     </p>
@@ -224,6 +224,12 @@
                                         </form>
                                         <a href="/" class="btn btn-outline-danger">Deny</a>
                                     </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card w-100 shadow-sm incoming-order-card text-center">
+                                <div class="card-body bg-light">
+                                    <p class="m-0">No incoming orders</p>
                                 </div>
                             </div>
                         {% endfor %}

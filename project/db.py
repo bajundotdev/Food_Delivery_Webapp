@@ -513,8 +513,8 @@ def get_driver_by_id(driver_id):
                 user_table.profile_picture_url, user_table.is_active,  is_available
                 
         FROM delivery_driver, user_table
-        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND  driver_id = %d
-    """, driver_id)
+        WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND  driver_id = %s
+    """, (driver_id,))
     row = cur.fetchone()
     cur.close()
     if row is not None:
@@ -687,7 +687,7 @@ def get_all_order_items_by_order_id(order_id):
 def get_all_order_items_by_order_id_status(order_id, status):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT pt.*, ot.*, cart.quantity * pt.price as total
+        SELECT pt.*, ot.*, cart.*, pt.price as total
         FROM order_table ot
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id

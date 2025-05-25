@@ -38,7 +38,6 @@ def driver_dashboard():
     # order = get_all_order_items_by_order_id(order_id)
     orderReady = get_all_orders_by_status(status="Ready")
 
-
     for order in orderReady:
         order.items = get_all_order_items_by_order_id_status(order.id, 'Ready')
         

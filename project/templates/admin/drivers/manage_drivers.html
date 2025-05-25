@@ -16,7 +16,7 @@
         <div class="container">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant')}}">Restaurant</a></li>
+                <li class="breadcrumb-item">Restaurant</li>
                 <li class="breadcrumb-item active" aria-current="page">Drivers</li>
             </ol>
         </div>
@@ -69,86 +69,99 @@
                 </div>
             </div>
         </section>
-
-        <!-- Manage Admin Section -->
+         
+        <!-- Driver Status Section -->
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4>Drivers</h4>
-                    <!-- Drivers Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th scope="col">Driver ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for driver in drivers %}
-                        <tr>
-                            <td>{{ driver.id }}</td>
-                            <td>{{ driver.name }}</td>
-                            <td>{{ driver.email }}</td>
-                            <td>{{ driver.phone }}</td>
-                            <td>{{ driver.status }}</td>
-                            <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center">No drivers found.</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
+                    <h4>
+                        <span class="bi bi-truck me-2"></span>
+                        Drivers
+                    </h4>
+
+                    <!-- Search and Filter Form -->
+                    <div class="card my-3">
+                        <div class="card-body">
+                            <form method="get" action="" class="row g-3 align-items-end">
+                                <div class="col-md-5 position-relative">
+                                    <input type="text" class="form-control ps-5" id="search_driver" name="search_driver" placeholder="Search Driver Name or ID" value="{{ request.args.get('search_driver', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <select class="form-select ps-5" id="driver_status" name="driver_status">
+                                        <option value="">All Status</option>
+                                        <option value="Available" {% if request.args.get('driver_status') == 'Available' %}selected{% endif %}>Available</option>
+                                        <option value="On Delivery" {% if request.args.get('driver_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                        <option value="Offline" {% if request.args.get('driver_status') == 'Offline' %}selected{% endif %}>Offline</option>
+                                    </select>
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <span class="bi bi-search me-1"></span> Search
+                                        </button>
+                                        <input type="submit" name="clear" class="btn btn-outline-secondary w-50" value="Clear">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th scope="col">Driver ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Last Active</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for driver in drivers %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('admin.view_driver', driver_id=driver.id) }}" class="text-decoration-none">#{{ driver.id }}</a>
+                                        </td>
+                                        <td>{{ driver.fullname }}</td>
+                                        <td>
+                                            {% if driver.status == "Available" %}
+                                                <span class="badge bg-success">{{ driver.status }}</span>
+                                            {% elif driver.status == "En Route" %}
+                                                <span class="badge bg-warning text-black">{{ driver.status }}</span>
+                                            {% elif driver.status == "Offline" %}
+                                                <span class="badge bg-secondary">{{ driver.status }}</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">{{ driver.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>2025-06-01 14:32</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ url_for('admin.update_driver', driver_id=driver.id) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i> Update
+                                                </a>
+                                                <form method="post" action="{{ url_for('admin.delete_product', product_id=driver.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-x-circle"></i> Disable
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No drivers found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
-
-                    <!-- Update Driver Form -->
-                    <h4>Update Driver Details</h4>
-                    <form method="post" class="row g-3">
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="driver_id" name="driver_id" value="{{ selected_driver.id if selected_driver else '' }}" readonly placeholder="Driver ID">
-                                <label for="driver_id">Driver ID</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="driver_name" name="driver_name" value="{{ selected_driver.name if selected_driver else '' }}" placeholder="Name">
-                                <label for="driver_name">Name</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="email" class="form-control" id="driver_email" name="driver_email" value="{{ selected_driver.email if selected_driver else '' }}" placeholder="Email">
-                                <label for="driver_email">Email</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="driver_phone" name="driver_phone" value="{{ selected_driver.phone if selected_driver else '' }}" placeholder="Phone">
-                                <label for="driver_phone">Phone</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <select class="form-select" id="driver_status" name="driver_status" aria-label="Driver Status">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                                <label for="driver_status">Status</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Update Driver</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </section>
