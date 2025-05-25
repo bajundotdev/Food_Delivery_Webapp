@@ -146,7 +146,8 @@ def add_to_cart(product_id):
 @cart_bp.post('/clearbasket/')
 def clear_basket():
     empty_basket()
-    clear_cart_db(get_user().id)
+    if session.get('user'):
+        clear_cart_db(get_user().id)
     flash('Basket cleared.', 'primary')
     return redirect(url_for('cart.view_cart'))
 

@@ -60,7 +60,9 @@ def remove_from_cart(item_id):
     cart = get_cart()
     print("removing from session")
     cart.remove_item(item_id)
-    user_id = session['user']['user_id']
+    user_dict = session.get('user')
+    if user_dict:
+        user_id = session['user']['user_id']
     _save_basket_to_session(cart)
 
 def empty_basket():
