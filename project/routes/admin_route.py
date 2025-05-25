@@ -117,13 +117,15 @@ def manage_orders():
                                                 drivers=drivers)
 
 # View Order by Order_ID
-@admin_bp.route('/order/<string:order_id>')
+@admin_bp.route('/order/<string:order_id>', methods=['GET'])
 @login_required
 @admin_required
 def view_order(order_id):
-    all_orders = get_all_orders()
+    order_details = get_all_orders_by_id(order_id)
+    items_in_order = get_all_order_items_by_order_id(order_id)
 
-    return render_template('admin/orders/view_order.html', all_orders=all_orders)
+    return render_template('admin/orders/view_order.html', order_details=order_details,
+                                                        items_in_order=items_in_order)
     # return redirect(url_for('admin.manage_orders'))
 
 # Update Status of Order by ORDER_ID

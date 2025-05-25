@@ -258,6 +258,8 @@
                                     <select class="form-select ps-5" id="order_status" name="order_status">
                                         <option value="">All Status</option>
                                         <option value="Pending" {% if request.args.get('order_status') == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="In Progress" {% if request.args.get('order_status') == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Ready" {% if request.args.get('order_status') == 'Ready' %}selected{% endif %}>Ready</option>
                                         <option value="Completed" {% if request.args.get('order_status') == 'Completed' %}selected{% endif %}>Completed</option>
                                         <option value="Cancelled" {% if request.args.get('order_status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
                                         <option value="On Delivery" {% if request.args.get('order_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
@@ -300,6 +302,8 @@
                                         <td>${{ order.total }}</td>
                                         <td>
                                             {% if order.status == "Pending" %}
+                                                <span class="badge bg-danger">{{ order.status }}</span>
+                                            {% elif order.status == "In Progress" %}
                                                 <span class="badge bg-warning text-black">{{ order.status }}</span>
                                             {% elif order.status == "Completed" %}
                                                 <span class="badge bg-success">{{ order.status }}</span>

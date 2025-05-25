@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>View Order #</h2>
+                <h2>View Order #{{ order_details.id }}</h2>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_orders') }}">Orders</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Order #1</li>
+                <li class="breadcrumb-item active" aria-current="page">Order #{{order_details.id}}</li>
             </ol>
         </div>
     </nav>
@@ -69,72 +69,105 @@
                 </div>
             </div>
         </section>
-        
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="d-flex">
+                    <div class="text-center flex-fill">
+                        <div class="text-center fs-4">
+                            <p class="mb-1">
+                                {% if order_details.status == "Pending" %}
+                                    <p class="fs-1 text-danger"><span class="bi bi-clock-history"></span></p>
+                                    <span class="badge bg-danger"> {{ order_details.status }}</span>
+                                    <div class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></div>
+                                {% elif order_details.status == "In Progress" %}
+                                    <p class="fs-1 text-warning"><span class="bi bi-hourglass-split"></span></p>
+                                    <span class="badge bg-warning text-black"> {{ order_details.status }}</span>
+                                    <div class="spinner-border spinner-border-sm text-warning" role="status" aria-hidden="true"></div>
+                                {% elif order_details.status == "Completed" %}
+                                    <p class="fs-1 text-success"><span class="bi bi-bag-check"></span></p>
+                                    <span class="badge bg-success"> {{ order_details.status }}</span>
+                                {% elif order_details.status == "Cancelled" %}
+                                    <p class="fs-1 text-danger"><span class="bi bi-x-circle"></span></p>
+                                    <span class="badge bg-danger"> {{ order_details.status }}</span>
+                                {% elif order_details.status == "On Delivery" %}
+                                    <p class="fs-1 text-warning"><span class="bi bi-truck"></span></p>
+                                    <span class="badge bg-warning text-black"> {{ order_details.status }}</span>
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></div>
+                                {% else %}
+                                    <p class="fs-1 text-primary"><span class="bi bi-truck"></span></p>
+                                    <span class="badge bg-primary"> {{ order_details.status }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
         <!-- Order Details Section -->
         <section>
             <div class="row mt-5">
-            <div class="col-12">
-                <h4>
-                <span class="bi bi-receipt me-2"></span>
-                Order Details - # order.id }}
-                </h4>
-                <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Customer Information</h5>
-                    <p class="mb-1"><strong>Name:</strong>  order.fullname }}</p>
-                    <p class="mb-1"><strong>Email:</strong>  order.email }}</p>
-                    <p class="mb-1"><strong>Phone:</strong>  order.phone }}</p>
-                    <p class="mb-1"><strong>Address:</strong>  order.address }}</p>
-                </div>
-                </div>
-                <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Order Summary</h5>
-                    <p class="mb-1"><strong>Status:</strong>
-                     if order.status == "Pending" %}
-                        <span class="badge bg-warning text-black"> order.status }}</span>
-                     elif order.status == "Completed" %}
-                        <span class="badge bg-success"> order.status }}</span>
-                     elif order.status == "Cancelled" %}
-                        <span class="badge bg-danger"> order.status }}</span>
-                     elif order.status == "On Delivery" %}
-                        <span class="badge bg-warning text-black"> order.status }}</span>
-                     else %}
-                        <span class="badge bg-primary"> order.status }}</span>
-                    endif %}
-                    </p>
-                    <p class="mb-1"><strong>Placed At:</strong>  order.placed_at }}</p>
-                    <p class="mb-1"><strong>Total:</strong> $ order.total }}</p>
-                </div>
-                </div>
-                <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Order Items</h5>
-                    <div class="table-responsive">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Unit Price</th>
-                            <th scope="col">Subtotal</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                         for item in order.items %}
-                            <tr>
-                            <td>item.name }}</td>
-                            <td> item.quantity }}</td>
-                            <td>$item.unit_price }}</td>
-                            <td>$item.subtotal }}</td>
-                            </tr>
-                         endfor %}
-                        </tbody>
-                    </table>
+                <div class="col-12">
+                    <h4><span class="bi bi-receipt me-2"></span> Order Summary - Order #{{ order_details.id }}</h4>
+                    
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="mb-1"><strong>Placed At:</strong>  {{ order_details.placed_at }}</h6>
+                            <h6 class="mb-1"><strong>Total:</strong> $ {{ order_details.total }}</h6>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Customer Information</h5>
+                            <p class="mb-1"><strong>Name:</strong>  {{ order_details.fullname }}</p>
+                            <p class="mb-1"><strong>Email:</strong>  {{ order_details.email }}</p>
+                            <p class="mb-1"><strong>Phone:</strong>  {{ order_details.phone_number }}</p>
+                            <p class="mb-1"><strong>Address:</strong>  {{ order_details.address }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Order Items</h5>
+                            <div class="table-responsive">
+                            <table class="table table-striped table-hover align-middle">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Item</th>
+                                    <th scope="col"></th>
+                                    <th scope="col" class="text-center">Quantity</th>
+                                    <th scope="col" class="text-center">Unit Price</th>
+                                    <th scope="col" class="text-center">Subtotal</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items_in_order %}
+                                        <tr>
+                                            <td><img src="{{ url_for('static', filename='img/products/'+item.food_image_url) }}" alt="{{item.food_image_url}}" class="img-thumbnail me-2" style="width: 50px;" /></td>
+                                            <td>{{ item.product_name }}</td>
+                                            <td class="text-center">{{ item.quantity }}</td>
+                                            <td class="text-center">${{item.price }}</td>
+                                            <td class="text-center">${{item.total }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <!-- Total row -->
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td class="fw-bold text-center">TOTAL:</td>
+                                        <td class="fw-bold text-center">$  {{ order_details.total }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                </div>
-            </div>
             </div>
         </section>
     </main>
