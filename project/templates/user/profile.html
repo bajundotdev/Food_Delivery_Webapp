@@ -170,7 +170,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for order in inordermo %}
+                                {% for order in my_orders %} 
                                 <tr>
                                     <td>
                                         <a href="{{ url_for('admin.view_order', order_id=order.id) }}" class="text-decoration-none"> {{order.id}} </a>

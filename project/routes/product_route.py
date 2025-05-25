@@ -34,14 +34,12 @@ def list_by_category(category):
 @product_bp.route('/<int:product_id>')
 def product_detail(product_id):
     """Display product details."""
-
-    product = get_product_by_id(product_id)
-
-    if not product:
+    product_details = get_product_by_id(product_id)
+    if not product_details:
         flash('Product not found')
-        return redirect(url_for('product.product_list'))
+        return redirect(url_for('main.index'))
         
-    return render_template('products/product_detail.html', product=product)
+    return render_template('products/product_details.html', product_details=product_details)
 
     # try:
     #     # Convert string to enum

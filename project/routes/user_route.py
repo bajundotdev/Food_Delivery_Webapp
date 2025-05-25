@@ -38,9 +38,10 @@ def profile():
     else:
         user_info = ""
         address = ""
+
     user_id = session.get('user').get('user_id')
-    inordermo = get_all_orders_by_user_id(user_id)
-    return render_template('user/profile.html', user_details=user_details, inordermo = inordermo, user_info=user_info, address = address, photo = photo)
+    my_orders = get_all_orders_by_user_id(user_id)
+    return render_template('user/profile.html', user_details=user_details, my_orders = my_orders, user_info=user_info, address = address, photo = photo)
 
 @user_bp.route('/profile/update/<string:email>', methods=['GET', 'POST'])
 @login_required

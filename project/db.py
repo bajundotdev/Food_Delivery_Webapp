@@ -684,6 +684,22 @@ def get_all_order_items_by_order_id(order_id):
         #]
     else:
         return []
+def get_all_order_items_by_order_id_status(order_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT pt.*, ot.*, cart.quantity * pt.price as total
+        FROM order_table ot
+        JOIN cart_items cart ON ot.order_id = cart.order_id
+        JOIN product_table pt ON cart.product_id = pt.product_id
+        WHERE ot.order_id = %s AND ot.status = %s
+    """, (order_id, status,))
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return results
+        
+    else:
+        return []
 
 def get_all_orders():
     cur = mysql.connection.cursor()
