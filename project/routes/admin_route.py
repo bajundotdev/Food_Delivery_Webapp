@@ -27,6 +27,22 @@ def admin_dashboard():
     orders_by_status = get_all_orders_by_status('Pending')[:10]
     drivers = get_all_driver()
 
+    search_order = request.args.get('search_order')
+    order_status = request.args.get('order_status')
+    search_driver = request.args.get('search_driver')
+    driver_status = request.args.get('driver_status')
+    clear = request.args.get('clear')
+
+    if request.method == "GET":
+        if search_order or order_status:
+            all_orders = search_order_name_id_status(search_order, order_status)
+
+        if search_driver or driver_status:
+            all_orders = search_order_name_id_status(search_driver, driver_status)
+
+        if clear:
+            return redirect(url_for('admin.admin_dashboard'))
+
     return render_template('admin/dashboard.html', admin_details=admin_details,
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
@@ -125,14 +141,18 @@ def update_order_status():
 @login_required
 @admin_required
 def manage_order_report():
-    status_filter = request.args.get('status', '')
     all_orders = get_all_orders()
-    
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
+    search_order = request.args.get('search_order')
+    order_status = request.args.get('order_status')
+    clear = request.args.get('clear')
+
+    if request.method == "GET":
+        if search_order or order_status:
+            all_orders = search_order_name_id_status(search_order, order_status)
+        if clear:
+            return redirect(url_for('admin.manage_order_report'))
+
+
     return render_template('admin/orders/manage_order_report.html', all_orders=all_orders)
 
 
@@ -145,10 +165,12 @@ def manage_order_report():
 @admin_required
 def manage_product():
 
-    status_filter = request.args.get('status', '')
-    
-    if status_filter:
-        menus = Product.get_orders_by_status(status_filter)
+    search_menu = request.args.get('search_menu', '')
+    menu_status = request.args.get('menu_status', '')
+    clear = request.args.get('status', '')
+
+    if search_menu or menu_status:
+        menus = search_product(search_menu)
     else:
         menus = get_all_products()
 
@@ -161,9 +183,17 @@ def add_product():
     form_product = ProductForm()
     if request.method == 'POST':
         add_product_to_db(form_product)
+        flash('Product successfully added!', 'success')
         return redirect(url_for('admin.manage_product'))
     
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
+
+@admin_bp.route('/menu/<int:product_id>', methods=['GET'])
+@login_required
+@admin_required
+def view_product(product_id):
+    product_details = get_product_by_id(product_id)
+    return render_template('admin/menu/product_details.html', product_details=product_details)
 
 @admin_bp.route('/menu/category/add', methods=['GET', 'POST'])
 @login_required
@@ -191,6 +221,7 @@ def update_product(product_id):
         return render_template('admin/menu/product_update_form.html', form_product=form_product, categories=ProductCategory)
     
     if request.method == 'POST':
+        print(form_product)
         form_product.name = request.form['name']
         form_product.price = float(request.form['price'])
         form_product.stock = int(request.form['stock'])
@@ -215,18 +246,24 @@ def save_product():
         update_product_table(update_form)
         for info in update_form:
             print(info.data)
-        flash('Product successfully updated!')
+        flash('Product successfully updated!', 'success')
         return redirect(url_for('admin.manage_product'))
         # return render_template('admin/product_update_form.html', form_product=form_product, categories=ProductCategory)
 
     return redirect(url_for('admin.manage_product'))
 
-@admin_bp.route('/menu/delete', methods=['POST'])
+@admin_bp.route('/menu/delete/<int:product_id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_product(product_id):
-    product_id = request.args.get('')
-    delete_product_from_list(product_id)
+    if request.method == "POST":
+        result = delete_product_from_list(product_id)
+
+        if result:
+            flash('Product successfully removed!', 'info')
+        else:
+            flash('Failed to remove product.', 'danger')
+
     return redirect(url_for('admin.manage_product'))
 
 #########################

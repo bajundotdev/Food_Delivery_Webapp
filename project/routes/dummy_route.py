@@ -38,7 +38,7 @@ from utils import is_logged_in
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 
-@product_bp.route('/<int:product_id>', methods=['GET'])
+@product_bp.route('/menu/<int:product_id>', methods=['GET'])
 def view_product(product_id):
     product = Product.get_by_id(product_id)  # Get the product by its ID (implement this method)
     if not product:
@@ -46,5 +46,5 @@ def view_product(product_id):
         return redirect(url_for('main.index'))  # Redirect to home or products listing
 
     form = AddToCartForm()  # Create the form object inside the route
-    return render_template('product_detail.html', product=product, form=form)
+    return render_template('draft/product_detail.html', product=product, form=form)
 

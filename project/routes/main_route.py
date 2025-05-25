@@ -22,7 +22,7 @@ def index():
         return render_template('index.html', 
                            products=searched,
                            cart_form=cart_form)
-
+    
     featured_products = get_all_products()
     return render_template('index.html', 
                            products=featured_products,

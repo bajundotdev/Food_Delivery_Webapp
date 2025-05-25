@@ -274,7 +274,6 @@ def get_product_by_id(product_id):
 
 def search_product(search_str):
     like_str = "%" + str(search_str) + "%"
-    print(like_str)
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT *
