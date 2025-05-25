@@ -38,38 +38,6 @@
                     <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Driving License Number" required>
                     <label for="license_number">Driving License Number</label>
                 </div>
-                <hr> <!--Address-->
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="label" name="label" placeholder="Label (e.g. House Number)" required>
-                    <label for="label">Label (e.g. House Number)</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="address_line1" name="address_line1" placeholder="Address Line 1" required>
-                    <label for="address_line1">Address Line 1</label>
-                </div>
-                
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="address_line2" name="address_line2" placeholder="Address Line 2" required>
-                    <label for="Address Line 2">Address Line 2</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
-                    <label for="city">City</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="state" name="state" placeholder="State" required>
-                    <label for="state">State</label>
-                </div>
-                
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="PostalCode" required>
-                    <label for="postal_code">Postal Code</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="country" name="country" placeholder="Country" required>
-                    <label for="country">Country</label>
-                </div>
-                <hr> <!--end address-->
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                     <label for="password">Password</label>
@@ -78,7 +46,6 @@
                     <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password" placeholder="Confirm Password" required>
                     <label for="signupConfirmPassword">Confirm Password</label>
                 </div>
-                
                 <button type="submit" class="btn btn-danger w-100">Join us today</button>
                 {{ form.csrf_token }}
             </form>
