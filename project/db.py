@@ -155,6 +155,17 @@ def add_user(form):
         INSERT INTO user_table (email, password_hash, fullname, phone_number, user_type, is_active, is_verified, created_at, updated_at, last_login, profile_picture_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)"""
         , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"user.jpg"))
+    
+    user_id = cur.lastrowid
+
+    cur.execute("""
+        INSERT INTO user_address (user_id, label, address_line1, address_line2,
+                city, state, postal_code, country, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (str(user_id), form.label.data, form.address_line1.data, form.address_line2.data,
+                form.city.data, form.state.data, form.postal_code.data, form.country.data,
+                current_timestamp, current_timestamp,))
+    
     mysql.connection.commit()
     cur.close()
 
@@ -446,6 +457,15 @@ def add_driver(form):
            int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"zoro.jpg"))
     
     user_id = cur.lastrowid
+
+    cur.execute("""
+        INSERT INTO user_address (user_id, label, address_line1, address_line2,
+                city, state, postal_code, country, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (str(user_id), form.label.data, form.address_line1.data, form.address_line2.data,
+                form.city.data, form.state.data, form.postal_code.data, form.country.data,
+                current_timestamp, current_timestamp,))
+
     cur.execute("""
         INSERT INTO delivery_driver (user_id, vehicle_type, license_number, vehicle_plate,
                 is_available, created_at, updated_at, driver_rating, total_deliveries)
