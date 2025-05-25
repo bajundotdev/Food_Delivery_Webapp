@@ -79,26 +79,28 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="text">
-                <form method="POST" action="{{ url_for('cart.clear_basket') }}">
-                    <input type="submit" value="Empty cart" class="btn btn-outline-danger">
-                </form>
-                
+            <div class="container">
+                <div class="row">
+                    <div class="col-auto me-auto">
+                        <form method="POST" action="{{ url_for('cart.clear_basket') }}">
+                            <input type="submit" value="Empty cart" class="btn btn-outline-danger">
+                        </form>
+                    </div>
+                    <div class="col-auto">
+                        {% if order.items|length > 0 %}
+                            <form method="GET" action="{{ url_for('cart.checkout_cart') }}">
+                                <input type="submit" value="Proceed to Checkout" class="btn btn-success">
+                            </form>
+                            {% else %}
+                            <a href="{{ url_for('main.index') }}">
+                                <button class="btn btn-success">
+                                    View products
+                                </button></a>
+                        {% endif %}
+                    </div>
             </div>
-            <div class="text-end">
-                {% if order.items|length > 0 %}
-                <form method="GET" action="{{ url_for('cart.checkout_cart') }}">
-                    <input type="submit" value="Proceed to Checkout" class="btn btn-success">
-                </form>
-                {% else %}
-                <a href="{{ url_for('main.index') }}">
-                    <button class="btn btn-success">
-                        View products
-                    </button></a>
-                {% endif %}
-                
-            </div>
-
+            </div>           
+  
   
     </main>
 {% endblock %}
