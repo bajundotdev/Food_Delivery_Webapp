@@ -28,7 +28,7 @@ def check_user(email, password):
 #####################
 
 def get_all_users():
-    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor)
     cur.execute("""
         SELECT user_id,fullname, email, phone_number,
                 password_hash ,profile_picture_url,
