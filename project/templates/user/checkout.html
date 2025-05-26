@@ -72,10 +72,6 @@
                                 <label for="address" class="form-label">Delivery Address</label>
                                 <input type="text" id="address" name="address" class="form-control" placeholder="Enter delivery address"  value="{{ address }}"/>
                             </div>
-                            <div class="mb-3">
-                                <label for="instructions" class="form-label">Delivery Instructions</label>
-                                <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Additional instructions (optional)"></textarea>
-                            </div>
                             
                             <h2 class="h5 mb-3">Payment</h2>
                             <div class="mb-3">
@@ -85,8 +81,8 @@
                                     <label class="form-check-label" for="payCard">Credit Card</label>
                                     </div>
                                     <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="payPaypal"  value="Debit Card"/>
-                                    <label class="form-check-label" for="payPaypal">Debit Card</label>
+                                        <input class="form-check-input" type="radio" name="payment_method" id="payPaypal"  value="Debit Card"/>
+                                        <label class="form-check-label" for="payPaypal">Debit Card</label>
                                     </div>
                                     <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="payCOD"  value="Cash"/>
@@ -94,8 +90,8 @@
                                 </div>
                             </div>
 
+                            <h2 class="h5">Delivery Options</h2>
                             <div class="mb-3">
-                            <label class="form-label">Shipping Method</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="shippingMethod" id="standard" value="standard" checked>
                                 <label class="form-check-label" for="standard">
@@ -110,8 +106,8 @@
                             </div>
                             </div>
                             
+                            <h2 class="h5">Packaging Method</h2>
                             <div class="mb-3">
-                            <label class="form-label">Packaging Method</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="packagingMethod" id="standard" value="standard" checked>
                                 <label class="form-check-label" for="standard">
@@ -128,8 +124,10 @@
                                 <input class="form-check-input" type="radio" name="packagingMethod" id="sameDay" value="sameDay">
                                 <label class="form-check-label" for="sameDay">
                                 Discreet and Confidential Packaging - $5.99
-                                <input type="text" class="form-control mt-1" id="packagingDetails" placeholder="Please specify any special requirements">
-                                </label>
+                                
+                                <div class="d-flex my-3">
+                                    <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Additional instructions (optional)"></textarea>
+                                </div>
                             </div>
                             </div>
 
