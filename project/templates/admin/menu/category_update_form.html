@@ -74,17 +74,17 @@
         <!-- Update Menu Section -->
         <section>
             <div class="row mt-5">
-                <div class="col-12">
+                <div class="col-8">
                     <h4 class="my-4">Category Details for "{{ category['category_name'] }}"</h4>
                     <div class="card">
                         <div class="card-body">
                             <form action="{{ url_for('admin.save_category') }}" method="post" class="row g-3 mb-4" enctype="multipart/form-data">
                              
-                                <input type="text" class="form-control" id="product_id" name="product_id" placeholder="{{ category['category_id'] }}" value="{{ category['category_id'] }}" hidden readonly required>
-                                <div class="col-md-6">
+                                <input type="text" class="form-control" id="category_id" name="category_id" placeholder="{{ category['category_id'] }}" value="{{ category['category_id'] }}" hidden readonly required>
+                                <div class="col-md-8">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="{{ category['category_id'] }}" value="{{ category['category_name'] }}" required>
-                                        <label for="product_name">Category name</label>
+                                        <input type="text" class="form-control" id="category_name" name="category_name" placeholder="{{ category['category_name'] }}" value="{{ category['category_name'] }}" required>
+                                        <label for="category_name">Category name</label>
                                     </div>
                                 </div>
                                 

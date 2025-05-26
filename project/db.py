@@ -981,7 +981,7 @@ def add_order_to_db(order, form, address_id):
     cur.close()
 
 ####################################    CRUD CATEGORIES     ##################
-def add_category(category_name):
+def add_category_db(category_name):
     cur = mysql.connection.cursor()
     cur.execute("""
         INSERT INTO categories (category_name)
@@ -991,7 +991,7 @@ def add_category(category_name):
     mysql.connection.commit()
     cur.close()
 
-def delete_category(category_id):
+def delete_category_db(category_id):
     cur = mysql.connection.cursor()
     cur.execute("""
         DELETE FROM categories
@@ -1002,7 +1002,7 @@ def delete_category(category_id):
     mysql.connection.commit()
     cur.close()
 
-def update_category(category_id, category_name):
+def update_category_db(category_id, category_name):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE categories
@@ -1031,6 +1031,7 @@ def get_all_category():
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT * FROM categories
+        ORDER BY category_name
         """
         ,)
     results = cur.fetchall()

@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, current_app, render_template, redirect, session, url_for, flash, request
 from project.decorators import login_required, admin_required
 from project.forms import ProductForm, DriverForm
+from project.forms.admin_form import CategoryForm
 from project.models import Product, Order
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
@@ -130,10 +131,18 @@ def update_category(category_id):
 @login_required
 @admin_required
 def save_category():
-   
+    category_form = CategoryForm()
+    existing_categ = get_all_category()
+     
     if request.method == "POST":
+        for categ in existing_categ:
+            if category_form.category_name.data == categ['category_name']:
+                flash("Category already exists!", "danger")
+                return redirect(url_for('admin.save_category'))
+        
         try:
-            #update_category(category_id, category_name)
+            print("ID :" ,category_form.category_id.data, " Name:", category_form.category_name.data)
+            update_category_db(category_form.category_id.data, category_form.category_name.data)
             flash('Category successfully updated!', 'success')
 
         except Exception as e:
@@ -147,11 +156,25 @@ def save_category():
 @admin_required
 def delete_category(category_id):
     if request.method == "POST":
-            pass
-            #delete_category(product_id)
-     
+            delete_category_db(category_id)
 
     return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/menu/add_category/', methods=['POST', 'GET'])
+@login_required
+@admin_required
+def add_category():
+     if request.method == "POST":
+        print(request.form.get('new_category_name'))
+        new_categ = request.form.get('new_category_name')
+        existing_categ = get_all_category()
+        for categ in existing_categ:
+            if new_categ == categ['category_name']:
+                flash("Category already exists!", "danger")
+                return redirect(url_for('admin.manage_product'))
+
+        add_category_db(new_categ)
+     return redirect(url_for('admin.manage_product'))
 ###########################
 #   Manage CRUD Orders    #
 ###########################

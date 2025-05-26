@@ -53,3 +53,7 @@ class RestaurantForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired(), Length(min=10, max=1000)])
     image = FileField('Restaurant Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     submit = SubmitField('Save Restaurant')
+
+class CategoryForm(FlaskForm):
+    category_id = StringField('Category ID', validators=[DataRequired()])
+    category_name = StringField('Category Name', validators=[DataRequired(), Length(min=2, max=100)])
