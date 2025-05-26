@@ -91,7 +91,7 @@
                                         <select class="form-select" id="category" name="category" required>
                                             <option value="" disabled selected>Select Category</option>
                                             {% for category in categories %}
-                                                <option value="{{ category.value }}">{{ category.value }}</option>
+                                                <option value="{{ category['category_id'] }}">{{ category['category_name'] }}</option>
                                             {% endfor %}
                                         </select>
                                         <label for="category">Category</label>

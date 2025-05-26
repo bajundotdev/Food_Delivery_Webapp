@@ -69,7 +69,46 @@
                 </div>
             </div>
         </section>
-
+        <section>
+            <!-- Categories Table -->
+            <div class="table-responsive mb-5">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th scope="col">Category ID</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            
+                            <td>{{ category['category_id'] }}</td>
+                            <td>{{ category['category_name'] }}</td>
+                            
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('admin.update_category', category_id=category['category_id']) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> Update
+                                    </a>
+                                    <form method="post" action="{{ url_for('admin.delete_category', category_id=category['category_id']) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No menus found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
         <!-- Menu/ Products Section -->
         <section>
             <div class="row mt-5">

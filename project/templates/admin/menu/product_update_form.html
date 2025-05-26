@@ -90,12 +90,13 @@
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select class="form-select" id="category" name="category" required>
-                                            <option value="" disabled>Select Category</option>
+                                            <option value="" disabled selected>Select Category</option>
                                             {% for category in categories %}
-                                                <option value="{{ category.value }}" {% if category.value == form_product.category %} selected {% endif %}>{{ category.value }}</option>
+                                                <option value="{{ category['category_id'] }}">{{ category['category_name'] }}</option>
                                             {% endfor %}
                                         </select>
                                         <label for="category">Category</label>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
