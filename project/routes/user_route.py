@@ -30,18 +30,25 @@ def profile():
     user_session = session.get('user')
     user_details = get_user_info_with_address_by_email(user_session['email'])
 
+    print(user_details)
+
     if user_details:
         user_info = user_details[0]
         address = user_details[1]
-        photo = user_details[0].profile_picture_url
-        session['photo'] = photo
+        # photo = user_details[0].profile_picture_url
+        # session['photo'] = photo
     else:
         user_info = ""
         address = ""
+        photo = ""
 
     user_id = session.get('user').get('user_id')
     my_orders = get_all_orders_by_user_id(user_id)
-    return render_template('user/profile.html', user_details=user_details, my_orders = my_orders, user_info=user_info, address = address, photo = photo)
+    return render_template('user/profile.html', user_details=user_details, 
+                           my_orders = my_orders, 
+                           user_info=user_info, 
+                           address = address, 
+                           photo = photo)
 
 @user_bp.route('/profile/update/<string:email>', methods=['GET', 'POST'])
 @login_required

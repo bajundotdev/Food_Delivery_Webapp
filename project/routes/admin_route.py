@@ -62,6 +62,32 @@ def admin_dashboard():
                                                 orders_by_status=orders_by_status)
                                                 #,drivers=drivers)
 
+@admin_bp.route('/profile', methods=['GET'])
+@login_required
+@admin_required 
+def profile():
+    user_session = session.get('user')
+    user_details = get_user_info_with_address_by_email(user_session['email'])
+
+    if user_details:
+        user_info = user_details[0]
+        address = user_details[1]
+        photo = user_details[0].profile_picture_url
+        session['photo'] = photo
+    else:
+        user_info = ""
+        address = ""
+        photo = ""
+    
+    user_id = session.get('user').get('user_id')
+    my_orders = get_all_orders_by_user_id(user_id)
+
+    return render_template('admin/profile.html', user_details=user_details, 
+                           user_info=user_info, 
+                           my_orders=my_orders,
+                           address = address, 
+                           photo = photo)
+
 #############################
 #   Manage CRUD Categories  #
 #############################
