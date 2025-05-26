@@ -56,28 +56,29 @@ def login():
                 flash('Invalid username or password', 'error')
                 return redirect(url_for('auth.login'))
             else:
-                # Store full user info in session
-                session['user'] = {
-                    'user_id': user.id,
-                    'firstname': user.name,
-                    'phone': user.phone,
-                    'email': user.email,
-                    'address_id': "",
-    
-                }
-                session['logged_in'] = True
-                session['role'] = user.role
-                flash('Login successful!', 'success')
-                if session['role'] == "Admin":
-                    return redirect(url_for('admin.admin_dashboard'))
-                elif session['role'] == "Delivery Driver":
-                    return redirect(url_for('driver.driver_dashboard'))
-                elif session['role'] == "Customer":
-                    user_id = session['user']['user_id']
-                    cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
-                    for item in cart_from_db:
-                        add_cart_item_from_db(item)  
-                    return redirect(url_for('main.index'))
+                if user.is_active:
+                    # Store full user info in session
+                    session['user'] = {
+                        'user_id': user.id,
+                        'firstname': user.name,
+                        'phone': user.phone,
+                        'email': user.email,
+                        'address_id': "",
+        
+                    }
+                    session['logged_in'] = True
+                    session['role'] = user.role
+                    flash('Login successful!', 'success')
+                    if session['role'] == "Admin":
+                        return redirect(url_for('admin.admin_dashboard'))
+                    elif session['role'] == "Delivery Driver":
+                        return redirect(url_for('driver.driver_dashboard'))
+                    elif session['role'] == "Customer":
+                        user_id = session['user']['user_id']
+                        cart_from_db = get_uncheckedout_cart_items_by_user_id(user_id)
+                        for item in cart_from_db:
+                            add_cart_item_from_db(item)  
+                        return redirect(url_for('main.index'))
         
     return render_template('login.html', form=form)
 

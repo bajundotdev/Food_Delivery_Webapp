@@ -19,7 +19,7 @@ def check_user(email, password):
     cur.close()
     if row:
         if check_password_hash(row['password_hash'], password):
-            return User(row['user_id'], row['fullname'], row['email'], row['phone_number'], row['password_hash'], row['profile_picture_url'], row['user_type'])
+            return User(row['user_id'], row['fullname'], row['email'], row['phone_number'], row['password_hash'], row['profile_picture_url'], row['user_type'], row['is_active'])
                            
     return None
 
@@ -978,3 +978,64 @@ def add_order_to_db(order, form, address_id):
         
     mysql.connection.commit()
     cur.close()
+
+####################################    CRUD CATEGORIES     ##################
+def add_category(category_name):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO categories (category_name)
+        VALUES (%s)"""
+        , (category_name, ))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def delete_category(category_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        DELETE FROM categories
+        WHERE category_id = %s
+        """
+        , (category_id, ))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def update_category(category_id, category_name):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE categories
+        SET category_name = %s
+        WHERE category_id = %s
+        """
+        , (category_name, category_id,))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def get_all_category_by_categ_id(category_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT * FROM categories WHERE category_id = %s
+        """
+        ,(category_id,))
+    results = cur.fetchone()
+    cur.close()
+    if results is not None:
+        return results
+    else:
+        return []
+
+def get_all_category():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT * FROM categories
+        """
+        ,)
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return results
+    else:
+        return []
+
