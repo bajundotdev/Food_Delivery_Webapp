@@ -59,8 +59,8 @@ def admin_dashboard():
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
-                                                orders_by_status=orders_by_status,
-                                                drivers=drivers)
+                                                orders_by_status=orders_by_status)
+                                                #,drivers=drivers)
 
 #############################
 #   Manage CRUD Categories  #
@@ -90,6 +90,42 @@ def manage_categories():
 
     return render_template('admin/categories.html', form=form, categories=categories)
 
+@admin_bp.route('/categories/update_category/<int:category_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def update_category(category_id):
+    category = get_all_category_by_categ_id(category_id)
+    
+
+    return render_template('admin/menu/category_update_form.html', category=category)
+
+
+@admin_bp.route('/menu/save_category/', methods=('POST', 'GET'))
+@login_required
+@admin_required
+def save_category():
+   
+    if request.method == "POST":
+        try:
+            #update_category(category_id, category_name)
+            flash('Category successfully updated!', 'success')
+
+        except Exception as e:
+            print("Error:", e)
+            flash('Failed to update category.', 'danger')
+
+    return redirect(url_for('admin.manage_product'))
+
+@admin_bp.route('/menu/delete_category/<int:category_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_category(category_id):
+    if request.method == "POST":
+            pass
+            #delete_category(product_id)
+     
+
+    return redirect(url_for('admin.manage_product'))
 ###########################
 #   Manage CRUD Orders    #
 ###########################
@@ -171,7 +207,7 @@ def manage_order_report():
 @login_required
 @admin_required
 def manage_product():
-
+    categories = get_all_category()
     menus = get_all_products()
     search_menu = request.args.get('search_menu', '')
     menu_status = request.args.get('menu_status', '')
@@ -184,13 +220,14 @@ def manage_product():
         if clear:
             return redirect(url_for('admin.manage_product'))
 
-    return render_template('admin/menu/manage_products_and_category.html', menus=menus)
+    return render_template('admin/menu/manage_products_and_category.html', categories=categories,menus=menus)
 
 @admin_bp.route('/menu/add', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def add_product():
     form_product = ProductForm()
+    categories = get_all_category()
 
     if request.method == "POST":
         file = request.files['food_image_url']
@@ -208,7 +245,7 @@ def add_product():
             print("Error:", e)
             flash('Failed to add new menu.', 'danger')
     
-    return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=ProductCategory)
+    return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=categories)
 
 @admin_bp.route('/menu/<int:product_id>', methods=['GET'])
 @login_required
@@ -224,13 +261,13 @@ def view_product(product_id):
 def update_product(product_id):
     form_product = ProductForm()
     form_product = get_product_by_id(product_id)
-
+    categories = get_all_category()
     if not form_product:
         flash('Product not found.', 'danger')
         return redirect(url_for('admin.manage_product'))
     
     if request.method == "GET":
-        return render_template('admin/menu/product_update_form.html', form_product=form_product, categories=ProductCategory)
+        return render_template('admin/menu/product_update_form.html', form_product=form_product, categories=categories)
     
     if request.method == 'POST':
         form_product.name = request.form['name']
@@ -294,12 +331,21 @@ def delete_product(product_id):
 #   Manage CRUD Users   #
 #########################
  
-@admin_bp.route('/users')
+@admin_bp.route('/users/')
 @login_required
 @admin_required
 def manage_users():
-    customers = get_all_users()
+    customers = get_all_users_by_status(1)    
+
     return render_template('admin/users/manage_customers.html', customers=customers)
+
+@admin_bp.post('/user/<int:user_id>/')
+def delete_user(user_id):
+    
+    print(user_id)
+    set_user_is_active(user_id,0)
+
+    return redirect(url_for('admin.manage_users'))
 
 @admin_bp.route('/admins')
 @login_required

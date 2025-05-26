@@ -19,7 +19,7 @@ def check_user(email, password):
     cur.close()
     if row:
         if check_password_hash(row['password_hash'], password):
-            return User(row['user_id'], row['fullname'], row['email'], row['phone_number'], row['password_hash'], row['profile_picture_url'], row['user_type'])
+            return User(row['user_id'], row['fullname'], row['email'], row['phone_number'], row['password_hash'], row['profile_picture_url'], row['user_type'], row['is_active'])
                            
     return None
 
@@ -35,13 +35,34 @@ def get_all_users():
                 user_type, is_active, last_login
         FROM user_table
     """, )
-    row = cur.fetchone()
+    results = cur.fetchall()
     cur.close()
-    if row is not None:
+    if results is not None:
         return [
             User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
                 row['password_hash'], row['profile_picture_url'],
-                row['user_type'], bool(row['is_active']), row['last_login'])
+                row['user_type'], bool(row['is_active']), row['last_login']) for row in results
+        ]
+    else:
+        return []
+    
+def get_all_users_by_status(is_active):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+        WHERE is_active = %s
+    """, (is_active,))
+    
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']) for row in results
         ]
     else:
         return []
@@ -179,6 +200,17 @@ def update_user_profile(fullname, phone, profile_picture_url, email):
 
     mysql.connection.commit()
     cur.close()
+
+def set_user_is_active(user_id, is_active):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table
+        SET is_active = %s
+        WHERE  user_id = %s
+    """, (is_active, user_id,))
+
+    mysql.connection.commit()
+    cur.close()
 #delete
 
 ##################
@@ -242,25 +274,25 @@ def add_address_by_user_id(form):
 def get_all_products():
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE deleted = 0
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE deleted = 0 AND product_table.category = categories.category_id
     """)
     results = cur.fetchall()
     cur.close()
 
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['category_name'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
 def get_product_by_id(product_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE product_id = %s
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE product_id = %s AND product_table.category = categories.category_id
     """ , (product_id,))
     row = cur.fetchone()
     #print("id: ", product_id)
@@ -276,9 +308,9 @@ def search_product(search_str):
     like_str = "%" + str(search_str) + "%"
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0 AND product_table.category = categories.category_id
     """ , (like_str, like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
@@ -288,7 +320,7 @@ def search_product(search_str):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def search_order_name_id_status(search_str, status):
+def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end="2025-05-30 18:35:48"):
     like_str = "%" + str(search_str) + "%"
     like_status = "%" + str(status) + "%"
     cur = mysql.connection.cursor()
@@ -300,9 +332,10 @@ def search_order_name_id_status(search_str, status):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
-                AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s)
+                AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s
+                AND (ordert.placed_at BETWEEN %s AND %s))
         ORDER BY ordert.status
-    """, (like_str, like_str, like_status))
+    """, (like_str, like_str, like_status, date_start, date_end))
     results = cur.fetchall()
     cur.close()
     return [
@@ -340,9 +373,9 @@ def search_users(search_str):
 def get_product_by_category(categ):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE category = %s
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE categories.category_name = %s product_table.category = categories.category_id
     """ % categ)
     results = cur.fetchall()
     cur.close()
@@ -946,3 +979,64 @@ def add_order_to_db(order, form, address_id):
         
     mysql.connection.commit()
     cur.close()
+
+####################################    CRUD CATEGORIES     ##################
+def add_category(category_name):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        INSERT INTO categories (category_name)
+        VALUES (%s)"""
+        , (category_name, ))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def delete_category(category_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        DELETE FROM categories
+        WHERE category_id = %s
+        """
+        , (category_id, ))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def update_category(category_id, category_name):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE categories
+        SET category_name = %s
+        WHERE category_id = %s
+        """
+        , (category_name, category_id,))
+    
+    mysql.connection.commit()
+    cur.close()
+
+def get_all_category_by_categ_id(category_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT * FROM categories WHERE category_id = %s
+        """
+        ,(category_id,))
+    results = cur.fetchone()
+    cur.close()
+    if results is not None:
+        return results
+    else:
+        return []
+
+def get_all_category():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT * FROM categories
+        """
+        ,)
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return results
+    else:
+        return []
+
