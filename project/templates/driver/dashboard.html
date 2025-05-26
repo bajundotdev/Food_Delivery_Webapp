@@ -122,7 +122,7 @@
                         Orders Ready for Delivery ({{ orderReady | length}})
                     </h4>
                 </div>
-                <!-- {{orderReady}} -->
+                {{orderReady}}
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
@@ -136,7 +136,7 @@
                                         <span class="badge bg-warning text-black ms-2">New</span>
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title mb-1">{{fullname}}</h5>
+                                        <h5 class="card-title mb-1">{{order.fullname}}</h5>
                                         <p class="card-text mb-2">
                                             <strong>Items:</strong>
                                             <ul>
@@ -161,7 +161,7 @@
                 <div class="col-12">
                     <h4>
                         <span class="bi bi-truck me-2"></span>
-                        Ongoing Delivery ({{orderOngoing | length}})
+                        Ongoing Delivery ({{orderTransit | length}})
                     </h4>
                 </div>
                 <!-- {{orderReady}} -->
@@ -171,19 +171,19 @@
                         {% for order in orderCompleted %}
                             {% if order.status == "Completed" %}
                                 <div class="card shadow-sm incoming-order-card">
-                                    <div class="card-header bg-success d-flex justify-content-between align-items-center">
+                                    <div class="card-header bg-warning d-flex justify-content-between align-items-center">
                                         <span class="text-white">
-                                            <i class="bi bi-bag-check me-2"></i> In Transit {{order.id}}
+                                            <i class="bi bi-bag-check me-2"></i> In Transit
                                         </span>
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title mb-1">{{fullname}}</h5>
+                                        <h5 class="card-title mb-1">{{order.fullname}}</h5>
                                         <p class="card-text mb-2">
-                                            <strong>Items:</strong> {{order.product_name}}<br>
+                                            <strong>Items:</strong> {{order.id.product_name}}<br>
                                             <strong>Total:</strong> {{order.total}}
                                         </p>
                                         <div class="d-flex">
-                                            <button class="btn btn-success btn-sm me-2">Done</button>
+                                            <button class="btn btn-warning btn-sm me-2">Done</button>
                                             <button class="btn btn-outline-secondary btn-sm">Cancelled</button>
                                         </div>
                                     </div>
