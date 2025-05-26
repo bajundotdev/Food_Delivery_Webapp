@@ -320,7 +320,7 @@ def search_product(search_str):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def search_order_name_id_status(search_str, status):
+def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end="2025-05-30 18:35:48"):
     like_str = "%" + str(search_str) + "%"
     like_status = "%" + str(status) + "%"
     cur = mysql.connection.cursor()
@@ -332,9 +332,10 @@ def search_order_name_id_status(search_str, status):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
-                AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s)
+                AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s
+                AND (ordert.placed_at BETWEEN %s AND %s))
         ORDER BY ordert.status
-    """, (like_str, like_str, like_status))
+    """, (like_str, like_str, like_status, date_start, date_end))
     results = cur.fetchall()
     cur.close()
     return [
