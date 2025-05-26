@@ -385,14 +385,26 @@ def delete_product(product_id):
 @admin_required
 def manage_users():
     customers = get_all_users_by_status(1)    
+    user_roles = UserRole
 
-    return render_template('admin/users/manage_customers.html', customers=customers)
+    return render_template('admin/users/manage_customers.html', customers=customers,
+                                                                user_roles=user_roles)
 
 @admin_bp.post('/user/<int:user_id>/')
 def delete_user(user_id):
     
     print(user_id)
     set_user_is_active(user_id,0)
+
+    return redirect(url_for('admin.manage_users'))
+
+@admin_bp.post('/user/update/<int:user_id>/')
+@login_required
+@admin_required
+def update_user_role(user_id):
+    
+    print(user_id)
+    # set_user_is_active(user_id,0)
 
     return redirect(url_for('admin.manage_users'))
 

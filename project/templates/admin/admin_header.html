@@ -42,12 +42,10 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="restaurantDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('admin.manage_product') }}">Manage menus and category</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('admin.manage_admins') }}">Manage admins</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('admin.manage_drivers') }}">Manage drivers</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url_for('admin.manage_users') }}">Customers</a>
+                    <a class="nav-link" aria-current="page" href="{{ url_for('admin.manage_users') }}">Accounts</a>
                 </li>
                 <li class="nav-item dropdown d-none d-md-block">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">

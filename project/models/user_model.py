@@ -12,7 +12,6 @@ class UserRole(Enum):
     CUSTOMER = "Customer"
     ADMIN = "Admin"
     DRIVER = "Delivery Driver"
-    RESTAURANTOWNER = "Restaurant Manager"
 
 ###################
 # User Models

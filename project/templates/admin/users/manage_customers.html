@@ -79,10 +79,10 @@
                         <table class="table table-striped align-middle">
                             <thead>
                                 <tr>
-                                    <th scope="col">Customer ID</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Phone</th>
+                                    <th scope="col">User Role</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -90,11 +90,22 @@
                                 {% for customer in customers %}
                                     {% if customer %}
                                     <tr>
-                                        <td>{{ customer.id }}</td>
                                         <td>{{ customer.name }}</td>
                                         <td>{{ customer.email }}</td>
                                         <td>{{ customer.phone }}</td>
+                                        <form method="POST" action="{{ url_for('admin.update_user_role', user_id=customer.id) }}">
                                         <td>
+                                            <select>
+                                                {% for role in user_roles %}
+                                                    <option value="{{ role.value }}" {% if customer.role == role.value %}selected{%endif%}>
+                                                        {{ role.value }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                                <input type="submit" value="Update" class="btn btn-sm btn-outline-primary">
+                                            </form>
                                             <form method="POST" action="{{ url_for('admin.delete_user', user_id=customer.id) }}">
                                                 <input type="submit" value="Delete" class="btn btn-sm btn-outline-danger">
                                             </form>
