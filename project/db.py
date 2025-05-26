@@ -35,13 +35,34 @@ def get_all_users():
                 user_type, is_active, last_login
         FROM user_table
     """, )
-    row = cur.fetchone()
+    results = cur.fetchall()
     cur.close()
-    if row is not None:
+    if results is not None:
         return [
             User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
                 row['password_hash'], row['profile_picture_url'],
-                row['user_type'], bool(row['is_active']), row['last_login'])
+                row['user_type'], bool(row['is_active']), row['last_login']) for row in results
+        ]
+    else:
+        return []
+    
+def get_all_users_by_status(is_active):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT user_id,fullname, email, phone_number,
+                password_hash ,profile_picture_url,
+                user_type, is_active, last_login
+        FROM user_table
+        WHERE is_active = %s
+    """, (is_active,))
+    
+    results = cur.fetchall()
+    cur.close()
+    if results is not None:
+        return [
+            User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']) for row in results
         ]
     else:
         return []
@@ -176,6 +197,17 @@ def update_user_profile(fullname, phone, profile_picture_url, email):
         SET fullname = %s, phone_number = %s, profile_picture_url = %s
         WHERE  email = %s
     """, (fullname, phone, profile_picture_url,email,))
+
+    mysql.connection.commit()
+    cur.close()
+
+def set_user_is_active(user_id, is_active):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table
+        SET is_active = %s
+        WHERE  user_id = %s
+    """, (is_active, user_id,))
 
     mysql.connection.commit()
     cur.close()

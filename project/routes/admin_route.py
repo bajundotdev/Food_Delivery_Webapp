@@ -59,8 +59,8 @@ def admin_dashboard():
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
-                                                orders_by_status=orders_by_status,
-                                                drivers=drivers)
+                                                orders_by_status=orders_by_status)
+                                                #,drivers=drivers)
 
 #############################
 #   Manage CRUD Categories  #
@@ -294,12 +294,21 @@ def delete_product(product_id):
 #   Manage CRUD Users   #
 #########################
  
-@admin_bp.route('/users')
+@admin_bp.route('/users/')
 @login_required
 @admin_required
 def manage_users():
-    customers = get_all_users()
+    customers = get_all_users_by_status(1)    
+
     return render_template('admin/users/manage_customers.html', customers=customers)
+
+@admin_bp.post('/user/<int:user_id>/')
+def delete_user(user_id):
+    
+    print(user_id)
+    set_user_is_active(user_id,0)
+
+    return redirect(url_for('admin.manage_users'))
 
 @admin_bp.route('/admins')
 @login_required

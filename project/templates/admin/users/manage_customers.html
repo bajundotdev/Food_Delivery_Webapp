@@ -87,20 +87,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                <tr>
-                                    <td>1001</td>
-                                    <td>Jane Doe</td>
-                                    <td>jane.doe@example.com</td>
-                                    <td>0412 345 678</td>
-                                    <td><a href="#" class="btn btn-sm btn-outline-primary">Edit</a></td>
-                                </tr>
-
-                                { else %}
+                                {% for customer in customers %}
+                                    {% if customer %}
                                     <tr>
-                                        <td colspan="6" class="text-center">No customers found.</td>
+                                        <td>{{ customer.id }}</td>
+                                        <td>{{ customer.name }}</td>
+                                        <td>{{ customer.email }}</td>
+                                        <td>{{ customer.phone }}</td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('admin.delete_user', user_id=customer.id) }}">
+                                                <input type="submit" value="Delete" class="btn btn-sm btn-outline-danger">
+                                            </form>
+                                            
+                                        </td>
                                     </tr>
-                                { endfor %}
+
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">No customers found.</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
