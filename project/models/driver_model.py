@@ -18,9 +18,9 @@ class DriverStatus(Enum):
 class Driver:
     id: str
     user_id: str
-    vecicle_type: str
+    vehicle_type: str
     license_number: str
-    vecicle_plate: str
+    vehicle_plate: str
     driver_rating: float
     total_deliveries: int
     fullname: str

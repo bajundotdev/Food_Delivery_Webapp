@@ -126,7 +126,7 @@
                                 {% for driver in drivers %}
                                     <tr>
                                         <td>
-                                            <a href="{{ url_for('admin.view_driver', driver_id=driver.id) }}" class="text-decoration-none">#{{ driver.id }}</a>
+                                            <a href="{{ url_for('admin.update_driver', driver_id=driver.id) }}" class="text-decoration-none">#{{ driver.id }}</a>
                                         </td>
                                         <td>{{ driver.fullname }}</td>
                                         <td>

@@ -319,8 +319,15 @@ def manage_drivers():
 @admin_required
 def update_driver(driver_id):
     driver_form = DriverForm()
-    driver = get_driver_by_id(driver_id)
-    driver_details = driver[0]
+    driver_query = get_driver_by_id(driver_id)
+    driver_details = driver_query[0]
+
+    # for driver in driver_query:
+    #     print(driver)
+    #     #user_address = get_address_by_user_id(driver.user_id)
+    #     #driver_details.append(user_address)
+    #     print(driver_details)
+    #     pass
 
     return render_template('admin/drivers/update_driver.html', driver_form=driver_form,
                                                         driver_details=driver_details)
