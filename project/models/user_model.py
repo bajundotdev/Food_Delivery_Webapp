@@ -57,7 +57,8 @@ class UserAddress:
         
     def full_address(self):
         """Return formatted full address string."""
-        parts = [self.street]
+        parts = [self.address_line1]
+
         if self.city and self.state:
             parts.append(f"{self.city}, {self.state}")
         elif self.city:

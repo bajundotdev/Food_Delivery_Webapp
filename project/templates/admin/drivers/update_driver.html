@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Manage Drivers</h2>
+                <h2>Update Driver</h2>
             </div>
         </div>
     </div>
@@ -70,7 +70,51 @@
             </div>
         </section>
 
-        {{ driver_details }}
+        <!-- User Profile Section -->
+        <section class="my-4">
+            <div class="card shadow-sm">
+                <div class="row d-flex g-0 align-items-sm-center">
+                    <div class="col-md-3 text-center p-3">
+                        <div class="d-inline-block rounded-circle border border-3 border-dark overflow-hidden" style="width: 140px; height: 140px;">
+                            {% if driver_details.profile_picture_url %}
+                                <img src="{{ url_for('static', filename='img/profile_photos/' + driver_details.profile_picture_url) }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='img/profile_photos/blank_profile.png') }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-9 text-md-start text-center">
+                        <div class="card-body">
+                            <h4 class="card-title mb-1">
+                                {{ driver_details.fullname }}
+                                {% if driver_details.is_active %}
+                                    <span class="badge text-success ms-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-danger ms-2">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Inactive
+                                    </span>
+                                {% endif %}
+                            </h4>
+                            <p class="card-text mb-1 text-muted">
+                                <span><i class="bi bi-envelope"></i> <a href="mailto:{{ driver_details.email }}">{{ driver_details.email }}</a></span>
+                            </p>
+                            <p class="card-text mb-0">
+                                <span><i class="bi bi-telephone"></i> {{ driver_details.phone_number }}</span>
+                            </p>
+                            <p class="card-text mb-1 text-muted">
+                                <span><i class="bi bi-scooter"></i> {{ driver_details.vehicle_type }}</span>
+                            </p>
+                            <p class="card-text mb-1 text-muted">
+                                <span><i class="bi bi-star-fill"></i> {{ driver_details.driver_rating }}</span>
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section>
             <div class="row mt-5">
                 <div class="col-12">

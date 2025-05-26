@@ -219,17 +219,17 @@ def set_user_is_active(user_id, is_active):
 def get_address_by_user_id(user_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT address_id,user_id, label,
+        SELECT address_id,user_id,
                 address_line1, address_line2 ,city,
                 state, postal_code, country,
                 created_at, updated_at
         FROM user_address
         WHERE user_id = %s
-    """, user_id)
+    """, (user_id,))
     row = cur.fetchone()
     cur.close()
     return [
-        User(str(row['address_id']), row['user_id'], row['label'],
+        UserAddress(str(row['address_id']), row['user_id'],
              row['address_line1'], row['address_line2'], row['city'],
              row['state'], row['postal_code'], row['country'],
              row['created_at'], row['updated_at']
