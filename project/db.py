@@ -274,25 +274,25 @@ def add_address_by_user_id(form):
 def get_all_products():
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE deleted = 0
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE deleted = 0 AND product_table.category = categories.category_id
     """)
     results = cur.fetchall()
     cur.close()
 
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['category_name'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
 def get_product_by_id(product_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE product_id = %s
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE product_id = %s AND product_table.category = categories.category_id
     """ , (product_id,))
     row = cur.fetchone()
     #print("id: ", product_id)
@@ -308,9 +308,9 @@ def search_product(search_str):
     like_str = "%" + str(search_str) + "%"
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0 AND product_table.category = categories.category_id
     """ , (like_str, like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
@@ -372,9 +372,9 @@ def search_users(search_str):
 def get_product_by_category(categ):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT *
-        FROM product_table
-        WHERE category = %s
+        SELECT product_table.*, categories.category_name
+        FROM product_table, categories
+        WHERE categories.category_name = %s product_table.category = categories.category_id
     """ % categ)
     results = cur.fetchall()
     cur.close()
