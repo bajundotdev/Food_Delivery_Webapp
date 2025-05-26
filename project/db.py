@@ -1041,3 +1041,14 @@ def get_all_category():
     else:
         return []
 
+def update_user_role_db(user_id, role):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table
+        SET user_type = %s
+        WHERE user_id = %s
+        """
+        , (user_id, role,))
+    
+    mysql.connection.commit()
+    cur.close()
