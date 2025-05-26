@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Add Menu</h2>
+                <h2>Order #{{ order_id }}</h2>
             </div>
         </div>
     </div>
@@ -16,9 +16,8 @@
         <div class="container">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant') }}">Restaurant</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_product') }}">Menus</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Menu</li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_orders') }}">Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order #{{ order_id }}</li>
             </ol>
         </div>
     </nav>
@@ -70,68 +69,72 @@
                 </div>
             </div>
         </section>
-        <hr>
-        <!-- Add Menu Section -->
+        
+        <!-- Order Details Section -->
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4 class="my-4">Add New Menu</h4>
-                    <div class="card shadow-sm">
+                    <h4>
+                        <span class="bi bi-receipt me-2"></span>
+                        Order Details
+                    </h4>
+                    <div class="card mb-4">
                         <div class="card-body">
-                            <form action="{{ url_for('admin.add_product') }}" method="post" class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Menu Name" required>
-                                        <label for="product_name">Menu Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="category" name="category" required>
-                                            <option value="" disabled selected>Select Category</option>
-                                            {% for category in categories %}
-                                                <option value="{{ category.value }}">{{ category.value }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="category">Category</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="Price" required>
-                                        <label for="price">Price</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="is_active" name="is_active" required>
-                                            <option value="1" selected>Active</option>
-                                            <option value="0">Inactive</option>
-                                        </select>
-                                        <label for="is_active">Status</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-floating">
-                                        <input type="file" class="form-control" id="food_image_url" name="food_image_url" value="food.jpg" accept="image/*">
-                                        <label for="food_image_url">Menu Image</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" id="description" name="description" placeholder="Description" style="height: 100px"></textarea>
-                                        <label for="description">Description</label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-4">
-                                    <button type="submit" class="btn btn-success">Save Menu</button>
-                                </div>
-                            </form>
+                            <h5 class="card-title mb-3">Order Summary</h5>
+                            <p class="mb-1"><strong>Status:</strong>
+                                {% if laman[0].status == "Pending" %}
+                                    <span class="badge bg-warning text-black">{{  laman[0].status }}</span>
+                                {%elif laman[0].status == "Completed" %}
+                                    <span class="badge bg-success">{{ laman[0].status }}</span>
+                                {%elif laman[0].status == "Cancelled" %}
+                                    <span class="badge bg-danger">{{  laman[0].status }}</span>
+                                {%elif laman[0].status == "On Delivery" %}
+                                    <span class="badge bg-warning text-black">{{  laman[0].status }}</span>
+                                {%else %}
+                                    <span class="badge bg-primary">{{  laman[0].status }}</span>
+                                {% endif %}
+                            </p>
+                            <p class="mb-1"><strong>Placed At:</strong>{{   laman[0].placed_at }}</p>
+                            <p class="mb-1"><strong>Total:</strong> $ {{ laman[0].total_price }}</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Order Items</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Item</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Unit Price</th>
+                                            <th scope="col">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for item in laman %}
+                                            <tr>
+                                                <td>{{ item.product_name }}</td>
+                                                <td>{{  item.quantity }}</td>
+                                                <td>$ {{ item.price }}</td>
+                                                <td>$ {{ item.price * item.quantity }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <!-- Total row -->
+                                        <tr>
+                                            <td colspan="2"></td>
+                                            <td class="text-end fw-bold">Total:</td>
+                                            <td class="fw-bold">$ {{ laman[0].total_price }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 {% endblock %}

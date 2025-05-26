@@ -2,4 +2,6 @@
 # app/forms/__init__.py
 from .admin_form import ProductForm
 from .shopping_form import CartForm
-from .forms import BaseUserForm, RegistrationForm, LoginForm, PasswordChangeForm, AdminUserForm, SearchForm, CartOperationForm, CheckoutForm, OrderStatusForm
+from .driver_form import DriverForm
+from .main_form import BaseUserForm, LoginForm, RegistrationForm, PasswordChangeForm
+# from .forms import BaseUserForm, RegistrationForm, LoginForm, PasswordChangeForm, AdminUserForm, SearchForm, CartOperationForm, OrderStatusForm

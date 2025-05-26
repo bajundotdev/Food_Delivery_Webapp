@@ -31,10 +31,11 @@ CREATE TABLE `cart_items` (
   `order_id` bigint DEFAULT NULL,
   `created_at` timestamp NOT NULL,
   `quantity` int NOT NULL,
+  `temp_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`cart_id`),
   KEY `cart_items_product_id_foreign` (`product_id`),
   KEY `cart_items_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,8 +44,32 @@ CREATE TABLE `cart_items` (
 
 LOCK TABLES `cart_items` WRITE;
 /*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
-INSERT INTO `cart_items` VALUES (1,1,5,2,'2025-05-20 08:16:05',1),(2,2,5,2,'2025-05-20 08:16:14',2),(3,7,5,NULL,'2025-05-20 08:16:20',1),(4,3,9,3,'2025-05-20 08:17:02',1);
+INSERT INTO `cart_items` VALUES (1,1,5,2,'2025-05-20 08:16:05',1,NULL),(2,2,5,2,'2025-05-20 08:16:14',2,NULL),(4,3,9,3,'2025-05-20 08:17:02',1,NULL),(7,7,10,9,'2025-05-23 13:26:46',1,'9a6e21cb-8cd4-48eb-ad71-929b4bfad5f1'),(8,7,10,9,'2025-05-23 13:42:38',1,'144d7e68-9a33-47be-8351-1298b131cf68'),(18,3,10,9,'2025-05-24 03:42:12',2,'111a7261-9357-4fc4-81fa-9d90f3a6838f'),(19,7,5,10,'2025-05-24 04:24:01',1,'f19b9893-ed8f-4d64-9ab1-b2bfae8789a5'),(20,3,5,10,'2025-05-24 04:24:01',2,'97f430bc-9a82-4aca-80ca-87760b3c409a'),(21,7,5,NULL,'2025-05-26 00:03:16',1,'aa501e8e-822e-45d5-b7b5-411d8db933b0'),(22,3,5,NULL,'2025-05-26 00:03:16',1,'68ffbfc0-7c60-44bf-8472-81a80c886987');
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `categories` (
+  `category_id` int NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `categories`
+--
+
+LOCK TABLES `categories` WRITE;
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` VALUES (1,'Main Dish'),(2,'Dessert'),(3,'Snack'),(4,'Beverage'),(5,'Super Meal');
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -60,7 +85,7 @@ CREATE TABLE `delivery_driver` (
   `vehicle_type` varchar(255) NOT NULL,
   `license_number` varchar(255) NOT NULL,
   `vehicle_plate` varchar(255) NOT NULL,
-  `is_available` tinyint(1) NOT NULL,
+  `is_available` tinyint(1) NOT NULL DEFAULT '1',
   `driver_rating` decimal(8,2) NOT NULL,
   `total_deliveries` int NOT NULL,
   `created_at` timestamp NOT NULL,
@@ -68,7 +93,7 @@ CREATE TABLE `delivery_driver` (
   PRIMARY KEY (`driver_id`),
   KEY `delivery_driver_user_id_foreign` (`user_id`),
   CONSTRAINT `delivery_driver_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +102,7 @@ CREATE TABLE `delivery_driver` (
 
 LOCK TABLES `delivery_driver` WRITE;
 /*!40000 ALTER TABLE `delivery_driver` DISABLE KEYS */;
-INSERT INTO `delivery_driver` VALUES (1,6,'Scooter','123456789','123-ABC',0,5.00,1,'2025-05-18 07:03:07','2025-05-18 07:03:07');
+INSERT INTO `delivery_driver` VALUES (1,6,'Scooter','123456789','123-ABC',0,5.00,1,'2025-05-18 07:03:07','2025-05-18 07:03:07'),(2,18,'Bicycle','88877-AAA','Not applicable',1,5.00,0,'2025-05-24 12:42:42','2025-05-24 12:42:42'),(3,23,'Carloo','888AAA888AAA','XXX123',1,5.00,0,'2025-05-25 01:24:46','2025-05-25 01:24:46'),(4,24,'4x4','PH12345','1234ABC',1,5.00,0,'2025-05-25 02:44:16','2025-05-25 02:44:16');
 /*!40000 ALTER TABLE `delivery_driver` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,6 +128,7 @@ CREATE TABLE `order_table` (
   `notes` text,
   `payment_invoice` varchar(45) DEFAULT NULL,
   `delivery_option` varchar(45) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   KEY `order_table_driver_id_foreign` (`driver_id`),
   KEY `order_table_user_id_foreign` (`user_id`),
@@ -110,7 +136,7 @@ CREATE TABLE `order_table` (
   CONSTRAINT `order_table_address_id_foreign` FOREIGN KEY (`address_id`) REFERENCES `user_address` (`address_id`),
   CONSTRAINT `order_table_driver_id_foreign` FOREIGN KEY (`driver_id`) REFERENCES `delivery_driver` (`driver_id`),
   CONSTRAINT `order_table_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +145,7 @@ CREATE TABLE `order_table` (
 
 LOCK TABLES `order_table` WRITE;
 /*!40000 ALTER TABLE `order_table` DISABLE KEYS */;
-INSERT INTO `order_table` VALUES (2,5,1,1,'Completed',12.99,'Success','Cash','2025-05-20 08:35:48','2025-05-20 08:35:48',NULL,'Fast delivery, Eco Mode','RF:0012345',NULL),(3,10,1,1,'Ready',12.99,'Success','Credit Card','2025-05-20 10:25:49','2025-05-20 10:25:49',NULL,'Delayed','RF:999999',NULL),(4,10,NULL,2,'OrderStatus.PENDING',20.99,'Success','Debit Card','2025-05-22 13:47:07',NULL,NULL,NULL,'102025-05-22 23:47:07',NULL),(5,10,NULL,2,'OrderStatus.PENDING',20.99,'Success','Debit Card','2025-05-22 13:47:47',NULL,NULL,NULL,'102025-05-22 23:47:47',NULL);
+INSERT INTO `order_table` VALUES (2,5,1,1,'Completed',12.99,'Success','Cash','2025-05-20 08:35:48','2025-05-20 08:35:48',NULL,'Fast delivery, Eco Mode','RF:0012345',NULL,NULL),(3,10,1,1,'Ready',12.99,'Success','Credit Card','2025-05-20 10:25:49','2025-05-20 10:25:49',NULL,'Delayed','RF:999999',NULL,NULL),(4,10,NULL,2,'Pending',20.99,'Success','Debit Card','2025-05-22 13:47:07',NULL,NULL,NULL,'102025-05-22 23:47:07',NULL,NULL),(5,10,NULL,2,'Pending',20.99,'Success','Debit Card','2025-05-22 13:47:47',NULL,NULL,NULL,'102025-05-22 23:47:47',NULL,NULL),(8,10,NULL,2,'Pending',31.96,'','Cash','2025-05-24 00:24:34',NULL,NULL,'Hungry na po','102025-05-24 10:24:34',NULL,'White House, Block 10, Small County, District of Col, Washington, 4000, USA'),(9,10,NULL,2,'Pending',5.98,'','Cash','2025-05-24 03:42:12',NULL,NULL,'pakibalot an lang po','102025-05-24 13:42:12',NULL,'White House, Block 10, Small County, District of Col, Washington, 4000, USA'),(10,5,NULL,1,'Pending',15.98,'','Cash','2025-05-24 04:24:01',NULL,NULL,'sa bahay po','52025-05-24 14:24:01',NULL,'Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia');
 /*!40000 ALTER TABLE `order_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,11 +169,11 @@ CREATE TABLE `product_table` (
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NOT NULL,
   `restaurant_id` bigint unsigned DEFAULT NULL,
-  `deleted` tinyint(1) DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`product_id`),
   KEY `product_table_ownser_id_foreign` (`restaurant_id`),
   CONSTRAINT `product_table_ownser_id_foreign` FOREIGN KEY (`restaurant_id`) REFERENCES `restaurant` (`restaurant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +182,7 @@ CREATE TABLE `product_table` (
 
 LOCK TABLES `product_table` WRITE;
 /*!40000 ALTER TABLE `product_table` DISABLE KEYS */;
-INSERT INTO `product_table` VALUES (1,'Pizza lang','Delicious Pizza promise swear','Main Dish',12.99,5.00,'15','https://media.istockphoto.com/id/1561032358/photo/mouthwatering-oven-baked-pizzas-adorned-with-assorted-meats-pepperoni-and-cheese-and-a.jpg?s=612x612&w=is&k=20&c=dCUZqn3KX9pxoPChOrbZrriEGW605FChZmZsnmug30s=',1,'2025-05-14 00:12:11','2025-05-14 00:12:11',1,1),(2,'Burger','Juicy beef burger','Main',9.99,100.00,'20','https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',1,'2025-05-17 09:44:44','2025-05-17 09:44:44',1,1),(3,'Kwazan','Croissant is the new Kwazan','Main',2.99,100.00,'20','https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',1,'2025-05-17 09:44:44','2025-05-17 09:44:44',1,0),(7,'Chicken barbecue','The best barbie ever in Brisbane','Main',12.99,100.00,'20','https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',1,'2025-05-17 09:48:21','2025-05-17 09:48:21',2,0);
+INSERT INTO `product_table` VALUES (1,'Pizza lang','Delicious Pizza promise swear','1',12.99,5.00,'15','chicken-red-curry-black-cup.jpg',1,'2025-05-14 00:12:11','2025-05-14 00:12:11',1,1),(2,'Burger','Juicy beef burger','1',9.99,100.00,'20','chicken-red-curry-black-cup.jpg',1,'2025-05-17 09:44:44','2025-05-17 09:44:44',1,1),(3,'Kwazan','Croissant is the new Kwazan','1',2.99,100.00,'20','chicken-red-curry-black-cup.jpg',1,'2025-05-17 09:44:44','2025-05-17 09:44:44',1,0),(7,'Chicken barbecue','The best barbie ever in Brisbane','1',12.99,100.00,'20','chicken-red-curry-black-cup.jpg',1,'2025-05-17 09:48:21','2025-05-17 09:48:21',2,0),(8,'basta pagkain','Masarap to pramis','4',500.00,100.00,'10','ace.jpg',1,'2025-05-26 01:54:30','2025-05-26 01:54:30',1,0);
 /*!40000 ALTER TABLE `product_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +244,7 @@ CREATE TABLE `user_address` (
   PRIMARY KEY (`address_id`),
   KEY `user_address_user_id_foreign` (`user_id`),
   CONSTRAINT `user_address_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,7 +253,7 @@ CREATE TABLE `user_address` (
 
 LOCK TABLES `user_address` WRITE;
 /*!40000 ALTER TABLE `user_address` DISABLE KEYS */;
-INSERT INTO `user_address` VALUES (1,5,'Iglu','62 Blamey St.','Kelvin Grove','Brisbane','Queensland','4509','Australia','2025-05-18 07:07:42','2025-05-18 07:07:42'),(2,10,'White House','Block 10','Small County','District of Col','Washington','4000','USA','2025-05-22 13:35:00','2025-05-22 13:35:00');
+INSERT INTO `user_address` VALUES (1,5,'Iglu','62 Blamey St.','Kelvin Grove','Brisbane','Queensland','4509','Australia','2025-05-18 07:07:42','2025-05-18 07:07:42'),(2,10,'White House','Block 10','Small County','District of Col','Washington','4000','USA','2025-05-22 13:35:00','2025-05-22 13:35:00'),(3,22,'56','Baratie','East Blue','Sabaodi','Grandline','5000','Albasta','2025-05-25 01:23:57','2025-05-25 01:23:57'),(4,23,'No Label','Blake Street','Red Mountain','Big Apple City','Arizona','6000','Biringan','2025-05-25 01:24:46','2025-05-25 01:24:46'),(5,24,'502','Butuan City','Butuan City','Butuan','ADN','8600','Philippines','2025-05-25 02:44:16','2025-05-25 02:44:16');
 /*!40000 ALTER TABLE `user_address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -252,7 +278,7 @@ CREATE TABLE `user_table` (
   `updated_at` timestamp NOT NULL,
   `last_login` timestamp NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +287,7 @@ CREATE TABLE `user_table` (
 
 LOCK TABLES `user_table` WRITE;
 /*!40000 ALTER TABLE `user_table` DISABLE KEYS */;
-INSERT INTO `user_table` VALUES (1,'Junnie Boy','junnie@foodah.com','+61000111222','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','https://plus.unsplash.com/premium_photo-1664536392896-cd1743f9c02c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Admin',1,1,'2025-05-13 23:18:20','2025-05-13 23:18:20','2025-05-13 23:18:20'),(5,'Jamizan Angkol','jamizan@foodah.com','+6112345678','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','https://plus.unsplash.com/premium_photo-1664536392896-cd1743f9c02c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Customer',1,1,'2025-05-13 23:20:58','2025-05-13 23:20:58','2025-05-13 23:20:58'),(6,'Tomasino Bakero','tomasen@foodah.com','+61999888777','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','https://plus.unsplash.com/premium_photo-1664536392896-cd1743f9c02c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Delivery Driver',1,1,'2025-05-13 23:21:42','2025-05-13 23:21:42','2025-05-13 23:21:42'),(7,'Adriano Restoranto','adrian@foodah.com','+61987654321','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','https://plus.unsplash.com/premium_photo-1664536392896-cd1743f9c02c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Restaurant Manager',1,1,'2025-05-14 00:06:07','2025-05-14 00:06:07','2025-05-14 00:06:07'),(8,'admin','admin@foodah.com','610000000','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','https://plus.unsplash.com/premium_photo-1664536392896-cd1743f9c02c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D','Admin',1,1,'2025-05-17 04:16:20','2025-05-17 04:16:20','2025-05-17 04:16:20'),(9,'Tony Chopper','tony@foodah.com','09777968166','scrypt:32768:8:1$zRIKWVTmKGvdqHYm$1d2fb305042d1ed8d4914692321486a3aacab3ecdc7cb03345bc0a4c886c2b257f3de9818b3883e9a87673e2c91892fdf241673daffb5d790c8580c69061542f','user.jpg','Customer',1,1,'2025-05-20 02:28:16','2025-05-20 02:28:16','2025-05-20 02:28:16'),(10,'Nico Robin','robin@foodah.com','+6123564578','scrypt:32768:8:1$t5z5WXMfLPqUbocC$f6dc23b40a45944bbe5050054fe86ca474a566b1e53d6a1d6aa903d9cdebce21c85bce30f257d98d442d8ce1b1e82fe4cb96ac17f7ca0262a48ca5ac24ab20e0','user.jpg','Customer',1,1,'2025-05-20 06:23:36','2025-05-20 06:23:36','2025-05-20 06:23:36');
+INSERT INTO `user_table` VALUES (1,'Junnie Boy','junnie@foodah.com','+61000111222','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Admin',0,1,'2025-05-13 23:18:20','2025-05-13 23:18:20','2025-05-13 23:18:20'),(5,'Jamizan Angkol','jamizan@foodah.com','+6112345678','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Customer',0,1,'2025-05-13 23:20:58','2025-05-13 23:20:58','2025-05-13 23:20:58'),(6,'Tomasino Bakero','tomasen@foodah.com','+61999888777','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Delivery Driver',0,1,'2025-05-13 23:21:42','2025-05-13 23:21:42','2025-05-13 23:21:42'),(7,'Adriano Restoranto','adrian@foodah.com','+61987654321','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Restaurant Manager',0,1,'2025-05-14 00:06:07','2025-05-14 00:06:07','2025-05-14 00:06:07'),(8,'admin','admin@foodah.com','610000000','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Admin',1,1,'2025-05-17 04:16:20','2025-05-17 04:16:20','2025-05-17 04:16:20'),(9,'Tony Chopper','tony@foodah.com','09777968166','scrypt:32768:8:1$zRIKWVTmKGvdqHYm$1d2fb305042d1ed8d4914692321486a3aacab3ecdc7cb03345bc0a4c886c2b257f3de9818b3883e9a87673e2c91892fdf241673daffb5d790c8580c69061542f','zoro.jpg','Customer',1,1,'2025-05-20 02:28:16','2025-05-20 02:28:16','2025-05-20 02:28:16'),(10,'Nico Robin Chan','robin@foodah.com','+6155522266','scrypt:32768:8:1$t5z5WXMfLPqUbocC$f6dc23b40a45944bbe5050054fe86ca474a566b1e53d6a1d6aa903d9cdebce21c85bce30f257d98d442d8ce1b1e82fe4cb96ac17f7ca0262a48ca5ac24ab20e0','zoro.jpg','Customer',1,1,'2025-05-20 06:23:36','2025-05-20 06:23:36','2025-05-20 06:23:36'),(18,'Roronoa Zoro','zoro@foodah.com','+6155566677','scrypt:32768:8:1$wvs1rBa3yiJLn78t$b66e12a2b880dd1a81d49d7ac79ed081dbf61fbc6d690bd556443311991f4c718a5b30f7ec1e264928617b961c5d1f29e7738ebe63dacb395902e519c10734db','zoro.jpg','Delivery Driver',1,1,'2025-05-24 12:42:42','2025-05-24 12:42:42','2025-05-24 12:42:42'),(22,'Vinsmoke Sanji','sanji@foodah.com','+6399988887','scrypt:32768:8:1$ulZiglADiDd330Fq$233c8da365c49bb47ff2ac56978c543b296d38995ed4b6e62f7a9db3644f59a1fb7cdf16c5c5b04c5f53e296f388d9a0c84034664e1d18e73b5c0c8db0f2a07f','zoro.jpg','Customer',1,1,'2025-05-25 01:23:57','2025-05-25 01:23:57','2025-05-25 01:23:57'),(23,'Boy Panda','boypanda@foodah.com','+999888899','scrypt:32768:8:1$tkNwE5jBdqkVzWjZ$5940fd2f2dfac3c64e08e098d8496b757d7f6298b44b673f0a8995b050cb192a3db80bd6f24eb83608b76b0245cfbaa27180be36d962795374152afdaa09f064','zoro.jpg','Delivery Driver',1,1,'2025-05-25 01:24:46','2025-05-25 01:24:46','2025-05-25 01:24:46'),(24,'Noel Ajoc','noel.ajoc@gmail.com','123456789','scrypt:32768:8:1$mnSyop8DFRbo5qcj$d975b77bab3c9ff2f7abf770bc86130372fe267a917576db7ad3444c2bd1a6cc14ea2aa9c9a41f047443f52f94ba6c99233cf1b83a3865ab9b8f58d22f9a7506','zoro.jpg','Delivery Driver',1,1,'2025-05-25 02:44:16','2025-05-25 02:44:16','2025-05-25 02:44:16');
 /*!40000 ALTER TABLE `user_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,4 +382,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-23 14:46:08
+-- Dump completed on 2025-05-26 13:07:29

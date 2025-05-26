@@ -20,6 +20,9 @@ def create_app():
     app.config['MYSQL_DB'] = 'foodah_database'      # Name of the database you created. Change the file name to match your database name.
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     
+    UPLOAD_FOLDER = 'project/static/img/'
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
      # Initialize MySQL
     mysql.init_app(app)
 

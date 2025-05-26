@@ -24,7 +24,7 @@ class User:
     name: str
     email: str
     phone: str
-    password: str
+    password: str = ""
     profile_picture_url: str = ""
     role: UserRole = UserRole.CUSTOMER
     is_active: bool = True
@@ -57,7 +57,8 @@ class UserAddress:
         
     def full_address(self):
         """Return formatted full address string."""
-        parts = [self.street]
+        parts = [self.address_line1]
+
         if self.city and self.state:
             parts.append(f"{self.city}, {self.state}")
         elif self.city:

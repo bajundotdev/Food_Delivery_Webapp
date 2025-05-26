@@ -4,7 +4,7 @@
     <div class="container mt-2">
         <div class="row d-flex">
             <div class="col">
-                <h2>Manage Restaurant</h2>
+                <h2>Manage Customers</h2>
             </div>
         </div>
     </div>
@@ -16,8 +16,7 @@
         <div class="container">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_restaurant')}}">Restaurant</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Admins</li>
+                <li class="breadcrumb-item active" aria-current="page">Customers</li>
             </ol>
         </div>
     </nav>
@@ -70,76 +69,78 @@
             </div>
         </section>
 
-        <!-- Manage Admin Section -->
+        <!-- Manage Customers Section -->
         <section>
             <div class="row mt-5">
                 <div class="col-12">
-                    <h4>System Administrators</h4>
-                    <!-- Admins Table -->
+                    <h4>Customers</h4>
+                    <!-- Customers Table -->
                     <div class="table-responsive mb-4">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                        <tr>
-                            <th scope="col">Admin ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for admin in admins %}
-                        <tr>
-                            <td>{{ admin.id }}</td>
-                            <td>{{ admin.name }}</td>
-                            <td>{{ admin.email }}</td>
-                            <td>{{ admin.role }}</td>
-                            <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center">No admins found.</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Customer ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for customer in customers %}
+                                    {% if customer %}
+                                    <tr>
+                                        <td>{{ customer.id }}</td>
+                                        <td>{{ customer.name }}</td>
+                                        <td>{{ customer.email }}</td>
+                                        <td>{{ customer.phone }}</td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('admin.delete_user', user_id=customer.id) }}">
+                                                <input type="submit" value="Delete" class="btn btn-sm btn-outline-danger">
+                                            </form>
+                                            
+                                        </td>
+                                    </tr>
+
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">No customers found.</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
 
-                    <!-- Update Admin Form -->
-                    <h4>Update Admin Details</h4>
+                    <!-- Update Customer Form -->
+                    <h4>Update Customer Details</h4>
                     <form method="post" class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="admin_id" name="admin_id" value="{{ selected_admin.id if selected_admin else '' }}" readonly placeholder="Admin ID">
-                                <label for="admin_id">Admin ID</label>
+                                <input type="text" class="form-control" id="customer_id" name="customer_id" value="" readonly placeholder="Customer ID">
+                                <label for="customer_id">Customer ID</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="admin_name" name="admin_name" value="{{ selected_admin.name if selected_admin else '' }}" placeholder="Name">
-                                <label for="admin_name">Name</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" value="" placeholder="Name">
+                            <label for="customer_name">Name</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ selected_admin.email if selected_admin else '' }}" placeholder="Email">
-                                <label for="admin_email">Email</label>
+                            <input type="email" class="form-control" id="customer_email" name="customer_email" value="" placeholder="Email">
+                            <label for="customer_email">Email</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <select class="form-select" id="admin_role" name="admin_role" aria-label="Admin Role">
-                                    <option value="SuperAdmin">SuperAdmin</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Staff">Staff</option>
-                                </select>
-                                <label for="admin_role">Role</label>
+                            <input type="text" class="form-control" id="customer_phone" name="customer_phone" value="" placeholder="Phone">
+                            <label for="customer_phone">Phone</label>
                             </div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Update Admin</button>
+                            <button type="submit" class="btn btn-primary">Update Customer</button>
                         </div>
                     </form>
                 </div>
