@@ -320,7 +320,7 @@ def search_product(search_str):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end="2025-05-30 18:35:48"):
+def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end=current_timestamp):
     like_str = "%" + str(search_str) + "%"
     like_status = "%" + str(status) + "%"
     cur = mysql.connection.cursor()

@@ -39,17 +39,20 @@ def admin_dashboard():
     for order in orders_by_status:
         order.items = get_all_order_items_by_order_id_status(order.id, 'Pending')
 
-    # search query details
-    search_order = request.args.get('search_order')
-    search_category = request.args.get('order_category')
-    order_status = request.args.get('order_status')
-    search_driver = request.args.get('search_driver')
-    driver_status = request.args.get('driver_status')
     clear = request.args.get('clear')
 
     if request.method == "GET":
-        if search_order or order_status or search_category:
-            all_orders = search_order_name_id_status(search_order, order_status)
+        
+        # search query details
+        search_order = request.args.get('search_order')
+        order_status = request.args.get('order_status')
+        search_driver = request.args.get('search_driver')
+        startdate = request.args.get('startdate')
+        enddate = request.args.get('enddate')
+        driver_status = request.args.get('driver_status')
+        
+        if search_order or order_status or startdate or enddate:
+            all_orders = search_order_name_id_status(search_order, order_status, startdate, enddate)
 
         if search_driver or driver_status:
             all_orders = search_order_name_id_status(search_driver, driver_status)

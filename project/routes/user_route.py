@@ -35,8 +35,7 @@ def profile():
     if user_details:
         user_info = user_details[0]
         address = user_details[1]
-        # photo = user_details[0].profile_picture_url
-        # session['photo'] = photo
+        photo = user_session['photo']
     else:
         user_info = ""
         address = ""
