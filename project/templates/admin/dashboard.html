@@ -188,7 +188,7 @@
                         {% else %}
                             <div class="card w-100 shadow-sm incoming-order-card text-center">
                                 <div class="card-body bg-light">
-                                    <p class="m-0">No incoming orders</p>
+                                    <p class="m-0">No incoming orders found.</p>
                                 </div>
                             </div>
                         {% endfor %}
@@ -213,7 +213,7 @@
                     <div class="card my-3">
                         <div class="card-body">
                             <form method="get" action="" class="row g-3 align-items-end">
-                                <div class="col-md-5 position-relative">
+                                <div class="col-md-3 position-relative">
                                     <input type="text" class="form-control ps-5" id="search_order" name="search_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_order', '') }}">
                                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
                                         <i class="bi bi-search"></i>
@@ -233,7 +233,23 @@
                                         <i class="bi bi-toggle-on"></i>
                                     </span>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3 position-relative">
+                                    <select class="form-select ps-5" id="order_category" name="order_category">
+                                        {% for category in categories %}
+                                            <option value="">All Categories</option>
+                                            <option value="Pending" {% if request.args.get('order_category') == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="In Progress" {% if request.args.get('order_category') == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                            <option value="Ready" {% if request.args.get('order_category') == 'Ready' %}selected{% endif %}>Ready</option>
+                                            <option value="Completed" {% if request.args.get('order_category') == 'Completed' %}selected{% endif %}>Completed</option>
+                                            <option value="Cancelled" {% if request.args.get('order_category') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                            <option value="On Delivery" {% if request.args.get('order_category') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-primary w-100">
                                             <span class="bi bi-search me-1"></span> Search

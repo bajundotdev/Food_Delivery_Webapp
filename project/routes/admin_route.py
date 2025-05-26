@@ -21,31 +21,34 @@ mysql = MySQL()
 @login_required
 @admin_required
 def admin_dashboard():
+    # user session details
     user_session = session['user']
     user_id = user_session['user_id']
-    user_email = user_session['email']
     user_details = get_user_info_with_address_by_user_id(user_id)
     admin_details = get_user_info_with_address_by_user_id(user_id)
 
-
+    # dashboard required details
     all_users = get_all_users()
     all_orders = get_all_orders()
     all_products = get_all_products()
     drivers = get_all_driver()
 
+    # incoming orders query
     orders_by_status = get_all_orders_by_status('Pending')
 
     for order in orders_by_status:
         order.items = get_all_order_items_by_order_id_status(order.id, 'Pending')
 
+    # search query details
     search_order = request.args.get('search_order')
+    search_category = request.args.get('order_category')
     order_status = request.args.get('order_status')
     search_driver = request.args.get('search_driver')
     driver_status = request.args.get('driver_status')
     clear = request.args.get('clear')
 
     if request.method == "GET":
-        if search_order or order_status:
+        if search_order or order_status or search_category:
             all_orders = search_order_name_id_status(search_order, order_status)
 
         if search_driver or driver_status:
@@ -59,8 +62,8 @@ def admin_dashboard():
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
-                                                orders_by_status=orders_by_status)
-                                                #,drivers=drivers)
+                                                orders_by_status=orders_by_status,
+                                                drivers=drivers)
 
 @admin_bp.route('/profile', methods=['GET'])
 @login_required
@@ -146,12 +149,13 @@ def save_category():
 @login_required
 @admin_required
 def delete_category(category_id):
-    if request.method == "POST":
-            pass
-            #delete_category(product_id)
-     
 
+    if request.method == "POST":
+        delete_category_from_db(category_id)
+        flash('Category successfully removed!', 'success')
+     
     return redirect(url_for('admin.manage_product'))
+
 ###########################
 #   Manage CRUD Orders    #
 ###########################

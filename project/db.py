@@ -290,7 +290,7 @@ def get_all_products():
 def get_product_by_id(product_id):
     cur = mysql.connection.cursor()
     cur.execute("""
-        SELECT product_table.*, categories.category_name
+        SELECT product_table.*, categories.*
         FROM product_table, categories
         WHERE product_id = %s AND product_table.category = categories.category_id
     """ , (product_id,))
@@ -991,16 +991,17 @@ def add_category(category_name):
     mysql.connection.commit()
     cur.close()
 
-def delete_category(category_id):
+def delete_category_from_db(category_id):
     cur = mysql.connection.cursor()
     cur.execute("""
         DELETE FROM categories
         WHERE category_id = %s
-        """
-        , (category_id, ))
+        """, (category_id, ))
     
     mysql.connection.commit()
     cur.close()
+
+    return
 
 def update_category(category_id, category_name):
     cur = mysql.connection.cursor()
