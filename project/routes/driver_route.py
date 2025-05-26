@@ -53,11 +53,12 @@ def driver_dashboard():
     driver = get_driver_details_by_user_id(user_id)
     driver_id = driver[0].id
     # orderReady = get_all_orders_by_status(status="Ready")
-    orderReady = get_all_orders_and_products()
+    orderReady = get_all_orders_by_status(status="Ready")
 
+    orderTransit = get_all_orders_by_status(status="Delivery in Progress")
 
     orderCompleted = get_all_orders_by_status(status="Completed") 
-    return render_template('driver/dashboard.html', driver=driver, orderCompleted=orderCompleted, orderReady=orderReady)
+    return render_template('driver/dashboard.html', driver=driver, orderTransit=orderTransit, orderCompleted=orderCompleted, orderReady=orderReady)
 
 @driver_bp.route('/profile')
 @login_required
