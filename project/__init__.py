@@ -30,7 +30,7 @@ def create_app():
     logger = logging.getLogger(__name__)
     logger.info("Application created successfully.")
     
-    # Initialie MySQL
+     # Initialize MySQL
     mysql.init_app(app)
 
     # Initialise session
