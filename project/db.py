@@ -201,6 +201,17 @@ def update_user_profile(fullname, phone, profile_picture_url, email):
     mysql.connection.commit()
     cur.close()
 
+def set_user_role(user_id, user_type):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table 
+        SET user_type = %s
+        WHERE user_id = %s
+    """, (user_type, user_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
 def set_user_is_active(user_id, is_active):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -365,9 +376,9 @@ def search_users(search_str):
     results = cur.fetchall()
     cur.close()
     return [
-        Product(str(row['product_id']), row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+        User(str(row['user_id']), row['fullname'], row['email'],row['phone_number'],
+                row['password_hash'], row['profile_picture_url'],
+                row['user_type'], bool(row['is_active']), row['last_login']) for row in results
     ]
 
 def get_product_by_category(categ):

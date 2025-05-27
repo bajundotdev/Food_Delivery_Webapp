@@ -60,8 +60,8 @@ def admin_dashboard():
                                                 all_users=all_users,
                                                 all_orders=all_orders, 
                                                 all_products=all_products, 
-                                                orders_by_status=orders_by_status)
-                                                #,drivers=drivers)
+                                                orders_by_status=orders_by_status,
+                                                drivers=drivers)
 
 @admin_bp.route('/profile', methods=['GET'])
 @login_required
@@ -387,14 +387,26 @@ def manage_users():
     customers = get_all_users_by_status(1)    
     user_roles = UserRole
 
+    search_user = request.args.get('search_user')
+    clear = request.args.get('clear')
+
+    if request.method == "GET":
+        if search_user:
+            customers = search_users(search_user)
+        if clear:
+            return redirect(url_for('admin.manage_users'))
+
     return render_template('admin/users/manage_customers.html', customers=customers,
                                                                 user_roles=user_roles)
 
 @admin_bp.post('/user/<int:user_id>/')
 def delete_user(user_id):
     
-    print(user_id)
-    set_user_is_active(user_id,0)
+    try:
+        set_user_is_active(user_id,0)
+        flash('User successfully removed!', 'success')
+    except Exception as e:
+        flash(f'Error removing user: {e}', 'danger')
 
     return redirect(url_for('admin.manage_users'))
 
@@ -403,8 +415,12 @@ def delete_user(user_id):
 @admin_required
 def update_user_role(user_id):
     
-    print(user_id)
-    # set_user_is_active(user_id,0)
+    user_role = request.form.get('user_role')
+    try:
+        set_user_role(user_id, user_role)
+        flash('User successfully updated!', 'success')
+    except Exception as e:
+        flash(f'Error updating user: {e}', 'danger')
 
     return redirect(url_for('admin.manage_users'))
 
