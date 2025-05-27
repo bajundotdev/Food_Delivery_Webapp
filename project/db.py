@@ -412,7 +412,7 @@ def add_product_to_db(form):
                     %s, %s, %s, %s, %s, %s,
                     0)"""
             , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
-            form.prep_time_est.data, form.food_image_url.data.filename, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
+            form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
         mysql.connection.commit()
         cur.close()
     except:

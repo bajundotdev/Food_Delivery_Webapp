@@ -7,6 +7,7 @@ from project.models import Product, Order
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 
+
 from project.db import *
 from project.routes.user_route import allowed_file
 
@@ -278,20 +279,46 @@ def add_product():
     categories = get_all_category()
 
     if request.method == "POST":
-        file = request.files['food_image_url']
-    
+        file = request.files.get('food_image_url')
+
         try:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
+                filename = filename.replace(" ", "_")
+
+                upload_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], 'products')
+                os.makedirs(upload_folder, exist_ok=True)
+                file_path = os.path.join(upload_folder, filename)
+                file.save(file_path)
+
+                form_product.food_image_url.data = f'{filename}'
+
                 add_product_to_db(form_product)
 
-            flash('Menu successfully added!', 'success')
-            return redirect(url_for('admin.manage_product'))
+                flash('Menu successfully added!', 'success')
+                return redirect(url_for('admin.manage_product'))
+            else:
+                flash('Invalid file or file type.', 'danger')
 
         except Exception as e:
             print("Error:", e)
             flash('Failed to add new menu.', 'danger')
+
+    # if request.method == "POST":
+    #     file = request.files['food_image_url']
+    
+    #     try:
+    #         if file and allowed_file(file.filename):
+    #             filename = secure_filename(file.filename)
+    #             file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
+    #             add_product_to_db(form_product)
+
+    #         flash('Menu successfully added!', 'success')
+    #         return redirect(url_for('admin.manage_product'))
+
+    #     except Exception as e:
+    #         print("Error:", e)
+    #         flash('Failed to add new menu.', 'danger')
     
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=categories)
 
