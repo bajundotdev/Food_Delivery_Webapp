@@ -324,7 +324,7 @@ def search_product(search_str):
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 
-def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end="2025-05-30 18:35:48"):
+def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end=current_timestamp):
     like_str = "%" + str(search_str) + "%"
     like_status = "%" + str(status) + "%"
     cur = mysql.connection.cursor()
@@ -339,7 +339,7 @@ def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35
                 AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s
                 AND (ordert.placed_at BETWEEN %s AND %s))
         ORDER BY ordert.placed_at
-    """, (like_str, like_str, like_status, date_start, date_end))
+    """, (like_str, like_str, like_status, date_start, str(date_end) + "23:59:59"))
     results = cur.fetchall()
     cur.close()
     return [
