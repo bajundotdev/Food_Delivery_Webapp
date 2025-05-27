@@ -142,8 +142,13 @@
     <main class="container my-4">
         <!-- Featured Food Menu Section -->
         <section>
-            <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
-            {{ request.args.get('search_string') }}
+            <h2 class="mb-4 text-center">
+                {% if query %}
+                    Search for "{{ query }}"
+                {% else %}
+                    Daily food deals on Foodah!
+                {% endif %}
+            </h2>
             <div class="row g-4">
                 {% for product in products %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4">
