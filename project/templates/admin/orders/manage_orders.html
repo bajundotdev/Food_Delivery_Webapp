@@ -61,8 +61,8 @@
                                                 <p class="card-text m-2">
                                                     <strong>Items:</strong>
                                                     <ul>
-                                                        {% for product in orders_with_products %}
-                                                            <li>x{{ product.quantity }} {{ product.product_name }}</li>
+                                                        {% for item in order.items %}
+                                                            <li>x{{ item.quantity }} {{ item.product_name }}</li>
                                                         {% endfor %}
                                                     </ul>
                                                 </p>
@@ -120,8 +120,8 @@
                                                 <p class="card-text m-2">
                                                     <strong>Items:</strong>
                                                     <ul>
-                                                        {% for product in orders_with_products %}
-                                                            <li>x{{ product.quantity }} {{ product.product_name }}</li>
+                                                        {% for item in order.items %}
+                                                            <li>x{{ item.quantity }} {{ item.product_name }}</li>
                                                         {% endfor %}
                                                     </ul>
                                                 </p>
@@ -140,7 +140,6 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-
                             </div>
                         </div>
                     </div>
@@ -184,8 +183,8 @@
                                                 <p class="card-text m-2">
                                                     <strong>Items:</strong>
                                                     <ul>
-                                                        {% for product in orders_with_products %}
-                                                            <li>x{{ product.quantity }} {{ product.product_name }}</li>
+                                                        {% for item in order.items %}
+                                                            <li>x{{ item.quantity }} {{ item.product_name }}</li>
                                                         {% endfor %}
                                                     </ul>
                                                 </p>

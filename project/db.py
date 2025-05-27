@@ -652,6 +652,22 @@ def set_driver_status(driver_id, status):
     mysql.connection.commit()
     cur.close()
 
+def set_driver_is_active(driver_id, is_active):
+    stat = 0
+    if int(is_active) == 0:
+        stat = 1
+    else:
+        stat = 0
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE delivery_driver
+        SET is_available = %s
+        WHERE  driver_id = %s
+    """, (stat, driver_id, ))
+    mysql.connection.commit()
+    cur.close()
+
 def get_driver_status_by_driver_id(driver_id):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -865,6 +881,7 @@ def get_all_orders_by_status(status):
               row['address']
              ) for row in results
     ]
+
 def set_order_status(order_id, status):
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -872,6 +889,16 @@ def set_order_status(order_id, status):
         SET status = %s
         WHERE order_id = %s
     """, (status,order_id,))
+    mysql.connection.commit()
+    cur.close()
+
+def set_order_status_by_driver_id(order_id, driver_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET status = %s, driver_id = %s, delivered_at = %s, canceled_at = %s
+        WHERE order_id = %s
+    """, (status, driver_id, current_timestamp, current_timestamp, order_id,))
     mysql.connection.commit()
     cur.close()
 

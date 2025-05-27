@@ -184,24 +184,24 @@ def add_category():
 @login_required
 @admin_required
 def manage_orders():
-    status_filter = request.args.get('status', '')
 
-    orders_with_products = get_all_orders_and_products()[:10]
     pending_orders = get_all_orders_by_status('Pending')
+    for order in pending_orders:
+        order.items = get_all_order_items_by_order_id_status(order.id, 'Pending')
+
     in_progress_orders = get_all_orders_by_status('In Progress')
+    for order in in_progress_orders:
+        order.items = get_all_order_items_by_order_id_status(order.id, 'In Progress')
+
     ready_orders = get_all_orders_by_status('Ready')
-    drivers = get_all_driver()
+    for order in ready_orders:
+        order.items = get_all_order_items_by_order_id_status(order.id, 'Ready')
     
-    if status_filter:
-        orders = Order.get_orders_by_status(status_filter)
-    else:
-        # orders = Order.get_all()
-        orders = []
-    return render_template('admin/orders/manage_orders.html', orders_with_products=orders_with_products,
-                                                pending_orders=pending_orders,
+
+
+    return render_template('admin/orders/manage_orders.html', pending_orders=pending_orders,
                                                 in_progress_orders=in_progress_orders,
-                                                ready_orders=ready_orders,
-                                                drivers=drivers)
+                                                ready_orders=ready_orders)
 
 # View Order by Order_ID
 @admin_bp.route('/order/<string:order_id>', methods=['GET'])
@@ -213,7 +213,6 @@ def view_order(order_id):
 
     return render_template('admin/orders/view_order.html', order_details=order_details,
                                                         items_in_order=items_in_order)
-    # return redirect(url_for('admin.manage_orders'))
 
 # Update Status of Order by ORDER_ID
 @admin_bp.route('/orders/update_order', methods=['POST'])

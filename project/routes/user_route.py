@@ -67,8 +67,15 @@ def update_profile(email):
 @login_required
 def view_order():
     order_id = request.args.get('order_id')
-    laman = get_products_from_order_id(order_id)
-    return render_template('user/view_order.html', laman = laman, order_id = order_id)
+
+    order_details = get_all_orders_by_id(order_id)
+    driver_id = order_details.driver_id
+    driver_details = get_driver_by_id(driver_id)
+    items_in_order = get_all_order_items_by_order_id(order_id)
+
+    return render_template('user/view_order.html', order_details=order_details,
+                                                driver_details=driver_details[0],
+                                                items_in_order=items_in_order)
 
 @user_bp.route('/user/save/', methods=('POST', 'GET'))
 @login_required
