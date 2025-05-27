@@ -34,6 +34,7 @@ def get_all_users():
                 password_hash ,profile_picture_url,
                 user_type, is_active, last_login
         FROM user_table
+        ORDER BY fullname
     """, )
     results = cur.fetchall()
     cur.close()
@@ -54,6 +55,7 @@ def get_all_users_by_status(is_active):
                 user_type, is_active, last_login
         FROM user_table
         WHERE is_active = %s
+        ORDER BY fullname
     """, (is_active,))
     
     results = cur.fetchall()
@@ -173,7 +175,9 @@ def search_user_by_name(fullname):
 def add_user(form):
     cur = mysql.connection.cursor()
     cur.execute("""
-        INSERT INTO user_table (email, password_hash, fullname, phone_number, user_type, is_active, is_verified, created_at, updated_at, last_login, profile_picture_url)
+        INSERT INTO user_table (email, password_hash, fullname,
+                phone_number, user_type, is_active, is_verified,
+                created_at, updated_at, last_login, profile_picture_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)"""
         , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"user.jpg"))
     
@@ -334,7 +338,7 @@ def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35
         WHERE (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
                 AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s
                 AND (ordert.placed_at BETWEEN %s AND %s))
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """, (like_str, like_str, like_status, date_start, date_end))
     results = cur.fetchall()
     cur.close()
@@ -391,9 +395,11 @@ def add_product_to_db(form):
     try:
         cur.execute("""
             INSERT INTO product_table (product_name,description,category,price,food_rating,
-                    prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id)
+                    prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id,
+                    deleted)
             VALUES (%s, %s, %s, %s, %s, 
-                    %s, %s, %s, %s, %s, %s)"""
+                    %s, %s, %s, %s, %s, %s,
+                    0)"""
             , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
             form.prep_time_est.data, form.food_image_url.data.filename, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
         mysql.connection.commit()
@@ -576,6 +582,7 @@ def get_all_driver():
                 
         FROM delivery_driver, user_table
         WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1
+        ORDER BY user_table.fullname
     """)
     results = cur.fetchall()
     cur.close()
@@ -602,6 +609,7 @@ def get_available_driver():
                 
         FROM delivery_driver, user_table
         WHERE delivery_driver.user_id = user_table.user_id AND user_table.is_active = 1 AND  is_available = 1
+        ORDER BY user_table.fullname
     """)
     results = cur.fetchall()
     cur.close()
@@ -671,6 +679,7 @@ def get_all_orders_and_products():
         FROM order_table ot
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id
+        ORDER BY ot.placed_at
     """)
     results = cur.fetchall()
     cur.close()
@@ -710,11 +719,7 @@ def get_all_order_items_by_order_id(order_id):
     cur.close()
     if results is not None:
         return results
-        #[
-            # OrderItem(str(row['order_id']), row['product_id'], row['restaurant_name'],
-            #     bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-            #     row['email'], row['website'], row['description'], row['image_url']) for row in results
-        #]
+       
     else:
         return []
 def get_all_order_items_by_order_id_status(order_id, status):
@@ -725,6 +730,7 @@ def get_all_order_items_by_order_id_status(order_id, status):
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id
         WHERE ot.order_id = %s AND ot.status = %s
+        ORDER BY ot.placed_at
     """, (order_id, status,))
     results = cur.fetchall()
     cur.close()
@@ -744,7 +750,7 @@ def get_all_orders():
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """)
     results = cur.fetchall()
     cur.close()
@@ -767,7 +773,7 @@ def get_all_orders_by_id(order_id):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.order_id = %s
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """, (order_id,))
     row = cur.fetchone()
     cur.close()
@@ -789,7 +795,7 @@ def get_all_orders_by_user_id(user_id):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.user_id = %s
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """, (user_id,))
     results = cur.fetchall()
     cur.close()
@@ -812,7 +818,7 @@ def get_all_orders_by_driver_id_status(driver_id, status):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s AND ordert.status = %s
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """, (driver_id, status,))
     results = cur.fetchall()
     cur.close()
@@ -835,7 +841,7 @@ def get_all_orders_by_status(status):
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
         WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.status = %s
-        ORDER BY ordert.status
+        ORDER BY ordert.placed_at
     """, (status,))
     results = cur.fetchall()
     cur.close()
