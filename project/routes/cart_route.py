@@ -6,47 +6,9 @@ from project.db import *
 from project.models import Cart, CartItem, Product
 from project.forms.shopping_form import CheckoutForm
 
-
-
 # Create blueprints for different sections of the application
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 from project.session import *
-##########################
-# Session Management     #
-##########################
-
-def is_logged_in():
-    """Check if user is logged in."""
-    return 'user_id' in session
-
-def get_user_id():
-    """Get the logged-in user's ID."""
-    return session.get('user_id')
-
-def get_user_role():
-    """Get the logged-in user's role."""
-    return session.get('user_role')
-
-def set_user_role(role):
-    """Set the logged-in user's role."""
-    session['user_role'] = role
-
-def clear_user_session():
-    """Clear user session data."""
-    session.pop('user_id', None)
-    session.pop('user_role', None)
-
-def get_user_cart():
-    """Get or create cart for current user."""
-    user_id = get_user_id()
-    if not user_id:
-        return None
-    
-    # Create a new cart if not in session
-    if 'cart' not in session:
-        session['cart'] = Cart(user_id=user_id)
-    
-    return session['cart']
 
 ###################
 # Cart Routes     #
@@ -61,96 +23,16 @@ def view_cart():
 
     return render_template('user/user_cart.html', order=order, totalprice=order.total_cost())
 
-
-# @cart_bp.route('/add/<string:product_id>', methods=['POST'])
-# def add_to_cart(product_id):
-#     """Add item to cart."""
-    
-#     product_id = request.args.get(product_id)
-
-#     if not is_logged_in():
-#         if 'shopping_cart' not in session:
-#             session['shopping_cart'] = {}
-#             cart = session['shopping_cart']
-
-#         # Add or update product quantity
-#         if str(product_id) in cart:
-#             cart[str(product_id)]['quantity'] += 1
-#         else:
-#             cart[str(product_id)] = {
-#                 # 'id': product['id'],
-#                 # 'name': product['name'],
-#                 # 'price': product['price'],
-#                 # 'quantity': 1
-#             }
-
-#         session['shopping_cart'] = cart  # Save back to session 
-        
-#     else:
-#         product = Product.get_by_id(product_id)
-#         if not product:
-#             flash('Product not found', 'error')
-#             return redirect(url_for('product.list_products'))
-            
-#         quantity = int(request.form.get('quantity', 1))
-        
-#         cart = get_user_cart()
-        
-#         # Create a new CartItem
-#         cart_item = CartItem(
-#             id=f"temp_{product_id}",  # Will be replaced when saved
-#             product_id=product_id,
-#             product=product,
-#             quantity=quantity
-#         )
-        
-#         # Add to cart
-#         cart.add_item(cart_item)
-        
-#         # Save to session
-#         session['cart'] = cart
-    
-#     flash('Item added to cart.', 'success')
-#     return redirect(url_for('main.index'))
-
 @cart_bp.route('/cart/update/<cart_id>', methods=['POST'])
 def update_quantity(cart_id):
     
     action = request.form.get('action')
     product_id = request.form.get('product_id')
     quantity = int(request.form.get('cart_quantity', 0))
-    #print(cart_id)
     if action == 'plus':
         increment_cart_item(cart_id)
     elif action == 'minus':
-        #quantity = max(0, quantity - 1)
         minus_cart_item(cart_id)
-
-
-    return redirect(url_for('cart.view_cart'))
-    
-    
-    # cart = session.get('shopping_cart')
-    # print(product_id)
-    # print(cart['items'])
-
-    # if action == 'plus':
-    #     for item in cart['items']:
-    #         #if item['id'] == cart_id:
-    #         print(item['quantity'])
-            #request.session['shopping_cart']['items']['quantity'] += 1
-            # if item.get('product')['id'] == product_id:
-                # item['product']['quantity'] += 1
-                # cart.add_item(product_id)  
-    # elif action == 'minus':
-        # quantity = max(0, quantity - 1)
-        # for item in cart:
-            # if item['product']['id'] == product_id:
-                # item['product']['quantity'] = quantity
-
-    # elif action == 'minus':
-    #     quantity = max(0, quantity - 1)
-    #     cart[str(product_id)]['quantity'] = quantity
 
     return redirect(url_for('cart.view_cart'))
 
