@@ -7,6 +7,7 @@ from .user_route import user_bp
 from .driver_route import driver_bp
 from .error_handlers_route import error_bp
 
+# This module imports all the route blueprints used in the application.
 all_blueprints = [
     admin_bp,
     auth_bp,
