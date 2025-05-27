@@ -13,9 +13,9 @@ main_bp = Blueprint('main', __name__)
 def index():
     """Homepage route."""
     cart_form = CartForm()
+    categories = get_all_category()
 
-    if request.method == 'GET':
-        
+    if request.method == 'GET':        
         query = request.args.get('search_food', '').strip()
 
         if query:
@@ -24,6 +24,7 @@ def index():
             featured_products = get_all_products()  
 
     return render_template('index.html', 
+                           categories=categories,
                            query=query,
                            products=featured_products,
                            cart_form=cart_form)

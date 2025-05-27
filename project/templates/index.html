@@ -115,24 +115,22 @@
     <!-- Product Categories Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top" style="top: 56px; z-index: 1020;">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Categories</a>
             <div class="flex-grow-1" id="categoriesNavbar">
                 <ul class="nav nav-pills nav-fill w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='all') }}">All</a>
+                        <a class="nav-link text-category {% if request.args.get('category') == 'all' %} fw-bold {%endif%}" 
+                            href="{{ url_for('main.index', category='all') }}">
+                            
+                            All
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='main') }}">Main</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='dessert') }}">Dessert</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='beverage') }}">Beverage</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index', category='snack') }}">Snack</a>
-                    </li>
+                    {% for category in categories %}
+                        <a class="nav-link text-category {% if request.args.get('category') == category.category_name %} fw-bold {%endif%}" href="{{ url_for('main.index', category=category.category_name) }}">
+                            {{category.category_name}}
+                        </a>
+                    {% endfor %}
+                    
+                    
                 </ul>
             </div>
         </div>
