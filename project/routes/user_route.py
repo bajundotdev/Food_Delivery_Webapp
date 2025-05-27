@@ -86,11 +86,13 @@ def save_profile():
         file = request.files.get('profile_image')
 
         if file and allowed_file(file.filename):
+            print(file)
             filename = secure_filename(file.filename)
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/profile_photos', filename))
 
-        update_user_profile(name,request.form.get('phone'), filename,request.form.get('email'))
-        flash('Profile saved!', 'success')
+            update_user_profile(name,request.form.get('phone'), filename.request.form.get('email'))
+            flash('Profile saved!', 'success')
+            
         return redirect(url_for('user.profile'))
 
     return redirect(url_for('user.profile'), photo = session.get('photo'))
