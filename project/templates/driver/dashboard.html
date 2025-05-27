@@ -42,13 +42,13 @@
                         <div class="card-body">
                             <h4 class="card-title mb-1">
                                 Hi, {{ user_details[0].name }}!
-                                {% if user_details[0].is_active %}
+                                {% if driver[0].is_active %}
                                     <span class="badge text-success ms-2">
                                         <i class="bi bi-check-circle-fill me-1"></i> Active
                                     </span>
                                 {% else %}
                                     <span class="badge text-danger ms-2">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Inactive
+                                        <i class="bi bi-x-circle-fill me-1"></i> Offline
                                     </span>
                                 {% endif %}
                             </h4>
@@ -63,10 +63,9 @@
                     </div>
                     
                     <div class="col-md-4 col-sm-12 text-center p-2">
-                        <form method="post" action="/" class="d-inline">
-                            <input type="hidden" name="admin_id" value="{{ user_details[0].id }}">
-                            <button type="submit" class="btn btn-primary">
-                                {% if user_details[0]['is_active'] %}
+                        <form method="post" action="{{ url_for('driver.update_driver_status', driver_id=driver[0].id) }}" class="d-inline">
+                            <button type="submit" value="{{driver[0]['is_active']}}" id="is_active" name="is_active" class="btn btn-primary">
+                                {% if driver[0]['is_active'] %}
                                     <i class="bi bi-x-circle-fill me-1"></i> Change Status
                                 {% else %}
                                     <i class="bi bi-check-circle-fill me-1"></i> Change Status
@@ -88,11 +87,11 @@
                 <!-- Orders Card -->
                 <div class="col-12 col-md-3 col-sm-6">
                     <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-primary h-100">
+                        <div class="card text-bg-success h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-basket display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">{{orderCompleted | length}}</h5>
-                                <h5 class="card-title text-white mb-1">Delivered Orders</h5>
+                                <h5 class="card-text fs-4 text-white mb-0">{{ orderCompleted | length}}</h5>
+                                <h5 class="card-title text-white mb-1">Orders Delivered</h5>
                             </div>
                         </div>
                     </a>
@@ -101,11 +100,11 @@
                 <!-- Delivery Drivers Card -->
                 <div class="col-12 col-md-3 col-sm-6">
                     <a href="#" class="text-decoration-none">
-                        <div class="card text-bg-success h-100">
+                        <div class="card text-bg-warning h-100">
                             <div class="card-body text-center">
-                                <i class="bi bi-truck display-4 mb-0 text-white"></i>
-                                <h5 class="card-text fs-4 text-white mb-0">{{driver | length}}</h5>
-                                <h5 class="card-title text-white mb-1">Delivery Drivers</h5>
+                                <i class="bi bi-truck display-4 mb-0"></i>
+                                <h5 class="card-text fs-4 mb-0">{{ order_for_delivery | length}}</h5>
+                                <h5 class="card-title mb-1">For Delivery</h5>
                             </div>
                         </div>
                     </a>
@@ -118,7 +117,7 @@
             <div class="row my-4">
                 <div class="col-12">
                     <h4>
-                        <span class="bi bi-truck me-2"></span>
+                        <span class="bi bi-cart-check me-2"></span>
                         Orders Ready for Delivery ({{ orderReady | length}})
                     </h4>
                 </div>
@@ -127,31 +126,37 @@
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
                         {% for order in orderReady %}
-                            {% if order.status == "Ready" %}
-                                <div class="card shadow-sm incoming-order-card">
-                                    <div class="card-header bg-danger d-flex justify-content-between align-items-center">
-                                        <span class="text-white">
-                                            <i class="bi bi-bag-check me-2"></i> Order #{{order.id}}
-                                        </span>
-                                        <span class="badge bg-warning text-black ms-2">For Delivery</span>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-1">{{order.fullname}}</h5>
-                                        <p class="card-text mb-2">
-                                            <strong>Items:</strong>
-                                            <ul>
-                                                {% for item in order.items %}
-                                                    <li>x{{ item.quantity }} {{ item.product_name }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                            <strong>Total:</strong> {{order.total}}
-                                        </p>
-                                        <div class="d-flex">
-                                            <button class="btn btn-danger me-2 w-100">Confirm Delivery</button>
-                                        </div>
-                                    </div>
+                            <div class="card shadow-sm incoming-order-card">
+                                <div class="card-header bg-danger d-flex justify-content-between align-items-center">
+                                    <span class="text-white">
+                                        <i class="bi bi-bag-check me-2"></i> Order #{{order.id}}
+                                    </span>
+                                    <span class="badge bg-warning text-black ms-2">For Delivery</span>
                                 </div>
-                            {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title mb-1">{{order.fullname}}</h5>
+                                    <p class="card-text mb-2">
+                                        <strong>Items:</strong>
+                                        <ul>
+                                            {% for item in order.items %}
+                                                <li>x{{ item.quantity }} {{ item.product_name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <strong>Total:</strong> {{order.total}}
+                                    </p>
+                                    <form method="post" action="{{ url_for('driver.confirm_delivery') }}">
+                                        <div class="d-flex">
+                                            <button type="submit" value="{{ order.id }}" id="order_id" name="order_id" class="btn btn-danger me-2 w-100">Confirm Delivery</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card w-100 shadow-sm incoming-order-card text-center">
+                                <div class="card-body bg-light">
+                                    <p class="m-0">No orders ready for delivery.</p>
+                                </div>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -160,43 +165,44 @@
                 <div class="col-12">
                     <h4>
                         <span class="bi bi-truck me-2"></span>
-                        Ongoing Delivery ({{orderTransit | length}})
+                        Ongoing Delivery ({{ order_for_delivery | length}})
                     </h4>
                 </div>
                 <!-- {{orderReady}} -->
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
-                        {% for order in orderCompleted %}
-                            {% if order.status == "Completed" %}
-                                <div class="card shadow-sm incoming-order-card">
-                                    <div class="card-header bg-warning d-flex justify-content-between align-items-center">
-                                        <span class="text-white">
-                                            <i class="bi bi-bag-check me-2"></i> In Transit
-                                        </span>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-1">{{order.fullname}}</h5>
-                                        <p class="card-text mb-2">
-                                            <strong>Items:</strong> {{order.id.product_name}}<br>
-                                            <strong>Total:</strong> {{order.total}}
-                                        </p>
-                                        <div class="d-flex">
-                                            <button class="btn btn-warning btn-sm me-2">Done</button>
-                                            <button class="btn btn-outline-secondary btn-sm">Cancelled</button>
-                                        </div>
-                                    </div>
+                        {% for order in order_for_delivery %}
+                            <div class="card shadow-sm incoming-order-card">
+                                <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+                                    <span class="">
+                                        <i class="bi bi-bag-check me-2"></i> In Progress: Order #{{order.id}}
+                                    </span>
                                 </div>
-                            {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title mb-1">{{order.fullname}}</h5>
+                                    <p class="card-text mb-0"> <strong>Phone:</strong> {{order.phone_number }}</p> 
+                                    <p class="card-text mb-0"> <strong>Address:</strong> {{order.address }}</p> 
+                                    <p class="card-text mb-0"> <strong>Payment Method:</strong> {{order.payment_method }}</p> 
+                                    <p class="card-text mb-2">
+                                        <strong>Total:</strong> {{order.total}}
+                                    </p>
+                                    <form method="post" action="{{ url_for('driver.view_ongoing_delivery', order_id=order.id) }}">
+                                        <div class="d-flex">
+                                            <button type="submit" value="order_received" id="order_status" name="order_status" class="btn btn-warning me-2 w-100">Order Received</button>
+                                            <button type="submit" value="order_cancelled" id="order_status" name="order_status" class="btn btn-outline-secondary me-2 w-md-auto">Cancelled</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card w-100 shadow-sm incoming-order-card text-center">
+                                <div class="card-body bg-light">
+                                    <p class="m-0">No ongoing delivery.</p>
+                                </div>
+                            </div>
                         {% endfor %}
                     </div>
-                </div>
-
-
-                <div class="mt-3 d-flex justify-content-end">
-                    <a href="{{ url_for('admin.manage_orders') }}" class="btn btn-danger">
-                        Go to Orders <i class="bi bi-arrow-right"></i>
-                    </a>
                 </div>
             </div>
         </section>
@@ -204,41 +210,77 @@
         <!-- Recent Delivery Status Section -->
         <section>
             <div class="row mt-5">
-            <div class="col-12">
-                <h4>Recent Delivery Status</h4>
-                <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead>
-                    <tr>
-                        <th scope="col">Driver ID</th>
-                        <th scope="col">Customer Name</th>
-                        <th scope="col">Customer Address</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Time Delivered</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for order in order_for_delivery %}
-                        {% if order.status == "For Delivery" %}
-                        <tr>
-                            <td>
-                            <a href="#" class="text-decoration-none">{{order.driver_id}}</a>
-                            </td>
-                            <td>{{order.fullname}}</td>
-                            <td>{{order.address}}</td>
-                            <td><span class="badge bg-success">{{order.status}}</span></td>
-                            <td>{{order.delivered_at}}</td>
-                            <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                            </td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="col-12">
+                    <h4><span class="bi bi-clock-history me-2"></span>Recent Orders Delivered</h4>
+                    <!-- Search and Filter Form -->
+                    <div class="card my-3">
+                        <div class="card-body">
+                            <form method="get" action="" class="row g-3 align-items-end">
+                                <div class="col-md-5 position-relative">
+                                    <input type="text" class="form-control ps-5" id="search_order" name="search_order" placeholder="Search Customer or Order ID" value="{{ request.args.get('search_order', '') }}">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-3 position-relative">
+                                    <select class="form-select ps-5" id="order_status" name="order_status">
+                                        <option value="">All Status</option>
+                                        <option value="Pending" {% if request.args.get('order_status') == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="In Progress" {% if request.args.get('order_status') == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Ready" {% if request.args.get('order_status') == 'Ready' %}selected{% endif %}>Ready</option>
+                                        <option value="Completed" {% if request.args.get('order_status') == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <option value="Cancelled" {% if request.args.get('order_status') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                        <option value="On Delivery" {% if request.args.get('order_status') == 'On Delivery' %}selected{% endif %}>On Delivery</option>
+                                    </select>
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <span class="bi bi-search me-1"></span> Search
+                                        </button>
+                                        <input type="submit" name="clear" class="btn btn-outline-secondary w-50" value="Clear">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Customer Address</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Time Delivered</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in all_orders_by_driver %}
+                                <tr>
+                                    <td>{{order.fullname}}</td>
+                                    <td>{{order.address}}</td>
+                                    <td><span class="badge bg-success">{{order.status}}</span></td>
+                                    <td>{{order.delivered_at}}</td>
+                                    <td>
+                                        <a href="{{ url_for('driver.view_ongoing_delivery', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <span><i class="bi bi-eye"></i></span>View
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No orders found.</td>
+                                    </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
             </div>
         </section>
     </main>
