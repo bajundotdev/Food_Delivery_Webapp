@@ -664,7 +664,26 @@ def driver_accept_delivery(driver_id, order_id):
     """, (driver_id, order_id,))
     mysql.connection.commit()
     cur.close()
-#add driver
+
+def driver_complete_delivery(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET status = "Completed", delivered_at = %s, payment_status = "Success"
+        WHERE order_id= %s
+    """, (current_timestamp, order_id,))
+    mysql.connection.commit()
+    cur.close()
+
+def cancel_order(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful"
+        WHERE order_id= %s
+    """, (current_timestamp, order_id,))
+    mysql.connection.commit()
+    cur.close()
     
 #update driver
 #delete driver
