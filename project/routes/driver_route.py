@@ -42,11 +42,13 @@ def driver_dashboard():
         order.items = get_all_order_items_by_order_id_status(order.id, 'Ready')
         
 
+    order_for_delivery = get_all_orders_by_status(status="For Delivery") 
     orderCompleted = get_all_orders_by_status(status="Completed") 
 
     return render_template('driver/dashboard.html', user_details=user_details, 
                                                 driver=driver, 
                                                 orderCompleted=orderCompleted, 
+                                                order_for_delivery=order_for_delivery,
                                                 orderReady=orderReady,
                                                 all_orders=all_orders)
 

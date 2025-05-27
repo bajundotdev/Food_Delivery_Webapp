@@ -35,7 +35,9 @@ def profile():
     user_session = session.get('user')
     user_details = get_user_info_with_address_by_email(user_session['email'])
 
-    print(user_details)
+    # print(user_details)
+    if request.method == 'POST':
+        return redirect(url_for('user.profile'))
 
     if user_details:
         user_info = user_details[0]

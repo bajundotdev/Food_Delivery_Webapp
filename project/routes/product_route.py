@@ -15,6 +15,7 @@ product_bp = Blueprint('product', __name__, url_prefix='/products')
 def product_list():
     """Display all products."""
     products = get_all_products()
+
     return render_template('products/product_list.html', products=products)
 
 @product_bp.route('/category/<category>')
@@ -35,6 +36,7 @@ def list_by_category(category):
 def product_detail(product_id):
     """Display product details."""
     product_details = get_product_by_id(product_id)
+    
     if not product_details:
         flash('Product not found')
         return redirect(url_for('main.index'))

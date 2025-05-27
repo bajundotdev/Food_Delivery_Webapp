@@ -22,7 +22,7 @@ def register():
                 return redirect(url_for('auth.register'))
 
             add_user(form)
-            flash('Registration successful!')
+            flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
 
     return render_template('register.html', form=form)
@@ -69,6 +69,7 @@ def login():
                     session['logged_in'] = True
                     session['role'] = user.role
                     flash('Login successful!', 'success')
+
                     if session['role'] == "Admin":
                         return redirect(url_for('admin.admin_dashboard'))
                     elif session['role'] == "Delivery Driver":

@@ -325,13 +325,13 @@ def search_product(search_str):
     cur.execute("""
         SELECT product_table.*, categories.category_name
         FROM product_table, categories
-        WHERE (product_name LIKE %s OR description LIKE %s OR category LIKE %s OR product_id LIKE %s) AND deleted = 0 AND product_table.category = categories.category_id
+        WHERE (product_name LIKE %s OR description LIKE %s OR category_name LIKE %s OR product_id LIKE %s) AND deleted = 0 AND product_table.category = categories.category_id
     """ , (like_str, like_str, like_str, like_str, ))
     results = cur.fetchall()
     cur.close()
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
-             row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
+             row['category_name'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
              row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
     ]
 

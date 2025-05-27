@@ -141,12 +141,8 @@
                         Links
                     </h5>
                     <ul class="list-unstyled mb-0">
-                        <li>
-                            <a href="{{ url_for('main.index') }}" class="text-dark">Home</a>
-                        </li>
-                        <li>
-                            <a href="delivery_request.html" class="text-dark">Cart</a>
-                        </li>
+                        <li><a href="{{ url_for('main.index') }}" class="text-dark">Home</a></li>
+                        <li><a href="{{ url_for('cart.view_cart') }}" class="text-dark">Cart</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">

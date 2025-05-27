@@ -84,7 +84,7 @@
         <!-- Admin Dashboard Section -->
         <section>
             <!-- Cards -->
-            <div class="row g-4">       
+            <div class="row g-4 d-flex justify-content-center">       
                 <!-- Orders Card -->
                 <div class="col-12 col-md-3 col-sm-6">
                     <a href="#" class="text-decoration-none">
@@ -114,7 +114,7 @@
         </section>
 
         <!-- Active Orders Section -->
-        <br>
+        <section>
             <div class="row my-4">
                 <div class="col-12">
                     <h4>
@@ -122,7 +122,7 @@
                         Orders Ready for Delivery ({{ orderReady | length}})
                     </h4>
                 </div>
-                {{orderReady}}
+                
                 <div class="overflow-auto">
                     <div class="d-flex flex-row gap-3 my-4">
                         <!-- Example Incoming Order Card -->
@@ -131,9 +131,9 @@
                                 <div class="card shadow-sm incoming-order-card">
                                     <div class="card-header bg-danger d-flex justify-content-between align-items-center">
                                         <span class="text-white">
-                                            <i class="bi bi-bag-check me-2"></i> Incoming Order {{order.id}}
+                                            <i class="bi bi-bag-check me-2"></i> Order #{{order.id}}
                                         </span>
-                                        <span class="badge bg-warning text-black ms-2">New</span>
+                                        <span class="badge bg-warning text-black ms-2">For Delivery</span>
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title mb-1">{{order.fullname}}</h5>
@@ -147,8 +147,7 @@
                                             <strong>Total:</strong> {{order.total}}
                                         </p>
                                         <div class="d-flex">
-                                            <button class="btn btn-danger btn-sm me-2">Accept</button>
-                                            <button class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                            <button class="btn btn-danger me-2 w-100">Confirm Delivery</button>
                                         </div>
                                     </div>
                                 </div>
@@ -205,7 +204,7 @@
         <!-- Recent Delivery Status Section -->
         <section>
             <div class="row mt-5">
-            <div class="col-12"></div>
+            <div class="col-12">
                 <h4>Recent Delivery Status</h4>
                 <div class="table-responsive">
                 <table class="table table-striped align-middle">
@@ -220,21 +219,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for order in orderCompleted %}
-                    {% if order.status == "Completed" %}
-                    <tr>
-                        <td>
-                        <a href="#" class="text-decoration-none">{{order.driver_id}}</a>
-                        </td>
-                        <td>{{order.fullname}}</td>
-                        <td>{{order.address}}</td>
-                        <td><span class="badge bg-success">{{order.status}}</span></td>
-                        <td>{{order.delivered_at}}</td>
-                        <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
-                    {% endif %}
+                    {% for order in order_for_delivery %}
+                        {% if order.status == "For Delivery" %}
+                        <tr>
+                            <td>
+                            <a href="#" class="text-decoration-none">{{order.driver_id}}</a>
+                            </td>
+                            <td>{{order.fullname}}</td>
+                            <td>{{order.address}}</td>
+                            <td><span class="badge bg-success">{{order.status}}</span></td>
+                            <td>{{order.delivered_at}}</td>
+                            <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </td>
+                        </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
