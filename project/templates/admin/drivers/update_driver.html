@@ -123,16 +123,12 @@
                     <div class="card">
                         <div class="card-body">
                             <form method="post" action="" class="row g-3">
+                                {{ driver_form.csrf_token }}
+                                <input type="text" class="form-control" id="driver_id" name="driver_id" value="{{ driver_details.id if driver_details else '' }}" readonly placeholder="Driver ID" readonly hidden>
                                 <div class="col-md-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="driver_id" name="driver_id" value="{{ driver_details.id if driver_details else '' }}" readonly placeholder="Driver ID">
-                                        <label for="driver_id">Driver ID</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="driver_name" name="driver_name" value="{{ driver_details.fullname if driver_details else '' }}" placeholder="Name">
-                                        <label for="driver_name">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ driver_details.fullname if driver_details else '' }}" placeholder="Name">
+                                        <label for="name">Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -149,11 +145,11 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-floating">
-                                        <select class="form-select" id="driver_status" name="driver_status" aria-label="Driver Status">
-                                            <option value="Active">Active</option>
-                                            <option value="Inactive">Inactive</option>
+                                        <select class="form-select" id="status" name="status" aria-label="Driver Status">
+                                            <option value="Available">Active</option>
+                                            <option value="Unavailable">Inactive</option>
                                         </select>
-                                        <label for="driver_status">Status</label>
+                                        <label for="status">Status</label>
                                     </div>
                                 </div>
                                 <div class="col-12">

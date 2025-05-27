@@ -632,8 +632,9 @@ def set_driver_status(driver_id, status):
     stat = 0
     if status == "Available":
         stat = 1
-    elif status == "Unavailable":
+    else:
         stat = 0
+
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE delivery_driver

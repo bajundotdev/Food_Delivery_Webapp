@@ -141,7 +141,6 @@ def save_category():
                 return redirect(url_for('admin.save_category'))
         
         try:
-            print("ID :" ,category_form.category_id.data, " Name:", category_form.category_name.data)
             update_category_db(category_form.category_id.data, category_form.category_name.data)
             flash('Category successfully updated!', 'success')
 
@@ -445,12 +444,16 @@ def update_driver(driver_id):
     driver_query = get_driver_by_id(driver_id)
     driver_details = driver_query[0]
 
-    # for driver in driver_query:
-    #     print(driver)
-    #     #user_address = get_address_by_user_id(driver.user_id)
-    #     #driver_details.append(user_address)
-    #     print(driver_details)
-    #     pass
+    if request.method == "POST":
+        try:
+            status = request.form['status']
+            print(driver_id, status)
+            
+            set_driver_status(driver_id, status)
+            flash('User successfully updated!', 'success')
+            return redirect(url_for('admin.admin_dashboard'))
+        except Exception as e:
+            flash(f'Error updating driver: {e}', 'danger')
 
     return render_template('admin/drivers/update_driver.html', driver_form=driver_form,
                                                         driver_details=driver_details)
