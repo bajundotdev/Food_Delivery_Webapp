@@ -3,6 +3,7 @@ from flask import Flask
 from flask_mysqldb import MySQL
 from .routes import all_blueprints
 from .routes.error_handlers_route import not_found_error, internal_error
+from .session import init_session
 import logging
 
 mysql = MySQL()
@@ -29,9 +30,14 @@ def create_app():
     logger = logging.getLogger(__name__)
     logger.info("Application created successfully.")
     
-     # Initialize MySQL
+    # Initialie MySQL
     mysql.init_app(app)
 
+    # Initialise session
+    @app.before_request
+    def initialise_session():
+        init_session()
+        
     # Register all blueprints
     for bp in all_blueprints:
         app.register_blueprint(bp)
