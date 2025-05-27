@@ -18,10 +18,10 @@ class CartItem:
     quantity: int = 1
     id: str = field(default_factory=lambda: str(uuid4()))
     
-    
     def get_subtotal(self):
         """Calculate subtotal for this item."""
-        return self.product.price * self.quantity
+        subtotal = float(self.product.price * self.quantity)
+        return subtotal
     
     def increment_quantity(self):
         """Increment the quantity of this cart item."""
@@ -46,7 +46,7 @@ class Cart:
             existing_item.increment_quantity()
         else:
             self.items.append(item)
-    
+   
     def remove_item(self, item_id: str):
         """Remove an item from the cart by its product ID."""
         print("begin")
@@ -73,4 +73,5 @@ class Cart:
     
     def total_cost(self):
         """Calculate the total cost of the cart."""
-        return sum(item.get_subtotal() for item in self.items)
+        total_cost = sum(item.get_subtotal() for item in self.items)
+        return f"%.2f" % (total_cost)

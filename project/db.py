@@ -179,7 +179,7 @@ def add_user(form):
                 phone_number, user_type, is_active, is_verified,
                 created_at, updated_at, last_login, profile_picture_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)"""
-        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"user.jpg"))
+        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"blank_profile.png"))
     
     user_id = cur.lastrowid
 

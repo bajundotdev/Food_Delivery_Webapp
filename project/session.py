@@ -50,6 +50,26 @@ def add_to_cart(product_id, quantity=1):
     cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=int(quantity)))
     _save_basket_to_session(cart)
 
+def increment_cart_item(cart_id, quantity=1):
+    cart = get_cart()
+    for item in cart.items:
+        if item.id == cart_id:
+            item.increment_quantity()
+    _save_basket_to_session(cart)
+
+def minus_cart_item(cart_id, quantity=1):
+    cart = get_cart()
+    for item in cart.items:
+        #print("item: ", item.id)
+        if item.id == cart_id:
+            print("Bawas")
+            item.decrement_quantity()
+    _save_basket_to_session(cart)
+#     cart = get_cart()
+#     cart =
+#     cart.add_item(CartItem(product=get_product_by_id(product_id), quantity=int(quantity)))
+#     _save_basket_to_session(cart)
+
 def add_cart_item_from_db(cart_item):
     cart = get_cart()
     cart.add_item(cart_item)

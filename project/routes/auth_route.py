@@ -64,7 +64,7 @@ def login():
                         'phone': user.phone,
                         'email': user.email,
                         'address_id': "",
-        
+                        'photo': user.profile_picture_url
                     }
                     session['logged_in'] = True
                     session['role'] = user.role

@@ -32,7 +32,7 @@
                         <tr>
                             <th scope="col">Item</th>
                             <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
+                            <th scope="col" class="th-sm">Quantity</th>
                             <th scope="col">Subtotal</th>
                             <th scope="col">Remove</th>
                         </tr> 
@@ -50,11 +50,20 @@
                                     {{ product.name }}
                                 </td>
                                 <td class="align-middle"> {{ product.price }}</td>
-                                <td class="align-middle"> {{ item.quantity }}</td>
-                                <td class="align-middle"> {{ item.get_subtotal() }} </td>
+                                <td class="align-middle d-flex">
+                                    <form method="post" action="{{ url_for('cart.update_quantity', cart_id=item.id) }}">
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="submit" name="action" value="minus" class="btn btn-primary">-</button>
+                                            <input id="product_id" name="product_id" value="{{ product.id }}" readonly hidden>
+                                            <input name="cart_quantity" value="{{ item.quantity }}">
+                                            <button type="submit" name="action" value="plus" class="btn btn-primary">+</button>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="align-middle text-center">${{ '%0.2f' | format(item.get_subtotal()|float) }}</td>
                                 <td class="align-middle">
                                     <form method="POST" action="{{ url_for('cart.removing_from_cart', cart_id=item.id) }}">
-                                        <input type="submit" value="Remove" class="btn btn-sm btn-outline-danger">
+                                        <input type="submit" value="Remove from cart" class="btn btn-sm btn-outline-danger">
                                     </form>
                                 </td>
                             </tr>

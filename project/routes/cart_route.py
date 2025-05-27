@@ -51,6 +51,110 @@ def get_user_cart():
 ###################
 # Cart Routes     #
 ###################
+@cart_bp.route('/')
+def view_cart():
+    product_id = request.form.get('product_id')
+    order = get_cart()
+
+    if product_id:
+        add_to_cart(product_id)
+
+    return render_template('user/user_cart.html', order=order, totalprice=order.total_cost())
+
+
+# @cart_bp.route('/add/<string:product_id>', methods=['POST'])
+# def add_to_cart(product_id):
+#     """Add item to cart."""
+    
+#     product_id = request.args.get(product_id)
+
+#     if not is_logged_in():
+#         if 'shopping_cart' not in session:
+#             session['shopping_cart'] = {}
+#             cart = session['shopping_cart']
+
+#         # Add or update product quantity
+#         if str(product_id) in cart:
+#             cart[str(product_id)]['quantity'] += 1
+#         else:
+#             cart[str(product_id)] = {
+#                 # 'id': product['id'],
+#                 # 'name': product['name'],
+#                 # 'price': product['price'],
+#                 # 'quantity': 1
+#             }
+
+#         session['shopping_cart'] = cart  # Save back to session 
+        
+#     else:
+#         product = Product.get_by_id(product_id)
+#         if not product:
+#             flash('Product not found', 'error')
+#             return redirect(url_for('product.list_products'))
+            
+#         quantity = int(request.form.get('quantity', 1))
+        
+#         cart = get_user_cart()
+        
+#         # Create a new CartItem
+#         cart_item = CartItem(
+#             id=f"temp_{product_id}",  # Will be replaced when saved
+#             product_id=product_id,
+#             product=product,
+#             quantity=quantity
+#         )
+        
+#         # Add to cart
+#         cart.add_item(cart_item)
+        
+#         # Save to session
+#         session['cart'] = cart
+    
+#     flash('Item added to cart.', 'success')
+#     return redirect(url_for('main.index'))
+
+@cart_bp.route('/cart/update/<cart_id>', methods=['POST'])
+def update_quantity(cart_id):
+    
+    action = request.form.get('action')
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('cart_quantity', 0))
+    #print(cart_id)
+    if action == 'plus':
+        increment_cart_item(cart_id)
+    elif action == 'minus':
+        #quantity = max(0, quantity - 1)
+        minus_cart_item(cart_id)
+
+
+    return redirect(url_for('cart.view_cart'))
+    
+    
+    # cart = session.get('shopping_cart')
+    # print(product_id)
+    # print(cart['items'])
+
+    # if action == 'plus':
+    #     for item in cart['items']:
+    #         #if item['id'] == cart_id:
+    #         print(item['quantity'])
+            #request.session['shopping_cart']['items']['quantity'] += 1
+            # if item.get('product')['id'] == product_id:
+                # item['product']['quantity'] += 1
+                # cart.add_item(product_id)  
+    # elif action == 'minus':
+        # quantity = max(0, quantity - 1)
+        # for item in cart:
+            # if item['product']['id'] == product_id:
+                # item['product']['quantity'] = quantity
+
+    # elif action == 'minus':
+    #     quantity = max(0, quantity - 1)
+    #     cart[str(product_id)]['quantity'] = quantity
+
+    return redirect(url_for('cart.view_cart'))
+
+    
 @cart_bp.post('/removebasketitem/<string:cart_id>/')
 def removing_from_cart(cart_id):
     cart = get_cart()
@@ -67,81 +171,6 @@ def removing_from_cart(cart_id):
     return redirect(url_for('cart.view_cart'))
 # Dummy data for cart items
 dummy_cart_items = []
-
-@cart_bp.route('/')
-def view_cart():
-    product_id = request.form.get('product_id')
-    order = get_cart()
-
-    if product_id:
-        print(f'user requested to add tour id = {product_id}')
-        add_to_cart(product_id)
-
-    return render_template('user/user_cart.html', order=order, totalprice=order.total_cost())
-    # """View cart contents."""
-    # if not is_logged_in():
-    #     flash('Please log in to view your cart')
-    #     return redirect(url_for('auth.login'))
-        
-    # cart = get_user_cart()
-    # if not cart:
-    #     flash('Unable to retrieve your cart')
-    #     return redirect(url_for('main.index'))
-    
-    # return render_template('cart.html', 
-    #                       cart=cart,
-    #                       total=cart.total_cost())
-
-@cart_bp.route('/add/<string:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    """Add item to cart."""
-    
-    product_id = request.args.get(product_id)
-
-    if not is_logged_in():
-        if 'shopping_cart' not in session:
-            session['shopping_cart'] = {}
-            cart = session['shopping_cart']
-
-        # Add or update product quantity
-        if str(product_id) in cart:
-            cart[str(product_id)]['quantity'] += 1
-        else:
-            cart[str(product_id)] = {
-                # 'id': product['id'],
-                # 'name': product['name'],
-                # 'price': product['price'],
-                # 'quantity': 1
-            }
-
-        session['shopping_cart'] = cart  # Save back to session 
-        
-    else:
-        product = Product.get_by_id(product_id)
-        if not product:
-            flash('Product not found', 'error')
-            return redirect(url_for('product.list_products'))
-            
-        quantity = int(request.form.get('quantity', 1))
-        
-        cart = get_user_cart()
-        
-        # Create a new CartItem
-        cart_item = CartItem(
-            id=f"temp_{product_id}",  # Will be replaced when saved
-            product_id=product_id,
-            product=product,
-            quantity=quantity
-        )
-        
-        # Add to cart
-        cart.add_item(cart_item)
-        
-        # Save to session
-        session['cart'] = cart
-    
-    flash('Item added to cart')
-    return redirect(url_for('main.index'))
 
 @cart_bp.post('/clearbasket/')
 def clear_basket():
