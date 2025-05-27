@@ -15,11 +15,11 @@
                     <p class="text-white">Support local businesses while enjoying fresh meals</p>
                     <div class="my-4">
                         <div class="card p-3">
-                            <form class="d-flex" action="{{ url_for('main.index', search_string='search_food')}}" method="post">
+                            <form class="d-flex" action="{{ url_for('main.index')}}" method="get">
                                 <div class="flex-grow-1 me-2">
                                     <input type="search" name="search_food" id="search_food" class="form-control" placeholder="Search foods...">
                                 </div>
-                                <button class="btn btn-danger">Find food</button>
+                                <button type="submit" class="btn btn-danger">Find food</button>
                             </form>
                             <a class="link-dark m-2" data-bs-toggle="offcanvas" href="#filterOffcanvas">Search filter options</a>
                         </div>
@@ -143,6 +143,7 @@
         <!-- Featured Food Menu Section -->
         <section>
             <h2 class="mb-4 text-center">Daily food deals on Foodah!</h2>
+            {{ request.args.get('search_string') }}
             <div class="row g-4">
                 {% for product in products %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4">

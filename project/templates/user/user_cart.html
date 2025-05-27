@@ -51,11 +51,6 @@
                                 </td>
                                 <td class="align-middle"> {{ product.price }}</td>
                                 <td class="align-middle"> {{ item.quantity }}</td>
-                                <!-- 
-                                <td class="align-middle">
-                                    <input type="number" class="form-control" name="quantity_1" value=" {{ product }} " min="1" style="width: 60px;" />
-                                </td>
-                                1 -->
                                 <td class="align-middle"> {{ item.get_subtotal() }} </td>
                                 <td class="align-middle">
                                     <form method="POST" action="{{ url_for('cart.removing_from_cart', cart_id=item.id) }}">
@@ -94,7 +89,7 @@
                             {% else %}
                             <a href="{{ url_for('main.index') }}">
                                 <button class="btn btn-success">
-                                    View products
+                                    View Menu
                                 </button></a>
                         {% endif %}
                     </div>
