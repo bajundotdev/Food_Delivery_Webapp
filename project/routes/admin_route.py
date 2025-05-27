@@ -3,10 +3,11 @@ from flask import Blueprint, current_app, render_template, redirect, session, ur
 from project.decorators import login_required, admin_required
 from project.forms import ProductForm, DriverForm
 from project.forms.admin_form import CategoryForm
-from project.models import Product, Order
+from project.models import Order, UserRole, User, Product
 from flask_mysqldb import MySQL
 from werkzeug.utils import secure_filename
 
+from project.session import get_user, init_session
 
 from project.db import *
 from project.routes.user_route import allowed_file
@@ -23,12 +24,15 @@ mysql = MySQL()
 @login_required
 @admin_required
 def admin_dashboard():
-    user_session = session['user']
-    user_id = user_session['user_id']
-    user_email = user_session['email']
+    current_user = get_user()
+    if not current_user:
+        flash('Session expired. Please log in again.', 'warning')
+        return redirect(url_for('auth.login'))
+    
+    user_id = current_user.id
+    user_email = current_user.email
     user_details = get_user_info_with_address_by_user_id(user_id)
     admin_details = get_user_info_with_address_by_user_id(user_id)
-
 
     all_users = get_all_users()
     all_orders = get_all_orders()
@@ -68,8 +72,12 @@ def admin_dashboard():
 @login_required
 @admin_required 
 def profile():
-    user_session = session.get('user')
-    user_details = get_user_info_with_address_by_email(user_session['email'])
+    current_user = get_user()
+    if not current_user:
+        flash('Session expired. Please log in again.', 'warning')
+        return redirect(url_for('auth.login'))
+    
+    user_details = get_user_info_with_address_by_email(current_user.email)
 
     if user_details:
         user_info = user_details[0]
@@ -81,14 +89,15 @@ def profile():
         address = ""
         photo = ""
     
-    user_id = session.get('user').get('user_id')
-    my_orders = get_all_orders_by_user_id(user_id)
+    # Use session function data
+    my_orders = get_all_orders_by_user_id(current_user.id)
 
-    return render_template('admin/profile.html', user_details=user_details, 
-                           user_info=user_info, 
-                           my_orders=my_orders,
-                           address = address, 
-                           photo = photo)
+    return render_template('admin/profile.html', 
+                         user_details=user_details, 
+                         user_info=user_info, 
+                         my_orders=my_orders,
+                         address=address, 
+                         photo=photo)
 
 #############################
 #   Manage CRUD Categories  #
@@ -101,20 +110,22 @@ def manage_categories():
     form = ProductForm()
     if form.validate_on_submit():
         try:
-            with mysql.connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO categories (name) VALUES (%s)",
-                    (form.name.data,)
-                )
-                mysql.connection.commit()
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+                "INSERT INTO categories (name) VALUES (%s)",
+                (form.name.data,)
+            )
+            mysql.connection.commit()
+            cursor.close()
             flash('Category added successfully.', 'success')
             return redirect(url_for('admin.manage_categories'))
         except Exception as e:
             flash(f'Error adding category: {e}', 'danger')
 
-    with mysql.connection.cursor(dictionary=True) as cursor:
-        cursor.execute("SELECT * FROM categories")
-        categories = cursor.fetchall()
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM categories")
+    categories = cursor.fetchall()
+    cursor.close()
 
     return render_template('admin/categories.html', form=form, categories=categories)
 
@@ -124,9 +135,7 @@ def manage_categories():
 def update_category(category_id):
     category = get_all_category_by_categ_id(category_id)
     
-
     return render_template('admin/menu/category_update_form.html', category=category)
-
 
 @admin_bp.route('/menu/save_category/', methods=('POST', 'GET'))
 @login_required
@@ -175,6 +184,7 @@ def add_category():
 
         add_category_db(new_categ)
      return redirect(url_for('admin.manage_product'))
+
 ###########################
 #   Manage CRUD Orders    #
 ###########################
@@ -213,7 +223,6 @@ def view_order(order_id):
 
     return render_template('admin/orders/view_order.html', order_details=order_details,
                                                         items_in_order=items_in_order)
-    # return redirect(url_for('admin.manage_orders'))
 
 # Update Status of Order by ORDER_ID
 @admin_bp.route('/orders/update_order', methods=['POST'])
@@ -225,8 +234,6 @@ def update_order_status():
     result = set_order_status(order_id, status)
 
     return redirect(url_for('admin.manage_orders'))
-    # return redirect(url_for('admin.manage_orders'))
-
 
 # View All Orders
 @admin_bp.route('/orders/report')
@@ -244,9 +251,7 @@ def manage_order_report():
         if clear:
             return redirect(url_for('admin.manage_order_report'))
 
-
     return render_template('admin/orders/manage_order_report.html', all_orders=all_orders)
-
 
 ###########################
 #   Manage CRUD Products  #
@@ -361,7 +366,8 @@ def update_product(product_id):
 
             flash('Product updated successfully.', 'success')
             return redirect(url_for('admin.manage_product'))
-        except:
+        except Exception as e:
+            print("Error:", e)
             flash('Failed to update product.', 'danger')
             
     return redirect(url_for('admin.manage_product'))
