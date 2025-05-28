@@ -30,10 +30,10 @@
                 <table class="table table-striped table-hover align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col">Price</th>
-                            <th scope="col" class="th-sm">Quantity</th>
-                            <th scope="col">Subtotal</th>
+                            <th scope="col" class="w-50">Item</th>
+                            <th scope="col" class="w-25">Price</th>
+                            <th scope="col" class="w-25">Quantity</th>
+                            <th scope="col" class="">Subtotal</th>
                             <th scope="col">Remove</th>
                         </tr> 
                     </thead>
@@ -52,11 +52,11 @@
                                 <td class="align-middle"> {{ product.price }}</td>
                                 <td class="align-middle d-flex">
                                     <form method="post" action="{{ url_for('cart.update_quantity', cart_id=item.id) }}">
-                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                            <button type="submit" name="action" value="minus" class="btn btn-primary">-</button>
+                                        <div class="btn-group d-flex w-75" role="group" aria-label="Basic example">
+                                            <button type="submit" name="action" value="minus" class="btn btn-danger">-</button>
                                             <input id="product_id" name="product_id" value="{{ product.id }}" readonly hidden>
-                                            <input name="cart_quantity" value="{{ item.quantity }}">
-                                            <button type="submit" name="action" value="plus" class="btn btn-primary">+</button>
+                                            <input name="cart_quantity" value="{{ item.quantity }}" class="form-control form-control-sm text-center">
+                                            <button type="submit" name="action" value="plus" class="btn btn-danger">+</button>
                                         </div>
                                     </form>
                                 </td>
