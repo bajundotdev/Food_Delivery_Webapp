@@ -30,7 +30,7 @@ def driver_dashboard():
 
     driver = get_driver_details_by_user_id(user_id)
     driver_id = driver[0].id
-    all_orders_by_driver = get_all_orders_by_driver_id_status(driver_id, 'Completed')
+    all_orders_by_driver = get_all_orders_by_driver(driver_id)
 
     orderReady = get_all_orders_by_status(status="Ready")
     for order in orderReady:

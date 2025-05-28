@@ -146,7 +146,7 @@
                                     </p>
                                     <form method="post" action="{{ url_for('driver.confirm_delivery') }}">
                                         <div class="d-flex">
-                                            <button type="submit" value="{{ order.id }}" id="order_id" name="order_id" class="btn btn-danger me-2 w-100">Confirm Delivery</button>
+                                            <button type="submit" value="{{ order.id }}" id="order_id" name="order_id" class="btn btn-danger me-2 w-100">Accept this Delivery</button>
                                         </div>
                                     </form>
                                 </div>
@@ -264,7 +264,21 @@
                                 <tr>
                                     <td>{{order.fullname}}</td>
                                     <td>{{order.address}}</td>
-                                    <td><span class="badge bg-success">{{order.status}}</span></td>
+                                    <td>
+                                        {% if order.status == "Pending" %}
+                                            <span class="badge bg-danger">{{ order.status }}</span>
+                                        {% elif order.status == "In Progress" %}
+                                            <span class="badge bg-warning text-black">{{ order.status }}</span>
+                                        {% elif order.status == "Completed" %}
+                                            <span class="badge bg-success">{{ order.status }}</span>
+                                        {% elif order.status == "Cancelled" %}
+                                            <span class="badge bg-danger">{{ order.status }}</span>
+                                        {% elif order.status == "On Delivery" %}
+                                            <span class="badge bg-warning text-black">{{ order.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary">{{ order.status }}</span>
+                                        {% endif %}
+                                    </td>
                                     <td>{{order.delivered_at}}</td>
                                     <td>
                                         <a href="{{ url_for('driver.view_ongoing_delivery', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">

@@ -878,6 +878,29 @@ def get_all_orders_by_driver_id_status(driver_id, status):
              ) for row in results
     ]
 
+def get_all_orders_by_driver(driver_id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
+                ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
+                ordert.payment_invoice, ordert.delivery_option,
+                usert.fullname, usert.email, usert.phone_number,
+                CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
+        FROM order_table ordert, user_table usert, user_address addt
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s
+        ORDER BY ordert.placed_at
+    """, (driver_id,))
+    results = cur.fetchall()
+    cur.close()
+    return [
+        Order(str(row['order_id']), row['user_id'], row['driver_id'], row['status'], row['total_price'],
+              row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
+              row['payment_invoice'], row['delivery_option'],
+              row['fullname'], row['email'],row['phone_number'],
+              row['address']
+             ) for row in results
+    ]
+
 def get_all_orders_by_status(status):
     cur = mysql.connection.cursor()
     cur.execute("""
