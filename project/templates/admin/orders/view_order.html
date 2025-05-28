@@ -126,6 +126,31 @@
                             <h6 class="mb-1"><strong>Total:</strong> $ {{ order_details.total }}</h6>
                         </div>
                     </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Delivery Driver Information</h5>
+                        </div>
+                        <div class="row d-flex g-0 align-items-sm-center">
+                            <div class="col-md-3 text-center p-3">
+                                <div class="d-inline-block rounded-circle border border-3 border-dark overflow-hidden" style="width: 140px; height: 140px;">
+                                    <img src="{{ url_for('static', filename='img/profile_photos/' + driver_details.profile_picture_url) }}" alt="Profile Picture" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                </div>
+                            </div>
+                            <div class="col-md-5 text-md-start text-center">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-1">
+                                        {{ driver_details.fullname }}
+                                    </h4>
+                                    <p class="mb-0"><strong>Rating:</strong>  {{ driver_details.driver_rating }}</p>
+                                    <p class="mb-0"><strong>Phone number:</strong>  {{ driver_details.phone_number }}</p>
+                                    <p class="mb-0"><strong>Vehicle type:</strong>  {{ driver_details.vehicle_type }}</p>
+                                    <p class="mb-0"><strong>Vehicle type:</strong>  {{ driver_details.vehicle_plate }}</p>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="card">
                         <div class="card-header fs-4">Order Items</div>
                         <ul class="list-group list-group-flush">

@@ -20,7 +20,6 @@
                                 </div>
                                 <button type="submit" class="btn btn-danger w-md-auto">Find food</button>
                             </form>
-                            <a class="link-dark mt-3 mt-md-2" data-bs-toggle="offcanvas" href="#filterOffcanvas">Search filter options</a>
                         </div>
                     </div>
                 </div>
@@ -28,88 +27,6 @@
         </div>
     </section>
     
-    <!-- Filter Offcanvas Sidebar -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
-        <div class="offcanvas-header">
-            <h5 id="filterOffcanvasLabel" class="offcanvas-title">Refine Your Search</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <form>
-                <!-- Category Filter -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Category</label>
-                    <div class="row row-cols-2 g-2">
-                        <div class="col">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="filterMain" />
-                                <label class="form-check-label" for="filterMain">Main</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="filterDessert" />
-                                <label class="form-check-label" for="filterDessert">Dessert</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="filterDrink" />
-                                <label class="form-check-label" for="filterDrink">Drink</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="filterSnack" />
-                                <label class="form-check-label" for="filterSnack">Snack</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Rating Filter -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Minimum Rating</label>
-                    <div class="btn-group w-100" role="group" aria-label="Rating filter">
-                        <input type="radio" class="btn-check" name="ratingFilter" id="ratingAny" value="any" checked>
-                        <label class="btn btn-outline-secondary" for="ratingAny">Any</label>
-                        <input type="radio" class="btn-check" name="ratingFilter" id="rating3" value="3+">
-                        <label class="btn btn-outline-secondary" for="rating3">3+ <i class="bi bi-star-fill text-warning"></i></label>
-                        <input type="radio" class="btn-check" name="ratingFilter" id="rating4" value="4+">
-                        <label class="btn btn-outline-secondary" for="rating4">4+ <i class="bi bi-star-fill text-warning"></i></label>
-                    </div>
-                </div>
-                <!-- Delivery Time Filter -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Delivery Time</label>
-                    <select class="form-select" name="timeFilter" id="deliveryTimeSelect">
-                        <option value="any" selected>Any</option>
-                        <option value="30">Within 30 minutes</option>
-                        <option value="45">Within 45 minutes</option>
-                        <option value="60">Within 1 hour</option>
-                    </select>
-                </div>
-                <!-- Price Range Filter -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Price Range</label>
-                    <div class="btn-group w-100" role="group" aria-label="Price range">
-                        <input type="radio" class="btn-check" name="priceFilter" id="priceAny" value="any" checked>
-                        <label class="btn btn-outline-secondary" for="priceAny">Any</label>
-                        <input type="radio" class="btn-check" name="priceFilter" id="price1" value="1">
-                        <label class="btn btn-outline-secondary" for="price1">$</label>
-                        <input type="radio" class="btn-check" name="priceFilter" id="price2" value="2">
-                        <label class="btn btn-outline-secondary" for="price2">$$</label>
-                        <input type="radio" class="btn-check" name="priceFilter" id="price3" value="3">
-                        <label class="btn btn-outline-secondary" for="price3">$$$</label>
-                    </div>
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-danger">Apply Filters</button>
-                    <button type="reset" class="btn btn-outline-secondary">Clear All</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Product Categories Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top" style="top: 56px; z-index: 1020;">
         <div class="container">
@@ -118,7 +35,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-category {% if request.args.get('category') == 'all' %} fw-bold {%endif%}" 
                             href="{{ url_for('main.index') }}">
-                            All
+                            All Categories
                         </a>
                     </li>
                     {% for category in categories %}

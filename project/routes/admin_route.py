@@ -210,8 +210,11 @@ def manage_orders():
 def view_order(order_id):
     order_details = get_all_orders_by_id(order_id)
     items_in_order = get_all_order_items_by_order_id(order_id)
+    driver_id = order_details.driver_id
+    driver_details = get_driver_by_id(driver_id)
 
     return render_template('admin/orders/view_order.html', order_details=order_details,
+                                                        driver_details=driver_details[0],
                                                         items_in_order=items_in_order)
 
 # Update Status of Order by ORDER_ID
