@@ -71,10 +71,14 @@ def view_order():
     order_details = get_all_orders_by_id(order_id)
     driver_id = order_details.driver_id
     driver_details = get_driver_by_id(driver_id)
+    if driver_details:
+        driver = driver_details[0]
+    else:
+        driver = ""
     items_in_order = get_all_order_items_by_order_id(order_id)
 
     return render_template('user/view_order.html', order_details=order_details,
-                                                driver_details=driver_details[0],
+                                                driver_details=driver,
                                                 items_in_order=items_in_order)
 
 @user_bp.route('/user/save/', methods=('POST', 'GET'))
