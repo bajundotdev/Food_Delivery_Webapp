@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from project.decorators import login_required
-from project.forms import LoginForm
+from project.forms import LoginForm, PasswordChangeForm
 from project.forms.customer_form import UserForm
 from project.session import *
 from werkzeug.utils import secure_filename
@@ -101,6 +101,33 @@ def save_profile():
 
     return redirect(url_for('user.profile'), photo = session.get('photo'))
 
+@user_bp.route('/profile/change_password/', methods=['GET', 'POST'])
+@login_required
+def update_password():
+    form = PasswordChangeForm()
+    return render_template('user/profile/change_password.html', form=form)
+
+@user_bp.route('/user/save_password/', methods=('POST', 'GET'))
+@login_required
+def save_password():
+    if request.method == "POST":
+        form = PasswordChangeForm()
+        current_password = form.current_password.data
+        new_password = form.confirm_password.data
+        user = get_user()
+        if form.validate_on_submit():
+            if check_user(user.email, current_password):
+                update_password_db(user.id, generate_password_hash(new_password))
+                flash('Password changed!', 'success')
+                return redirect(url_for('user.profile'))
+            else:
+                flash('Invalid password!', 'danger')
+                return redirect(url_for('user.update_password'))
+        else:
+            print(form.errors)
+            flash('Password did not match!', 'danger')
+            return redirect(url_for('user.update_password'))
+    return redirect(url_for('user.profile', form=form))
 # def profile():
 #     """View and edit user profile on the same page."""
 #     if not is_logged_in():

@@ -1140,3 +1140,15 @@ def update_user_role_db(user_id, role):
     
     mysql.connection.commit()
     cur.close()
+
+def update_password_db(user_id, password_hash):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE user_table
+        SET password_hash = %s
+        WHERE user_id = %s
+        """
+        , (password_hash, user_id,))
+    
+    mysql.connection.commit()
+    cur.close()
