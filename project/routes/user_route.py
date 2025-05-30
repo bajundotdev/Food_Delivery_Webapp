@@ -125,7 +125,7 @@ def save_password():
                 return redirect(url_for('user.update_password'))
         else:
             print(form.errors)
-            flash('Password did not match!', 'danger')
+            flash(form.errors, 'danger')
             return redirect(url_for('user.update_password'))
     return redirect(url_for('user.profile', form=form))
 # def profile():
