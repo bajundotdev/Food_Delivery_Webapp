@@ -1152,3 +1152,15 @@ def update_password_db(user_id, password_hash):
     
     mysql.connection.commit()
     cur.close()
+
+def update_order_price_db(order_id, price):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE order_table
+        SET total_price = %s
+        WHERE order_id = %s
+        """
+        , (price, order_id,))
+    
+    mysql.connection.commit()
+    cur.close()

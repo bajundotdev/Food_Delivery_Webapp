@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <div class="container mt-2">
+        <div class="row d-flex">
+            <div class="col">
+                <h2>Checkout</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index')}}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Checkout</li>
+            </ol>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <!-- Main content: Checkout form + Order summary -->
+    <main class="container my-4">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3">Order Receipt</h2>
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                            <div class="card-header">Order Summary</div>
+                            <ul class="list-group list-group-flush">
+                                {% for item in cart.items %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                                <span>{{ item.get_subtotal() }}</span>
+                                </li>
+                                {% endfor %}
+                                <li class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>Order Total</span>
+                                <span>$ {{ cart.total_cost() }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between fw-bold">
+                                    <span>Delivery Fee</span>
+                                    <span>$ {{ shippingFee }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between fw-bold">
+                                    <span>Packaging</span>
+                                    <span>$ {{ packagingFee }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between fw-bold bg-warning">
+                                    <span>Total</span>
+                                    <span>$ {{ total }}</span>
+                                </li>
+                            </ul>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-danger" name="submit" id="submit">Confirm Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+{% endblock %}
