@@ -30,8 +30,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="h5 mb-3">Delivery Details</h2>
-                        <!-- <form action="{{url_for('cart.receipt')}}" class="row g-3 mb-4" method="post">--> 
-                        <form action="{{url_for('cart.checkout_cart')}}" class="row g-3 mb-4" method="post">    
+                        <form action="{{url_for('cart.checkout_cart')}}" class="row g-3" method="post">    
                             <div class="col-12 mb-3">
                                 <label for="fullname" class="form-label">Full Name</label>
                                 <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Enter your name" value="{{ user_info.name }}" required/>
@@ -54,7 +53,7 @@
                                 <!-- Payment method radio options -->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="payment_method" id="payment_CC" value="Credit Card" checked />
-                                    <label class="form-check-label" for="payCard">Credit Card</label>
+                                    <label class="form-check-label" for="payment_CC">Credit Card</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="payment_method" id="payPaypal"  value="Debit Card"/>
@@ -69,14 +68,14 @@
                             <h2 class="h5">Delivery Options</h2>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="shippingMethod" id="standard" value="standard" checked>
-                                    <label class="form-check-label" for="standard">
+                                    <input class="form-check-input" type="radio" name="shippingMethod" id="standardDelivery" value="standard" checked>
+                                    <label class="form-check-label" for="standardDelivery">
                                     Standard Delivery - Free
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="shippingMethod" id="express" value="express">
-                                    <label class="form-check-label" for="express">
+                                    <input class="form-check-input" type="radio" name="shippingMethod" id="expressDelivery" value="express">
+                                    <label class="form-check-label" for="expressDelivery">
                                     Express Delivery - $5.99
                                     </label>
                                 </div>
@@ -86,15 +85,11 @@
                             <div class="mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="packagingMethod" id="eco_friendly" value="eco_friendly" checked>
-                                    <label class="form-check-label" for="standard">
-                                    Eco-Friendly Packaging - Free
-                                    </label>
+                                    <label class="form-check-label" for="standard">Eco-Friendly Packaging - Free</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="packagingMethod" id="standard_pack" value="standard">
-                                    <label class="form-check-label" for="express">
-                                    Standard Packaging - $2.99
-                                    </label>
+                                    <label class="form-check-label" for="express">Standard Packaging - $2.99</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="packagingMethod" id="discreet_confidential" value="discreet_confidential">
@@ -107,38 +102,59 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="saveInfo">
-                                    <label class="form-check-label" for="saveInfo">
-                                    Save this information for next time
-                                    </label>
+                            <div class="mb-2">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="agreeToTerms" required>
+                                    <label class="form-check-label" for="agreeToTerms">Yes, I confirm my order.</label>
                                 </div>
+                                <button type="submit" class="btn btn-danger w-100" name="submit" id="submit">Place Order</button>
                             </div>
-                            <button type="submit" class="btn btn-danger" name="submit" id="submit">Place Order</button>
                             {{ form.csrf_token }}
-                            {{ form.hidden_tag() }}
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card mb-4">
-                <div class="card-header">Order Summary</div>
-                <ul class="list-group list-group-flush">
-                    {% for item in cart.items %}
-                    <li class="list-group-item d-flex justify-content-between">
-                    <span>{{ item.product.name }} x {{ item.quantity }}</span>
-                    <span>{{ item.get_subtotal() }}</span>
-                    </li>
-                    {% endfor %}
-                    <li class="list-group-item d-flex justify-content-between fw-bold">
-                    <span>Total</span>
-                    <span>$ {{ cart.total_cost() }}</span>
-                    </li>
-                </ul>
+                    <div class="card-body pb-1">
+                        <h5>Order Summary</h5>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Items</span>
+                            <span>${{ cart.total_cost() }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Delivery Fee</span>
+                            <span>-</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Packaging Fee</span>
+                            <span>-</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <h5>Order Total</h5>
+                            <h5 class="fw-bold text-danger">${{ cart.total_cost() }}</h5>
+                        </li>
+                    </ul>
+                    
+                    <div class="card-body">
+                        <h5 class="mb-3">Items in your order</h5>
+                        {% for item in cart.items %}
+                            <div class="d-flex mb-3">
+                                <img src="{{ url_for('static', filename='img/products/'+item.product['image_url']) }}" alt="{{ item.product['image_url'] }}" class="img-thumbnail me-2" style="width: 50px;" />
+                                <div>
+                                    <h6 class="mb-0">{{ item.product['name'] }}</h6>
+                                    <span class="text-muted small">Qty: {{ item.quantity }}</span>
+                                    <span class="d-block text-danger">${{ item.get_subtotal() }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <a href="{{ url_for('cart.view_cart') }}" class="btn btn-outline-secondary btn-sm w-100 mt-2">Edit Cart</a>
+                    </div>
                 </div>
-                
             </div>
         </div>
     </main>

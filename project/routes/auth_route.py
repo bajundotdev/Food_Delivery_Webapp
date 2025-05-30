@@ -25,7 +25,7 @@ def register():
             flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
 
-    return render_template('register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 @auth_bp.route('/driver_register/', methods=('POST', 'GET'))
 def driver_register():
@@ -43,7 +43,7 @@ def driver_register():
             flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
 
-    return render_template('driver_register.html', form=form)
+    return render_template('auth/driver_register.html', form=form)
 
 @auth_bp.route('/login/', methods=('POST', 'GET'))
 def login():
@@ -81,7 +81,7 @@ def login():
                             add_cart_item_from_db(item)  
                         return redirect(url_for('main.index'))
         
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/logout')
 def logout():

@@ -95,7 +95,7 @@
                             <form method="GET" action="{{ url_for('cart.checkout_cart') }}">
                                 <input type="submit" value="Proceed to Checkout" class="btn btn-success">
                             </form>
-                            {% else %}
+                        {% else %}
                             <a href="{{ url_for('main.index') }}">
                                 <button class="btn btn-success">
                                     View Menu
