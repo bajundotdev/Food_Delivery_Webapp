@@ -62,13 +62,13 @@ def clear_basket():
     flash('Basket cleared.', 'primary')
     return redirect(url_for('cart.view_cart'))
 
-@cart_bp.route('/checkout', methods=('POST','GET'))
+@cart_bp.route('/checkout/', methods=('POST','GET'))
 @login_required
 def checkout_cart():
     cart = get_cart()
     user_session = session.get('user')
-    #user_details= user_session['email']
     user_details = get_user_info_with_address_by_email(user_session['email'])
+
     if user_details:
         user_info = user_details[0]
         address = user_details[1]
@@ -83,18 +83,28 @@ def checkout_cart():
     form = CheckoutForm()
     
     if request.method == 'POST':
-        form = CheckoutForm()
         shippingFee = 0
         packagingFee = 0
+
         if form.shippingMethod.data == "express":
             shippingFee = 5.99
         if form.packagingMethod.data == "standard":
             packagingFee = 2.99
         elif form.packagingMethod.data == "discreet_confidential":
             packagingFee = 5.99
+        
         total = round(float(cart.total_cost()) + float(shippingFee) + float(packagingFee),2)
-        flash("pasok sa post ng checkout", 'warning')
+
         if form.validate_on_submit():
+            order = convert_basket_to_order(cart)
+            order.total = total
+            address_id = get_address_id_by_user_id(int(order.user_id))
+            
+            print(order)
+            print(address_id)
+
+            # add_order_to_db(order, form, address_id)
+
             return render_template('user/receipt.html', form=form, cart=cart, total=total, packagingFee=packagingFee, shippingFee = shippingFee)
         else:
             print(form.errors)
