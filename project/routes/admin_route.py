@@ -84,7 +84,7 @@ def profile():
     user_id = session.get('user').get('user_id')
     my_orders = get_all_orders_by_user_id(user_id)
 
-    return render_template('admin/profile.html', user_details=user_details, 
+    return render_template('admin/profile/my_profile.html', user_details=user_details, 
                            user_info=user_info, 
                            my_orders=my_orders,
                            address = address, 
