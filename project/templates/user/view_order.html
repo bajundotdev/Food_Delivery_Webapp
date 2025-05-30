@@ -129,7 +129,7 @@
                                 <li class="list-group-item d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ url_for('static', filename='img/products/'+item.food_image_url) }}" alt="{{item.food_image_url}}" width="50" height="50" class="me-3 rounded ">
-                                        <div>
+                                        <div class="my-2">
                                             <div class="fw-semibold">{{ item.product_name }}</div>
                                             <div class="text-muted small">Qty: {{ item.quantity }} &times; ${{ item.price }}</div>
                                         </div>
@@ -138,6 +138,31 @@
                                 </li>
                             {% endfor %}
                             <!-- Total -->
+                            <li class="list-group-item d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>Delivery Fee</span>
+                                </div>
+                                <div class="fw-bold text-end">
+                                    {% if order_details.shipping_fee > 0 %}
+                                    $ {{ order_details.shipping_fee }}
+                                    {% else %}
+                                    Free
+                                    {% endif %}
+                                </div>
+                            </li>
+
+                            <li class="list-group-item d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span>Packaging Fee</span>
+                                </div>
+                                <div class="fw-bold text-end">
+                                    {% if order_details.packaging_fee > 0 %}
+                                    $ {{ order_details.packaging_fee }}
+                                    {% else %}
+                                    Free
+                                    {% endif %}
+                            </li>
+
                             <li class="list-group-item d-flex gap-2 justify-content-between">
                                 <div class="fw-bold">TOTAL:</div><div class="fw-bold text-success fs-5">${{ order_details.total }}</div>
                             </li>

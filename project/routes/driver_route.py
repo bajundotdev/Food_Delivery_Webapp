@@ -82,10 +82,11 @@ def view_ongoing_delivery(order_id):
     if request.method == 'POST':
         try:
             if action == 'order_received':
-                status = "Completed"
+                driver_complete_delivery(order_id)
             elif action == 'order_cancelled':
-                status = "Cancelled"
-            set_order_status_by_driver_id(order_id, driver_id, status)
+                status = str(request.form.get('cancelNote'))
+                cancel_order(order_id, status)
+
             flash('Order status updated successfully!', 'success')
         except Exception as e:
             print("Error:", e)

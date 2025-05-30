@@ -707,9 +707,9 @@ def cancel_order(order_id, cancellation_notes):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful", cancellation_notes
+        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful", cancellation_notes = %s
         WHERE order_id= %s
-    """, (current_timestamp, order_id, cancellation_notes,))
+    """, (current_timestamp, cancellation_notes, order_id,))
     mysql.connection.commit()
     cur.close()
     
@@ -813,10 +813,13 @@ def get_all_orders():
 
 def get_all_orders_by_id(order_id):
     cur = mysql.connection.cursor()
+
+    order = Order(1,2)
+
     cur.execute("""
         SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
                 ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
-                ordert.payment_invoice, ordert.delivery_option,
+                ordert.payment_invoice, ordert.delivery_option, ordert.shipping_fee, ordert.packaging_fee, ordert.cancellation_notes,
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
@@ -829,7 +832,7 @@ def get_all_orders_by_id(order_id):
               row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
               row['payment_invoice'], row['delivery_option'],
               row['fullname'], row['email'],row['phone_number'],
-              row['address']
+              row['address'], row['shipping_fee'], row['packaging_fee'], row['cancellation_notes']
              )
     
 
@@ -842,7 +845,7 @@ def get_all_orders_by_user_id(user_id):
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.user_id = %s
+        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.user_id = %s AND ordert.order_confirm = 1
         ORDER BY ordert.placed_at
     """, (user_id,))
     results = cur.fetchall()
@@ -1044,18 +1047,18 @@ def clear_cart_db(user_id,):
     cur.close()
 
 ################################    CHECK OUT QUERIES       #####
-def add_order_to_db(order, form, address_id):
+def add_order_to_db(order, form, address_id, shippingFee, packagingFee):
     cur = mysql.connection.cursor() 
     cur.execute("""
         INSERT INTO
                 order_table (user_id, address_id, status, total_price, payment_status,
                                 payment_method, placed_at, notes, payment_invoice, address,
-                                delivery_option, packaging_method
+                                delivery_option, packaging_method, shipping_fee, packaging_fee
                 )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         , (order.user_id, address_id ,OrderStatus.PENDING.value, order.total, order.payment_status,
            form.payment_method.data, current_timestamp, form.notes.data ,
-           str(str(order.user_id)+str(current_timestamp)), form.address.data, form.shippingMethod.data, form.packagingMethod.data))
+           str(str(order.user_id)+str(current_timestamp)), form.address.data, form.shippingMethod.data, form.packagingMethod.data, shippingFee, packagingFee))
     order_id = cur.lastrowid
 
     for item in order.items:

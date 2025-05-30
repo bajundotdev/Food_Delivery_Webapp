@@ -108,7 +108,7 @@ def checkout_cart():
             order = convert_basket_to_order(cart)
             order.total = total
             address_id = get_address_id_by_user_id(int(order.user_id))
-            order_id = add_order_to_db(order, form, address_id)
+            order_id = add_order_to_db(order, form, address_id, shippingFee, packagingFee)
             session['order'] = {
                 'order_id' : order_id,
                 'shippingFee': shippingFee,

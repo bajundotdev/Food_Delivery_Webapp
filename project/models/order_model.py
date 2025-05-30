@@ -65,7 +65,11 @@ class Order:
     email: str = ""
     phone_number: str = ""
     address: str = ""
+    shipping_fee: float = 0.0
+    packaging_fee: float = 0.0
+    cancellation_notes: str = ""
     items: List[OrderItem] = field(default_factory=lambda: [])
+
     def get_url(self):
         """Return URL to order detail page."""
         return f"/order/{self.id}"

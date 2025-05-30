@@ -46,11 +46,23 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between fw-bold">
                                     <span>Delivery Fee</span>
-                                    <span>$ {{ shippingFee }}</span>
+                                    <span>
+                                        {% if shippingFee > 0 %}
+                                        $ {{ shippingFee }}
+                                        {% else %}
+                                        Free
+                                        {% endif %}
+                                    </span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between fw-bold">
                                     <span>Packaging</span>
-                                    <span>$ {{ packagingFee }}</span>
+                                    <span>
+                                        {% if packagingFee > 0 %}
+                                        $ {{ packagingFee }}
+                                        {% else %}
+                                        Free
+                                        {% endif %}
+                                    </span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between fw-bold bg-warning">
                                     <span>Total</span>

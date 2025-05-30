@@ -179,7 +179,7 @@
                                         <i class="bi bi-bag-check me-2"></i> In Progress: Order #{{order.id}}
                                     </span>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body pb-0">
                                     <h5 class="card-title mb-1">{{order.fullname}}</h5>
                                     <p class="card-text mb-0"> <strong>Phone:</strong> {{order.phone_number }}</p> 
                                     <p class="card-text mb-0"> <strong>Address:</strong> {{order.address }}</p> 
@@ -189,11 +189,23 @@
                                     </p>
                                     <form method="post" action="{{ url_for('driver.view_ongoing_delivery', order_id=order.id) }}">
                                         <div class="d-flex">
-                                            <button type="submit" value="order_received" id="order_status" name="order_status" class="btn btn-warning me-2 w-100">Order Received</button>
-                                            <button type="submit" value="order_cancelled" id="order_status" name="order_status" class="btn btn-outline-secondary me-2 w-md-auto">Cancelled</button>
+                                            <button type="submit" value="order_received" id="order_status" name="order_status" class="btn btn-warning w-100">Order Received</button>                                        
                                         </div>
                                     </form>
                                 </div>
+
+                                <div class="card-body pt-0">
+                                    <form method="post" action="{{ url_for('driver.view_ongoing_delivery', order_id=order.id) }}">
+                                         <div class="form-group mb-2">
+                                            <label for="cancelNote"></label>
+                                            <textarea class="form-control" id="cancelNote" name="cancelNote" rows="3" placeholder="Reason for Cancellation" required></textarea>
+                                            </div> 
+                                        <div class="d-flex">                                                                            
+                                            <button type="submit" value="order_cancelled" id="order_status" name="order_status" class="btn btn-outline-secondary w-100">Cancel Order</button>
+                                        </div>
+                                    </form>
+                                </div>
+
                             </div>
                         {% else %}
                             <div class="card w-100 shadow-sm incoming-order-card text-center">
