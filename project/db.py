@@ -346,7 +346,7 @@ def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
+        WHERE order_confirm = 1 AND (ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id)
                 AND ((ordert.order_id LIKE %s OR usert.fullname LIKE %s) AND ordert.status LIKE %s
                 AND (ordert.placed_at BETWEEN %s AND %s))
         ORDER BY ordert.placed_at
@@ -727,6 +727,7 @@ def get_all_orders_and_products():
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id
         ORDER BY ot.placed_at
+        WHERE order_confirm = 1
     """)
     results = cur.fetchall()
     cur.close()
@@ -744,7 +745,7 @@ def get_products_from_order_id(order_id):
         FROM product_table pt
         JOIN cart_items cart ON cart.product_id = pt.product_id
         JOIN order_table ot ON ot.order_id = cart.order_id
-        WHERE cart.order_id = %s
+        WHERE order_confirm = 1 AND cart.order_id = %s
     """, (order_id, ))
     results = cur.fetchall()
     cur.close()
@@ -760,7 +761,7 @@ def get_all_order_items_by_order_id(order_id):
         FROM order_table ot
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id
-        WHERE ot.order_id = %s
+        WHERE order_confirm = 1 AND ot.order_id = %s
     """, (order_id, ))
     results = cur.fetchall()
     cur.close()
@@ -776,7 +777,7 @@ def get_all_order_items_by_order_id_status(order_id, status):
         FROM order_table ot
         JOIN cart_items cart ON ot.order_id = cart.order_id
         JOIN product_table pt ON cart.product_id = pt.product_id
-        WHERE ot.order_id = %s AND ot.status = %s
+        WHERE order_confirm = 1 AND ot.order_id = %s AND ot.status = %s
         ORDER BY ot.placed_at
     """, (order_id, status,))
     results = cur.fetchall()
@@ -796,7 +797,7 @@ def get_all_orders():
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id
+        WHERE order_confirm = 1 AND ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id
         ORDER BY ordert.placed_at
     """)
     results = cur.fetchall()
@@ -819,7 +820,7 @@ def get_all_orders_by_id(order_id):
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.order_id = %s
+        WHERE order_confirm = 1 AND ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.order_id = %s
         ORDER BY ordert.placed_at
     """, (order_id,))
     row = cur.fetchone()
@@ -864,7 +865,7 @@ def get_all_orders_by_driver_id_status(driver_id, status):
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s AND ordert.status = %s
+        WHERE order_confirm = 1 AND ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s AND ordert.status = %s
         ORDER BY ordert.placed_at
     """, (driver_id, status,))
     results = cur.fetchall()
@@ -887,7 +888,7 @@ def get_all_orders_by_driver(driver_id):
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s
+        WHERE order_confirm = 1 AND ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.driver_id = %s
         ORDER BY ordert.placed_at
     """, (driver_id,))
     results = cur.fetchall()
@@ -910,7 +911,7 @@ def get_all_orders_by_status(status):
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
-        WHERE ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.status = %s
+        WHERE order_confirm = 1 AND ordert.user_id = usert.user_id AND ordert.address_id = addt.address_id AND ordert.status = %s
         ORDER BY ordert.placed_at
     """, (status,))
     results = cur.fetchall()
@@ -1067,6 +1068,7 @@ def add_order_to_db(order, form, address_id):
         
     mysql.connection.commit()
     cur.close()
+    return order_id
 
 ####################################    CRUD CATEGORIES     ##################
 def add_category_db(category_name):
@@ -1157,7 +1159,7 @@ def update_order_price_db(order_id, price):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET total_price = %s
+        SET total_price = %s, order_confirm = 1
         WHERE order_id = %s
         """
         , (price, order_id,))

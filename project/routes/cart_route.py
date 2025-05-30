@@ -96,15 +96,26 @@ def checkout_cart():
         total = round(float(cart.total_cost()) + float(shippingFee) + float(packagingFee),2)
 
         if form.validate_on_submit():
+            user_id = session['user']['user_id']
+            clear_cart_db(user_id)
+            cart_items = session.get('shopping_cart')
+            for item in cart_items.get('items', []):
+                product_id = item['product']['id']
+                quantity = item['quantity']
+                item_id = item['id']
+                add_cart_item_to_db(product_id ,user_id, quantity, item_id)
+
             order = convert_basket_to_order(cart)
             order.total = total
             address_id = get_address_id_by_user_id(int(order.user_id))
-            
-            print(order)
-            print(address_id)
-
-            # add_order_to_db(order, form, address_id)
-
+            order_id = add_order_to_db(order, form, address_id)
+            session['order'] = {
+                'order_id' : order_id,
+                'shippingFee': shippingFee,
+                'packagingFee': packagingFee,
+                'total': total
+            }
+            empty_basket()
             return render_template('user/receipt.html', form=form, cart=cart, total=total, packagingFee=packagingFee, shippingFee = shippingFee)
         else:
             print(form.errors)
@@ -130,19 +141,16 @@ def receipt():
         flash('Please log in before checking out.', 'error')
         return redirect(url_for('main.login'))
 
-    form = CheckoutForm()
-    shippingFee = 0
-    packagingFee = 0
-    if form.shippingMethod.data == "express":
-        shippingFee = 5.99
-    if form.packagingMethod.data == "standard":
-        packagingFee = 2.99
-    elif form.packagingMethod.data == "discreet_confidential":
-        packagingFee = 5.99
-    total = round(float(cart.total_cost()) + float(shippingFee) + float(packagingFee),2)
     
     if request.method == 'POST':
-        flash("proceed na", 'warning')
+        order = session.get('order')
+        order_id = order['order_id']
+        shippingFee = order['shippingFee']
+        packagingFee = order['packagingFee']
+        total = order['total']
+        update_order_price_db(order_id, total)
+        flash('Your order has been confirmed!', 'success')
+        return redirect(url_for('user.profile'))
     #     if form.validate_on_submit():
 
     #         user_id = session['user']['user_id']
@@ -167,5 +175,5 @@ def receipt():
     #         print(form.errors)
     #         flash('The provided information is missing or incorrect', 'error')
     
-    return render_template('user/receipt.html', form=form, cart=cart, user_info=user_info, address = address, total=total, packagingFee=packagingFee, shippingFee = shippingFee)
+    return render_template('user/receipt.html')
     #return render_template('user/receipt.html', form=form, cart=cart, user_info=user_info, address = address)
