@@ -299,7 +299,7 @@ def get_all_products():
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
              row['category_name'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+             row['food_image_url'], row['is_active'] ) for row in results
     ]
 
 def get_product_by_id(product_id):
@@ -315,7 +315,7 @@ def get_product_by_id(product_id):
     if row is not None:
         return Product(row['product_id'], row['product_name'], row['description'],
                 row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-                row['food_image_url'], row['is_active'], str(row['restaurant_id']))
+                row['food_image_url'], row['is_active'] )
     else:
         return []
 
@@ -332,7 +332,7 @@ def search_product(search_str):
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
              row['category_name'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+             row['food_image_url'], row['is_active'] ) for row in results
     ]
 
 def search_order_name_id_status(search_str, status, date_start="2025-05-01 18:35:48", date_end=current_timestamp):
@@ -398,7 +398,7 @@ def get_product_by_category(categ):
     return [
         Product(str(row['product_id']), row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])) for row in results
+             row['food_image_url'], row['is_active'] ) for row in results
     ]
 
 def add_product_to_db(form):
@@ -960,7 +960,7 @@ def get_all_cart_items():
     return [
         CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+             row['food_image_url'], row['is_active'] ), row['quantity']) for row in results
     ]
    
     return results
@@ -978,7 +978,7 @@ def get_all_cart_items_by_user_id(user_id):
     return [
         CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])), row['quantity']) for row in results
+             row['food_image_url'], row['is_active'] ), row['quantity']) for row in results
     ]
 
 def get_uncheckedout_cart_items_by_user_id(user_id):
@@ -994,7 +994,7 @@ def get_uncheckedout_cart_items_by_user_id(user_id):
     return [
         CartItem(Product(str(row['product_id']), row['product_name'], row['description'],
              row['category'], float(row['price']), float(row['food_rating']), int(row['prep_time_est']),
-             row['food_image_url'], row['is_active'], str(row['restaurant_id'])),  row['cart_id'], row['quantity']) for row in results
+             row['food_image_url'], row['is_active'] ),  row['cart_id'], row['quantity']) for row in results
     ]
 
 def check_if_item_in_cart(product_id, user_id):
