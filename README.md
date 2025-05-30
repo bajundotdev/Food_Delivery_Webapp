@@ -23,18 +23,13 @@ A2_Group72_582_A2.zip
     │   └── img/
     ├── templates/
     │   ├── admin/
-    │   │   ├── manage_products.html
-    │   │   ├── manage_category.html
-    │   │   ├── manage_orders.html
-    │   │   ├── manage_customers.html
-    │   ├── drivers/
-    │   │   ├── profile.html
+    │   ├── auth/
+    │   ├── driver/
     │   ├── errors/
-    │   ├── login/
     │   ├── products/ 
-    │   ├── registration/
-    │   └── users/
-    │       ├── profile.html
+    │   ├── user/ 
+    │   ├── base.html
+    │   └── index.html 
     ├── __init__.py
     ├── database.sql (pre-populated)
     ├── db.py
@@ -83,7 +78,7 @@ A2_Group72_582_A2.zip
    python3 -m pip install -r requirements.txt
    ```
 
-5. **Configure MySQL Connection**
+5. **Configure MySQL Connection:**
 
    Update the MySQL configuration in `project` > `__init__.py` with your MySQL credentials:
 
@@ -99,6 +94,31 @@ A2_Group72_582_A2.zip
    ```
 
    The app will be available at [http://127.0.0.1:8888](http://127.0.0.1:8888).
+
+## User Credentials
+
+   Use the following user accounts to login:
+
+1. Log in as **System Admin**:
+
+   ```bash
+   Email Address: admin@foodah.com
+   Password: hello 
+   ```
+
+2. Log in as **Customer**:
+
+   ```bash
+   Email Address: jamizan@foodah.com
+   Password: hello 
+   ```
+
+3. Log in as **Delivery Driver**:
+
+   ```bash
+   Email Address: tomasen@foodah.com
+   Password: hello 
+   ```
 
 ## Notes
 
