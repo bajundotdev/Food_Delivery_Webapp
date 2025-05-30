@@ -37,7 +37,7 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number"  value="{{ user_info.phone }}" required/>
+                                <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your phone number"  value="{{ user_info.phone }}" required/>
                             </div>
                             <div class="col-6 mb-3">
                                 <label for="email" class="form-label">Email Address</label>
@@ -84,19 +84,19 @@
                             <h2 class="h5">Packaging Method</h2>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="standard" value="standard" checked>
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="standard" value="eco_friendly" checked>
                                     <label class="form-check-label" for="standard">
                                     Eco-Friendly Packaging - Free
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="express" value="express">
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="express" value="standard">
                                     <label class="form-check-label" for="express">
                                     Standard Packaging - $2.99
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="sameDay" value="sameDay">
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="sameDay" value="discreet_confidential">
                                     <label class="form-check-label" for="sameDay">
                                     Discreet and Confidential Packaging - $5.99
                                     
@@ -116,6 +116,7 @@
                             </div>
                             <button type="submit" class="btn btn-danger" name="submit" id="submit">Place Order</button>
                             {{ form.csrf_token }}
+                            {{ form.hidden_tag() }}
                         </form>
                     </div>
                 </div>

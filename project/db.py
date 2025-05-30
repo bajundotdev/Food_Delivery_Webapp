@@ -703,13 +703,13 @@ def driver_complete_delivery(order_id):
     mysql.connection.commit()
     cur.close()
 
-def cancel_order(order_id):
+def cancel_order(order_id, cancellation_notes):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful"
+        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful", cancellation_notes
         WHERE order_id= %s
-    """, (current_timestamp, order_id,))
+    """, (current_timestamp, order_id, cancellation_notes,))
     mysql.connection.commit()
     cur.close()
     
@@ -1048,12 +1048,13 @@ def add_order_to_db(order, form, address_id):
     cur.execute("""
         INSERT INTO
                 order_table (user_id, address_id, status, total_price, payment_status,
-                                payment_method, placed_at, notes, payment_invoice, address
+                                payment_method, placed_at, notes, payment_invoice, address,
+                                delivery_option, packaging_method
                 )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         , (order.user_id, address_id ,OrderStatus.PENDING.value, order.total, order.payment_status,
            form.payment_method.data, current_timestamp, form.notes.data ,
-           str(str(order.user_id)+str(current_timestamp)), form.address.data, ))
+           str(str(order.user_id)+str(current_timestamp)), form.address.data, form.shippingMethod.data, form.packagingMethod.data))
     order_id = cur.lastrowid
 
     for item in order.items:

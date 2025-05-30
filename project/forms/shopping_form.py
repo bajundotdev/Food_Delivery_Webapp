@@ -30,8 +30,10 @@ class OrderForm(FlaskForm):
 class CheckoutForm(FlaskForm):
     fullname = StringField("fullname", validators = [DataRequired(), Length(min=2, max=100)])
     phone = StringField("phone", validators = [DataRequired(), Length(min=2, max=100)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    address = StringField("Delivery Address", validators = [DataRequired(), Length(min=2, max=100)])
+    email = EmailField('email', validators=[DataRequired(), Email()])
+    address = StringField("address", validators = [DataRequired(), Length(min=2, max=100)])
     notes = TextAreaField("Delivery Instructions")
     payment_method = RadioField('Choose an option:', choices=[('Credit Card', 'Credit Card'), ('Debit Card', 'Debit Card'), ('Cash', 'Cash')])
+    shippingMethod = RadioField('Choose an option:', choices=[('standard', 'Standard Delivery - Free'), ('express', 'Express Delivery - $5.99')])
+    packagingMethod = RadioField('Choose an option:', choices=[('eco_friendly', 'Eco-Friendly Packaging - Free'), ('standard', 'Standard Packaging - $2.99'), ('discreet_confidential', 'Discreet and Confidential Packaging - $5.99')])
     submit = SubmitField("Place Order")
