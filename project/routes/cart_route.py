@@ -83,8 +83,8 @@ def checkout_cart():
     form = CheckoutForm()
     
     if request.method == 'POST':
-        
         if form.validate_on_submit():
+
             user_id = session['user']['user_id']
             clear_cart_db(user_id)
             cart_items = session.get('shopping_cart')
@@ -104,6 +104,7 @@ def checkout_cart():
             flash('Your order has been placed!', 'success')
             return redirect(url_for('user.profile'))
         else:
+            print(form.errors)
             flash('The provided information is missing or incorrect', 'error')
     
     return render_template('user/checkout.html', form=form, cart=cart, user_info=user_info, address = address)
