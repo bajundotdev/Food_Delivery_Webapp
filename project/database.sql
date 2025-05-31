@@ -35,7 +35,7 @@ CREATE TABLE `cart_items` (
   PRIMARY KEY (`cart_id`),
   KEY `cart_items_product_id_foreign` (`product_id`),
   KEY `cart_items_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `cart_items` (
 
 LOCK TABLES `cart_items` WRITE;
 /*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
-INSERT INTO `cart_items` VALUES (1,10,5,1,'2025-05-30 11:31:47',1,'5d96fc79-2a8d-4aa5-9d7f-a7c64817b2e2'),(2,11,5,1,'2025-05-30 11:31:47',1,'f731c91a-ce25-4987-86dc-3439559e00ae'),(3,11,5,2,'2025-05-30 11:46:41',1,'6944b80b-523f-4f97-8413-ac7dd51deb26'),(11,12,5,23,'2025-05-30 13:04:15',1,'6d1d9588-cc6f-446c-829c-9c645e1d62b2');
+INSERT INTO `cart_items` VALUES (1,10,5,1,'2025-05-30 11:31:47',1,'5d96fc79-2a8d-4aa5-9d7f-a7c64817b2e2'),(2,11,5,1,'2025-05-30 11:31:47',1,'f731c91a-ce25-4987-86dc-3439559e00ae'),(3,11,5,2,'2025-05-30 11:46:41',1,'6944b80b-523f-4f97-8413-ac7dd51deb26'),(11,12,5,23,'2025-05-30 13:04:15',1,'6d1d9588-cc6f-446c-829c-9c645e1d62b2'),(12,10,5,24,'2025-05-30 13:59:47',1,'3d0a1dd6-5a22-42d7-aa38-a7eccd47bee5'),(13,11,5,24,'2025-05-30 13:59:47',1,'1a1d8431-ff82-4a17-af67-02b5316b69d2'),(14,12,5,24,'2025-05-30 13:59:47',1,'f9b624ca-2762-4992-8089-e127d8170c2e'),(15,17,5,25,'2025-05-30 13:59:47',1,'21691759-94b9-4c88-b580-14662684a595'),(16,18,5,25,'2025-05-30 13:59:47',1,'68892a95-4b46-474b-b3fc-74962e048363'),(17,19,5,25,'2025-05-30 13:59:47',1,'c3f51cd2-a6b6-4c42-811b-ceb984bc09c1'),(18,10,5,26,'2025-05-30 13:59:47',1,'fdfb8bbd-2503-424f-8c09-3dcd85370c5c'),(20,10,5,27,'2025-05-31 00:28:37',1,'00d82b10-c87c-46d2-abef-ff9ce06042dd');
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +102,7 @@ CREATE TABLE `delivery_driver` (
 
 LOCK TABLES `delivery_driver` WRITE;
 /*!40000 ALTER TABLE `delivery_driver` DISABLE KEYS */;
-INSERT INTO `delivery_driver` VALUES (1,6,'Scooter','123456789','123-ABC',0,5.00,1,'2025-05-18 07:03:07','2025-05-18 07:03:07');
+INSERT INTO `delivery_driver` VALUES (1,6,'Scooter','123456789','123-ABC',1,5.00,1,'2025-05-18 07:03:07','2025-05-18 07:03:07');
 /*!40000 ALTER TABLE `delivery_driver` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +141,7 @@ CREATE TABLE `order_table` (
   CONSTRAINT `order_table_address_id_foreign` FOREIGN KEY (`address_id`) REFERENCES `user_address` (`address_id`),
   CONSTRAINT `order_table_driver_id_foreign` FOREIGN KEY (`driver_id`) REFERENCES `delivery_driver` (`driver_id`),
   CONSTRAINT `order_table_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +150,7 @@ CREATE TABLE `order_table` (
 
 LOCK TABLES `order_table` WRITE;
 /*!40000 ALTER TABLE `order_table` DISABLE KEYS */;
-INSERT INTO `order_table` VALUES (1,5,1,1,'Completed',88.98,'','Credit Card','2025-05-30 11:31:47','2025-05-30 12:14:24','2025-05-30 12:14:24','','52025-05-30 21:31:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(2,5,1,1,'Cancelled',40.00,'Not successful','Credit Card','2025-05-30 11:46:41','2025-05-30 12:43:45','2025-05-30 12:49:06','','52025-05-30 21:46:41','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','delayed',1,0.00,0.00),(23,5,1,1,'Cancelled',37.50,'Not successful','Credit Card','2025-05-30 13:04:15','2025-05-30 13:04:15','2025-05-30 13:04:15','','52025-05-30 23:04:15','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','soafer delay kaayo',1,0.00,0.00);
+INSERT INTO `order_table` VALUES (1,5,1,1,'Completed',88.98,'','Credit Card','2025-05-30 11:31:47','2025-05-30 12:14:24','2025-05-30 12:14:24','','52025-05-30 21:31:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(2,5,1,1,'Cancelled',40.00,'Not successful','Credit Card','2025-05-30 11:46:41','2025-05-30 12:43:45','2025-05-30 12:49:06','','52025-05-30 21:46:41','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','delayed',1,0.00,0.00),(23,5,1,1,'Cancelled',37.50,'Not successful','Credit Card','2025-05-30 13:04:15','2025-05-30 13:04:15','2025-05-30 13:04:15','','52025-05-30 23:04:15','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','soafer delay kaayo',1,0.00,0.00),(24,5,NULL,1,'Pending',126.48,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(25,5,NULL,1,'In Progress',84.22,'','Debit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','discreet_confidential',NULL,1,5.99,5.99),(26,5,NULL,1,'Pending',48.98,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(27,5,NULL,1,'Pending',45.99,'','Credit Card','2025-05-31 00:28:39',NULL,NULL,'','52025-05-31 10:28:37','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly',NULL,1,5.99,0.00);
 /*!40000 ALTER TABLE `order_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +175,7 @@ CREATE TABLE `product_table` (
   `updated_at` timestamp NOT NULL,
   `deleted` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +220,6 @@ CREATE TABLE `restaurant` (
 
 LOCK TABLES `restaurant` WRITE;
 /*!40000 ALTER TABLE `restaurant` DISABLE KEYS */;
-INSERT INTO `restaurant` VALUES (1,7,'Kapehan ni Adreyan',1,'Etivac, Phils',1,'2025-05-14 10:08:56',NULL,NULL,NULL,NULL,NULL),(2,7,'Manokan ni Adriyan',0,'South Brisbane, Queensland',1,'2025-05-17 19:47:58',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `restaurant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -289,7 +288,7 @@ CREATE TABLE `user_table` (
 
 LOCK TABLES `user_table` WRITE;
 /*!40000 ALTER TABLE `user_table` DISABLE KEYS */;
-INSERT INTO `user_table` VALUES (5,'Jamizan Angkol','jamizan@foodah.com','+6112345678','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Customer',1,1,'2025-05-13 23:20:58','2025-05-13 23:20:58','2025-05-13 23:20:58'),(6,'Tomasino Bakero','tomasen@foodah.com','+61999888777','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Delivery Driver',1,1,'2025-05-13 23:21:42','2025-05-13 23:21:42','2025-05-13 23:21:42'),(7,'Adriano Restoranto','adrian@foodah.com','+61987654321','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Admin',1,1,'2025-05-14 00:06:07','2025-05-14 00:06:07','2025-05-14 00:06:07'),(8,'admin','admin@foodah.com','610000000','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Admin',1,1,'2025-05-17 04:16:20','2025-05-17 04:16:20','2025-05-17 04:16:20');
+INSERT INTO `user_table` VALUES (5,'Jamizan Angkol','jamizan@foodah.com','+6112345678','scrypt:32768:8:1$647LYonyJ2Oqp0Pk$bf637d2b606ae72736552e4394c9aacfc47df9a0525be467668d087811bfc5d21d2ce6a0f2974b15bb93b9db1f99e451c61f66fc0058f7e027458ff9578e42fb','zoro.jpg','Customer',1,1,'2025-05-13 23:20:58','2025-05-13 23:20:58','2025-05-13 23:20:58'),(6,'Tomasino Bakero','tomasen@foodah.com','+61999888777','scrypt:32768:8:1$YcqQ4nZrNWFI4aPw$e34f526ca6df6329d656ff1ea66bc59cae91a2dbd0272bfc80d4617da1af201e57e8e148245f53ca642b6cf4ce1c45ef904d4be4c83940bb7a384e83e8cb84cd','zoro.jpg','Delivery Driver',1,1,'2025-05-13 23:21:42','2025-05-13 23:21:42','2025-05-13 23:21:42'),(8,'admin','admin@foodah.com','610000000','scrypt:32768:8:1$5MGTu6VX7giaiyo8$e61caf5df9874a6fd84fd7d3015738b2e4b129a94a0e6b72461787ed6e1a088eefafc86eb06e84560e8d92aafbfabc885891f881353910a5b480786ace021e3b','zoro.jpg','Admin',1,1,'2025-05-17 04:16:20','2025-05-17 04:16:20','2025-05-17 04:16:20');
 /*!40000 ALTER TABLE `user_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,4 +383,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-30 23:52:49
+-- Dump completed on 2025-05-31 12:22:15

@@ -111,7 +111,7 @@ Update the MySQL configuration in `project` > `__init__.py` with your MySQL cred
 
 ```bash
    Email Address: admin@foodah.com
-   Password: hello
+   Password: helloworld
 ```
 
 2. Log in as **Customer**:
