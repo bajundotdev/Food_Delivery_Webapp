@@ -34,24 +34,19 @@ class CartItem:
         
 @dataclass
 class Cart:
-    #user_id: str = None
     items: List[CartItem] = field(default_factory=lambda: [])
     
     def add_item(self, item: CartItem):
         """Add an item to the cart."""
         existing_item = self.check_item(item.product.id)
-        #print(item.id)
         if existing_item:
-            print("existing")
             existing_item.increment_quantity()
         else:
             self.items.append(item)
    
     def remove_item(self, item_id: str):
         """Remove an item from the cart by its product ID."""
-        print("begin")
         self.items = [item for item in self.items if item.id != item_id]
-        print("remove success")
     
     def check_item(self, product_id: str):
         """Get an item from the cart by its product ID."""

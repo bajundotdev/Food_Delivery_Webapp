@@ -72,24 +72,3 @@ class UserAddress:
             parts.append(self.country)
         
         return ", ".join(parts)
-
-#####################
-# Search Models     #
-#####################
-@dataclass
-class SearchResult:
-    type: str  # 'product', 'restaurant', etc.
-    item: object  # The actual object (Product, Restaurant, etc.)
-
-@dataclass
-class Search:
-    query: str
-    user_id: str
-    results: List[SearchResult] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.now)
-    
-    @staticmethod
-    def search_all(query: str):
-        """Search across all relevant entities."""
-        # Implementation needed
-        pass

@@ -39,7 +39,6 @@
                                 {% elif order_details.status == "In Progress" %}
                                     <p class="fs-1 text-warning"><span class="bi bi-hourglass-split"></span></p>
                                     <span class="badge bg-warning text-black"> {{ order_details.status }}</span>
-                                    <div class="spinner-border spinner-border-sm text-warning" role="status" aria-hidden="true"></div>
                                 {% elif order_details.status == "Completed" %}
                                     <p class="fs-1 text-success"><span class="bi bi-bag-check"></span></p>
                                     <span class="badge bg-success"> {{ order_details.status }}</span>
@@ -74,21 +73,17 @@
                             <p class="mb-1"><strong>Email:</strong>  {{ order_details.email }}</p>
                             <p class="mb-1"><strong>Phone:</strong>  {{ order_details.phone_number }}</p>
                             <p class="mb-1"><strong>Address:</strong>  {{ order_details.address }}</p>
+                            <p class="mb-1"><strong>Placed At:</strong>  {{ order_details.placed_at }}</p>
                         </div>
                     </div>
 
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="mb-1"><strong>Placed At:</strong>  {{ order_details.placed_at }}</h6>
-                            <h6 class="mb-1"><strong>Total:</strong> $ {{ order_details.total }}</h6>
+                    {% if order_details.status == "Cancelled" %}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Reason for Cancellation:</strong>  {{ order_details.cancellation_notes }}</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="mb-1"><strong>Reason for Cancellation:</strong>  {{ order_details.cancellation_notes }}</h6>
-                        </div>
-                    </div>
+                    {% endif %}
 
                     <div class="card">
                         <div class="card-header fs-4">Order Items</div>
@@ -112,9 +107,9 @@
                                 </div>
                                 <div class="fw-bold text-end">
                                     {% if order_details.shipping_fee > 0 %}
-                                    $ {{ order_details.shipping_fee }}
+                                        ${{ order_details.shipping_fee }}
                                     {% else %}
-                                    Free
+                                        Free
                                     {% endif %}
                                 </div>
                             </li>

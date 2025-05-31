@@ -20,13 +20,12 @@ def driver_dashboard():
 
     #get all orders na ready
     # for this order in orders
-        #get the products
+    #get the products
     #get all products orders from above order_id
     user_session = session.get('user')
     user_id = user_session['user_id']
 
     user_details = get_user_info_with_address_by_user_id(user_id)
-    # print(user_details)
 
     driver = get_driver_details_by_user_id(user_id)
     driver_id = driver[0].id
@@ -38,11 +37,13 @@ def driver_dashboard():
         
 
     order_for_delivery = get_all_orders_by_status(status="For Delivery") 
-    orderCompleted = get_all_orders_by_status(status="Completed") 
+    order_completed = get_all_orders_by_status(status="Completed") 
+    orders_cancelled = get_all_orders_by_status(status="Cancelled") 
 
     return render_template('driver/dashboard.html', user_details=user_details, 
                                                 driver=driver, 
-                                                orderCompleted=orderCompleted, 
+                                                orderCompleted=order_completed, 
+                                                orders_cancelled=orders_cancelled, 
                                                 order_for_delivery=order_for_delivery,
                                                 orderReady=orderReady,
                                                 all_orders_by_driver=all_orders_by_driver)
@@ -61,7 +62,6 @@ def confirm_delivery():
         set_order_status_by_driver_id(order_id, driver_id, 'For Delivery')
         flash('Order confirmed for delivery!', 'success')
     except Exception as e:
-        print("Error:", e)
         flash('Failed to confirm order for delivery.', 'danger')
 
     return redirect(url_for('driver.driver_dashboard'))
@@ -89,7 +89,6 @@ def view_ongoing_delivery(order_id):
 
             flash('Order status updated successfully!', 'success')
         except Exception as e:
-            print("Error:", e)
             flash('Failed to update order status.', 'danger')
    
     if request.method == 'GET':
@@ -118,14 +117,12 @@ def profile():
 @driver_required
 def update_driver_status(driver_id):
     driver_status = request.form.get('is_active', '')
-    print(driver_id, driver_status)
 
     if request.method == 'POST':
         try:
             set_driver_is_active(driver_id, driver_status)
             flash('Status successfully updated!', 'success')
         except Exception as e:
-            print("Error:", e)
             flash('Failed to update status.', 'danger')
 
     return redirect(url_for('driver.driver_dashboard'))

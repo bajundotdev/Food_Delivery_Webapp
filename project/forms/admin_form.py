@@ -37,7 +37,6 @@ class ProductForm(FlaskForm):
     is_active = SelectField('Status', validators=[DataRequired()])
     food_rating = FloatField('Food Rating', default=100)
     prep_time_est = FloatField('Prepping Time Est', validators=[NumberRange(min=1)], default=10)
-    restaurant_id = StringField('Restaurant')
     deleted = StringField('Deleted', default=0)
     food_image_url = FileField('Product Image', validators=[
         FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])

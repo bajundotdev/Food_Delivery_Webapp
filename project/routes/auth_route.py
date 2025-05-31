@@ -24,6 +24,10 @@ def register():
             add_user(form)
             flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
+        else:
+            for error in form.errors.values():
+                for item in error:
+                    flash(item, 'danger')
 
     return render_template('auth/register.html', form=form)
 
@@ -42,6 +46,10 @@ def driver_register():
             add_driver(form)
             flash('Registration successful!', 'success')
             return redirect(url_for('auth.login'))
+        else:
+            for error in form.errors.values():
+                for item in error:
+                    flash(item, 'danger')
 
     return render_template('auth/driver_register.html', form=form)
 
@@ -80,7 +88,11 @@ def login():
                         for item in cart_from_db:
                             add_cart_item_from_db(item)  
                         return redirect(url_for('main.index'))
-        
+        else:
+            for error in form.errors.values():
+                for item in error:
+                    flash(item, 'danger')
+
     return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/logout')

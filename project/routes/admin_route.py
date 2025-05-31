@@ -111,6 +111,11 @@ def manage_categories():
             return redirect(url_for('admin.manage_categories'))
         except Exception as e:
             flash(f'Error adding category: {e}', 'danger')
+    else:
+        for error in form.errors.values():
+            for item in error:
+                flash(item, 'danger')
+        return redirect(url_for('admin.manage_categories'))
 
     with mysql.connection.cursor(dictionary=True) as cursor:
         cursor.execute("SELECT * FROM categories")
@@ -146,7 +151,6 @@ def save_category():
             flash('Category successfully updated!', 'success')
 
         except Exception as e:
-            print("Error:", e)
             flash('Failed to update category.', 'danger')
 
     return redirect(url_for('admin.manage_product'))
@@ -165,7 +169,6 @@ def delete_category(category_id):
 @admin_required
 def add_category():
      if request.method == "POST":
-        print(request.form.get('new_category_name'))
         new_categ = request.form.get('new_category_name')
         existing_categ = get_all_category()
         for categ in existing_categ:
@@ -309,24 +312,7 @@ def add_product():
                 flash('Invalid file or file type.', 'danger')
 
         except Exception as e:
-            print("Error:", e)
             flash('Failed to add new menu.', 'danger')
-
-    # if request.method == "POST":
-    #     file = request.files['food_image_url']
-    
-    #     try:
-    #         if file and allowed_file(file.filename):
-    #             filename = secure_filename(file.filename)
-    #             file.save(os.path.join(current_app.config['UPLOAD_FOLDER']+'/products', filename))
-    #             add_product_to_db(form_product)
-
-    #         flash('Menu successfully added!', 'success')
-    #         return redirect(url_for('admin.manage_product'))
-
-    #     except Exception as e:
-    #         print("Error:", e)
-    #         flash('Failed to add new menu.', 'danger')
     
     return render_template('admin/menu/product_add_form.html', form_product=form_product, categories=categories)
 
@@ -358,8 +344,6 @@ def update_product(product_id):
         form_product.stock = int(request.form['stock'])
         form_product.description = request.form['description']
         file = request.files.get('food_image_url')
-        
-        print("File: ", file)
 
         try:
             result = update_product_table(form_product)
@@ -392,7 +376,6 @@ def save_product():
             flash('Menu successfully updated!', 'success')
 
         except Exception as e:
-            print("Error:", e)
             flash('Failed to update menu.', 'danger')
 
     return redirect(url_for('admin.manage_product'))
@@ -482,7 +465,6 @@ def update_driver(driver_id):
     if request.method == "POST":
         try:
             status = request.form['status']
-            print(driver_id, status)
             
             set_driver_status(driver_id, status)
             flash('User successfully updated!', 'success')
@@ -506,6 +488,5 @@ def manage_restaurant():
     if status_filter:
         orders = Order.get_orders_by_status(status_filter)
     else:
-        # orders = Order.get_all()
         orders = []
     return render_template('admin/restaurants/manage_restaurant.html', orders=orders)

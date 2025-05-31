@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from project.decorators import login_required, admin_required, driver_required
 
-# Import dummy database db.py
 from project.db import *
 from project.models import Cart, CartItem, Product
 from project.forms.shopping_form import CheckoutForm
@@ -43,14 +42,12 @@ def removing_from_cart(cart_id):
     item = cart.get_item(cart_id)
     
     if item:
-        #flash(f"Removed '{item.product.name}' from basket.")
-        print("item: ", item)
         remove_from_cart(item.id)
-        print("removing item")
     else:
         flash("Item not found in basket.", "warning")
 
     return redirect(url_for('cart.view_cart'))
+
 # Dummy data for cart items
 dummy_cart_items = []
 
@@ -118,7 +115,6 @@ def checkout_cart():
             empty_basket()
             return render_template('user/receipt.html', form=form, cart=cart, total=total, packagingFee=packagingFee, shippingFee = shippingFee)
         else:
-            print(form.errors)
             flash('The provided information is missing or incorrect', 'error')
     
     return render_template('user/checkout.html', form=form, cart=cart, user_info=user_info, address = address)
@@ -151,29 +147,5 @@ def receipt():
         update_order_price_db(order_id, total)
         flash('Your order has been confirmed!', 'success')
         return redirect(url_for('user.profile'))
-    #     if form.validate_on_submit():
-
-    #         user_id = session['user']['user_id']
-    #         clear_cart_db(user_id)
-    #         cart_items = session.get('shopping_cart')
-    #         for item in cart_items.get('items', []):
-    #             product_id = item['product']['id']
-                
-    #             quantity = item['quantity']
-    #             item_id = item['id']
-    #             add_cart_item_to_db(product_id ,user_id, quantity, item_id)
-
-
-    #         order = convert_basket_to_order(cart)
-    #         order.total = total
-    #         address_id = get_address_id_by_user_id(int(order.user_id))
-    #         add_order_to_db(order, form, address_id)
-    #         empty_basket()
-    #         flash('Your order has been placed!', 'success')
-    #         return redirect(url_for('user.profile'))
-    #     else:
-    #         print(form.errors)
-    #         flash('The provided information is missing or incorrect', 'error')
     
     return render_template('user/receipt.html')
-    #return render_template('user/receipt.html', form=form, cart=cart, user_info=user_info, address = address)

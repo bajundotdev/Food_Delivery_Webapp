@@ -1,5 +1,3 @@
-# dummyDb.py
-#from project.models import Product, ProductCategory, Restaurant, User, Driver, UserRole, Order, OrderItem
 from project.models import *
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -178,18 +176,17 @@ def add_user(form):
         INSERT INTO user_table (email, password_hash, fullname,
                 phone_number, user_type, is_active, is_verified,
                 created_at, updated_at, last_login, profile_picture_url)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)"""
-        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"blank_profile.png"))
+        VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), NOW(), NOW(), %s)"""
+        , (form.email.data, str(generate_password_hash(form.password.data)), form.fullname.data, form.phone_number.data, "Customer", int(1), int(1),"blank_profile.png"))
     
     user_id = cur.lastrowid
 
     cur.execute("""
         INSERT INTO user_address (user_id, label, address_line1, address_line2,
                 city, state, postal_code, country, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())""",
                 (str(user_id), form.label.data, form.address_line1.data, form.address_line2.data,
-                form.city.data, form.state.data, form.postal_code.data, form.country.data,
-                current_timestamp, current_timestamp,))
+                form.city.data, form.state.data, form.postal_code.data, form.country.data,))
     
     mysql.connection.commit()
     cur.close()
@@ -264,24 +261,6 @@ def get_address_id_by_user_id(user_id):
         return row['address_id']
     else:
         return ""
-   
-def add_address_by_user_id(form):
-    pass
-    # cur = mysql.connection.cursor()
-    # cur.execute("""
-    #     INSERT INTO user_address (
-    #                             )
-    #     VALUES (%s, %s, %s, %s,
-    #             %s, %s, %d, %d,
-    #             current_timestamp, current_timestamp
-    #             )
-    # """, (form.username.data, form.password.data, form.email.data,
-    #       form.firstname.data, form.surname.data, form.phone.data))
-    # mysql.connection.commit()
-    # cur.close()
-#add somethin here
-#update
-#delete
 
 ##################
 #    PRODUCT QUERIES   
@@ -310,7 +289,6 @@ def get_product_by_id(product_id):
         WHERE product_id = %s AND product_table.category = categories.category_id
     """ , (product_id,))
     row = cur.fetchone()
-    #print("id: ", product_id)
     cur.close()
     if row is not None:
         return Product(row['product_id'], row['product_name'], row['description'],
@@ -406,13 +384,12 @@ def add_product_to_db(form):
     try:
         cur.execute("""
             INSERT INTO product_table (product_name,description,category,price,food_rating,
-                    prep_time_est,food_image_url,is_active,created_at,updated_at,restaurant_id,
+                    prep_time_est,food_image_url,is_active,created_at,updated_at,
                     deleted)
             VALUES (%s, %s, %s, %s, %s, 
-                    %s, %s, %s, %s, %s, %s,
-                    0)"""
+                    %s, %s, %s,NOW(), NOW(), 0)"""
             , (form.product_name.data, form.description.data, form.category.data, form.price.data, form.food_rating.data,
-            form.prep_time_est.data, form.food_image_url.data, form.is_active.data, current_timestamp, current_timestamp,form.restaurant_id.data))
+            form.prep_time_est.data, form.food_image_url.data, form.is_active.data,))
         mysql.connection.commit()
         cur.close()
     except:
@@ -442,58 +419,6 @@ def delete_product_from_list(product_id):
     mysql.connection.commit()
     cur.close()
 
-#delete
-##################
-#    RESTAURANT QUERIES   
-##################
-def get_all_restaurants():
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT *
-        FROM restaurant
-    """)
-    results = cur.fetchall()
-    cur.close()
-    return [
-        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-             row['email'], row['website'], row['description'], row['image_url']) for row in results
-    ]
-
-def get_restaurant_by_id(restaurant_id):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT *
-        FROM restaurant
-        WHERE restaurant_id = %s
-    """, (restaurant_id,))
-    row = cur.fetchone()
-    cur.close()
-    return [
-        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-             row['email'], row['website'], row['description'], row['image_url'])
-    ]
-
-def get_restaurant_by_name(restaurant_name):
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT *
-        FROM restaurant
-        WHERE restaurant_id = %s
-    """, (restaurant_name,))
-    row = cur.fetchone()
-    cur.close()
-    return [
-        Restaurant(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-             bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-             row['email'], row['website'], row['description'], row['image_url'])
-    ]
-
-#add
-#update
-#delete
-
 ##################
 #    DRIVER QUERIES   
 ##################
@@ -502,26 +427,25 @@ def add_driver(form):
     cur.execute("""
         INSERT INTO user_table (email, password_hash, fullname, phone_number, user_type,
                 is_active, is_verified, created_at, updated_at, last_login, profile_picture_url)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)""", (form.email.data, str(generate_password_hash(form.password.data)),
+        VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), NOW(), NOW(), %s)""", (form.email.data, str(generate_password_hash(form.password.data)),
            form.fullname.data, form.phone_number.data, "Delivery Driver",
-           int(1), int(1), current_timestamp, current_timestamp, current_timestamp,"zoro.jpg"))
+           int(1), int(1),"blank_profile.png"))
     
     user_id = cur.lastrowid
 
     cur.execute("""
         INSERT INTO user_address (user_id, label, address_line1, address_line2,
                 city, state, postal_code, country, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())""",
                 (str(user_id), form.label.data, form.address_line1.data, form.address_line2.data,
-                form.city.data, form.state.data, form.postal_code.data, form.country.data,
-                current_timestamp, current_timestamp,))
+                form.city.data, form.state.data, form.postal_code.data, form.country.data,))
 
     cur.execute("""
         INSERT INTO delivery_driver (user_id, vehicle_type, license_number, vehicle_plate,
                 is_available, created_at, updated_at, driver_rating, total_deliveries)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""", (str(user_id), form.vehicle_type.data,
+        VALUES (%s, %s, %s, %s, %s, NOW(), NOW(), %s, %s)""", (str(user_id), form.vehicle_type.data,
                                                  form.license_number.data, form.vehicle_plate.data,
-           int(1), current_timestamp, current_timestamp, int(5), int(0)))
+           int(1), int(5), int(0)))
 
     mysql.connection.commit()
     cur.close()
@@ -697,9 +621,9 @@ def driver_complete_delivery(order_id):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET status = "Completed", delivered_at = %s, payment_status = "Success"
+        SET status = "Completed", delivered_at = NOW(), payment_status = "Success"
         WHERE order_id= %s
-    """, (current_timestamp, order_id,))
+    """, (order_id,))
     mysql.connection.commit()
     cur.close()
 
@@ -707,9 +631,9 @@ def cancel_order(order_id, cancellation_notes):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET status = "Cancelled", canceled_at = %s, payment_status = "Not successful", cancellation_notes = %s
+        SET status = "Cancelled", canceled_at = NOW(), payment_status = "Not successful", cancellation_notes = %s
         WHERE order_id= %s
-    """, (current_timestamp, cancellation_notes, order_id,))
+    """, (cancellation_notes, order_id,))
     mysql.connection.commit()
     cur.close()
     
@@ -731,11 +655,7 @@ def get_all_orders_and_products():
     """)
     results = cur.fetchall()
     cur.close()
-    # return [
-    #     Order(str(row['restaurant_id']), row['owner_id'], row['restaurant_name'],
-    #          bool(row['is_indigenous']), row['address'], bool(row['is_active']), row['phone'],
-    #          row['email'], row['website'], row['description'], row['image_url']) for row in results
-    # ]
+    
     return results
 
 def get_products_from_order_id(order_id):
@@ -942,9 +862,9 @@ def set_order_status_by_driver_id(order_id, driver_id, status):
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE order_table
-        SET status = %s, driver_id = %s, delivered_at = %s, canceled_at = %s
+        SET status = %s, driver_id = %s, delivered_at = NOW()
         WHERE order_id = %s
-    """, (status, driver_id, current_timestamp, current_timestamp, order_id,))
+    """, (status, driver_id, order_id,))
     mysql.connection.commit()
     cur.close()
 
@@ -1023,8 +943,8 @@ def add_cart_item_to_db(product_id, user_id, quantity, temp_id):
     else:
         cur.execute("""
             INSERT INTO cart_items (product_id, user_id, created_at, quantity, temp_id)
-            VALUES (%s, %s, %s, %s, %s)"""
-            , (product_id, user_id, current_timestamp, quantity, str(temp_id),))
+            VALUES (%s, %s, NOW(), %s, %s)"""
+            , (product_id, user_id, quantity, str(temp_id),))
         
     mysql.connection.commit()
     cur.close()
@@ -1055,9 +975,9 @@ def add_order_to_db(order, form, address_id, shippingFee, packagingFee):
                                 payment_method, placed_at, notes, payment_invoice, address,
                                 delivery_option, packaging_method, shipping_fee, packaging_fee
                 )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        VALUES (%s, %s, %s, %s, %s, %s, NOW(), %s, %s, %s, %s, %s, %s, %s)"""
         , (order.user_id, address_id ,OrderStatus.PENDING.value, order.total, order.payment_status,
-           form.payment_method.data, current_timestamp, form.notes.data ,
+           form.payment_method.data, form.notes.data ,
            str(str(order.user_id)+str(current_timestamp)), form.address.data, form.shippingMethod.data, form.packagingMethod.data, shippingFee, packagingFee))
     order_id = cur.lastrowid
 
