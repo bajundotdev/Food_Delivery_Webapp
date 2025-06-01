@@ -48,7 +48,7 @@
                                 <input type="text" id="address" name="address" class="form-control" placeholder="Enter delivery address"  value="{{ address }}" required/>
                             </div>
                             
-                            <h2 class="h5 mb-3">Payment</h2>
+                            <h2 class="h5 mb-3">Payment Method</h2>
                             <div class="mb-3">
                                 <!-- Payment method radio options -->
                                 <div class="form-check">
@@ -56,8 +56,8 @@
                                     <label class="form-check-label" for="payment_CC">Credit Card</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="payPaypal"  value="Debit Card"/>
-                                    <label class="form-check-label" for="payPaypal">Debit Card</label>
+                                    <input class="form-check-input" type="radio" name="payment_method" id="debitCard"  value="Debit Card"/>
+                                    <label class="form-check-label" for="debitCard">Debit Card</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="payment_method" id="payCOD"  value="Cash"/>
@@ -68,13 +68,13 @@
                             <h2 class="h5">Delivery Options</h2>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="shippingMethod" id="standardDelivery" value="standard" checked>
+                                    <input class="form-check-input" type="radio" name="shippingMethod" id="standardDelivery" value="Standard" checked>
                                     <label class="form-check-label" for="standardDelivery">
                                     Standard Delivery - Free
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="shippingMethod" id="expressDelivery" value="express">
+                                    <input class="form-check-input" type="radio" name="shippingMethod" id="expressDelivery" value="Express">
                                     <label class="form-check-label" for="expressDelivery">
                                     Express Delivery - $5.99
                                     </label>
@@ -84,16 +84,16 @@
                             <h2 class="h5">Packaging Method</h2>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="eco_friendly" value="eco_friendly" checked>
-                                    <label class="form-check-label" for="standard">Eco-Friendly Packaging - Free</label>
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="eco_friendly" value="Eco-Friendly" checked>
+                                    <label class="form-check-label" for="eco_friendly">Eco-Friendly Packaging - Free</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="standard_pack" value="standard">
-                                    <label class="form-check-label" for="express">Standard Packaging - $2.99</label>
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="standard_pack" value="Standard">
+                                    <label class="form-check-label" for="standard_pack">Standard Packaging - $2.99</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packagingMethod" id="discreet_confidential" value="discreet_confidential">
-                                    <label class="form-check-label" for="sameDay">
+                                    <input class="form-check-input" type="radio" name="packagingMethod" id="discreet_confidential" value="Discreet and Confidential">
+                                    <label class="form-check-label" for="discreet_confidential">
                                     Discreet and Confidential Packaging - $5.99
                                     
                                     <div class="d-flex my-3">
@@ -140,7 +140,7 @@
                             </div>
                         {% endfor %}
                         
-                        <a href="{{ url_for('cart.view_cart') }}" class="btn btn-outline-secondary btn-sm w-100 mt-2">Edit Cart</a>
+                        <a href="{{ url_for('cart.view_cart') }}" class="btn btn-outline-secondary w-100 mt-2">Edit Cart</a>
                     </div>
                 </div>
             </div>

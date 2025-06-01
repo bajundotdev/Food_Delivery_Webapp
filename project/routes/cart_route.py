@@ -83,11 +83,11 @@ def checkout_cart():
         shippingFee = 0
         packagingFee = 0
 
-        if form.shippingMethod.data == "express":
+        if form.shippingMethod.data == "Express":
             shippingFee = 5.99
-        if form.packagingMethod.data == "standard":
+        if form.packagingMethod.data == "Standard":
             packagingFee = 2.99
-        elif form.packagingMethod.data == "discreet_confidential":
+        elif form.packagingMethod.data == "Discreet and Confidential":
             packagingFee = 5.99
         
         total = round(float(cart.total_cost()) + float(shippingFee) + float(packagingFee),2)
@@ -124,7 +124,6 @@ def checkout_cart():
 def receipt():
     cart = get_cart()
     user_session = session.get('user')
-    #user_details= user_session['email']
     user_details = get_user_info_with_address_by_email(user_session['email'])
     if user_details:
         user_info = user_details[0]

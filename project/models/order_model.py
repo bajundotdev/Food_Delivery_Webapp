@@ -68,6 +68,7 @@ class Order:
     shipping_fee: float = 0.0
     packaging_fee: float = 0.0
     cancellation_notes: str = ""
+    packaging_method: str = ""
     items: List[OrderItem] = field(default_factory=lambda: [])
 
     def get_url(self):

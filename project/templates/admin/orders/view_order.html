@@ -142,7 +142,8 @@
 
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <span>Delivery Fee</span>
+                                    <span>Delivery Fee </span> &nbsp; 
+                                    <span class="text-muted">({{ order_details.delivery_option }})</span>
                                 </div>
                                 <div class="fw-bold text-end">
                                     {% if order_details.shipping_fee > 0 %}
@@ -155,7 +156,8 @@
 
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <span>Packaging Fee</span>
+                                    <span>Packaging Fee</span> &nbsp; 
+                                    <span class="text-muted">({{ order_details.packaging_method }})</span>
                                 </div>
                                 <div class="fw-bold text-end">
                                     {% if order_details.packaging_fee > 0 %}

@@ -739,7 +739,7 @@ def get_all_orders_by_id(order_id):
     cur.execute("""
         SELECT ordert.order_id, ordert.user_id, ordert.driver_id, ordert.address_id, ordert.status ,ordert.total_price,
                 ordert.payment_status, ordert.payment_method, ordert.placed_at, ordert.delivered_at, ordert.canceled_at ,ordert.notes,
-                ordert.payment_invoice, ordert.delivery_option, ordert.shipping_fee, ordert.packaging_fee, ordert.cancellation_notes,
+                ordert.payment_invoice, ordert.delivery_option, ordert.shipping_fee, ordert.packaging_fee, ordert.cancellation_notes,ordert.packaging_method,
                 usert.fullname, usert.email, usert.phone_number,
                 CONCAT(addt.label, ', ', addt.address_line1, ', ',addt.address_line2, ', ',addt.city,', ',addt.state, ', ',addt.postal_code, ', ',addt.country) as address
         FROM order_table ordert, user_table usert, user_address addt
@@ -752,7 +752,7 @@ def get_all_orders_by_id(order_id):
               row['payment_status'], row['payment_method'], row['placed_at'], row['delivered_at'],row['canceled_at'], row['notes'],
               row['payment_invoice'], row['delivery_option'],
               row['fullname'], row['email'],row['phone_number'],
-              row['address'], row['shipping_fee'], row['packaging_fee'], row['cancellation_notes']
+              row['address'], row['shipping_fee'], row['packaging_fee'], row['cancellation_notes'], row['packaging_method']
              )
     
 

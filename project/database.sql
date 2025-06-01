@@ -35,7 +35,7 @@ CREATE TABLE `cart_items` (
   PRIMARY KEY (`cart_id`),
   KEY `cart_items_product_id_foreign` (`product_id`),
   KEY `cart_items_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `cart_items` (
 
 LOCK TABLES `cart_items` WRITE;
 /*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
-INSERT INTO `cart_items` VALUES (1,10,5,1,'2025-05-30 11:31:47',1,'5d96fc79-2a8d-4aa5-9d7f-a7c64817b2e2'),(2,11,5,1,'2025-05-30 11:31:47',1,'f731c91a-ce25-4987-86dc-3439559e00ae'),(3,11,5,2,'2025-05-30 11:46:41',1,'6944b80b-523f-4f97-8413-ac7dd51deb26'),(11,12,5,23,'2025-05-30 13:04:15',1,'6d1d9588-cc6f-446c-829c-9c645e1d62b2'),(12,10,5,24,'2025-05-30 13:59:47',1,'3d0a1dd6-5a22-42d7-aa38-a7eccd47bee5'),(13,11,5,24,'2025-05-30 13:59:47',1,'1a1d8431-ff82-4a17-af67-02b5316b69d2'),(14,12,5,24,'2025-05-30 13:59:47',1,'f9b624ca-2762-4992-8089-e127d8170c2e'),(15,17,5,25,'2025-05-30 13:59:47',1,'21691759-94b9-4c88-b580-14662684a595'),(16,18,5,25,'2025-05-30 13:59:47',1,'68892a95-4b46-474b-b3fc-74962e048363'),(17,19,5,25,'2025-05-30 13:59:47',1,'c3f51cd2-a6b6-4c42-811b-ceb984bc09c1'),(18,10,5,26,'2025-05-30 13:59:47',1,'fdfb8bbd-2503-424f-8c09-3dcd85370c5c'),(20,10,5,27,'2025-05-31 00:28:37',1,'00d82b10-c87c-46d2-abef-ff9ce06042dd');
+INSERT INTO `cart_items` VALUES (1,10,5,1,'2025-05-30 11:31:47',1,'5d96fc79-2a8d-4aa5-9d7f-a7c64817b2e2'),(2,11,5,1,'2025-05-30 11:31:47',1,'f731c91a-ce25-4987-86dc-3439559e00ae'),(3,11,5,2,'2025-05-30 11:46:41',1,'6944b80b-523f-4f97-8413-ac7dd51deb26'),(11,12,5,23,'2025-05-30 13:04:15',1,'6d1d9588-cc6f-446c-829c-9c645e1d62b2'),(12,10,5,24,'2025-05-30 13:59:47',1,'3d0a1dd6-5a22-42d7-aa38-a7eccd47bee5'),(13,11,5,24,'2025-05-30 13:59:47',1,'1a1d8431-ff82-4a17-af67-02b5316b69d2'),(14,12,5,24,'2025-05-30 13:59:47',1,'f9b624ca-2762-4992-8089-e127d8170c2e'),(15,17,5,25,'2025-05-30 13:59:47',1,'21691759-94b9-4c88-b580-14662684a595'),(16,18,5,25,'2025-05-30 13:59:47',1,'68892a95-4b46-474b-b3fc-74962e048363'),(17,19,5,25,'2025-05-30 13:59:47',1,'c3f51cd2-a6b6-4c42-811b-ceb984bc09c1'),(18,10,5,26,'2025-05-30 13:59:47',1,'fdfb8bbd-2503-424f-8c09-3dcd85370c5c'),(20,10,5,27,'2025-05-31 00:28:37',1,'00d82b10-c87c-46d2-abef-ff9ce06042dd'),(23,12,5,29,'2025-06-01 03:08:39',1,'a26f2019-3e00-4240-9d5d-0f1b579f2d6c'),(24,11,5,29,'2025-06-01 03:08:39',1,'bd06fd24-1c55-45d8-ba4d-e2b6aa267296'),(25,12,5,30,'2025-06-01 03:12:25',1,'2a67064f-05ca-4553-ad41-395cf2242008'),(26,10,5,37,'2025-06-01 03:13:56',1,'d170f496-4434-4ea2-a60c-03c42acb02fd'),(27,15,5,37,'2025-06-01 03:13:56',2,'325f8f91-7c6a-449a-a85a-d3a595bb7016'),(28,16,5,37,'2025-06-01 03:13:56',1,'329d059c-bd62-4113-9a3b-eed66f5e065e'),(29,12,5,39,'2025-06-01 03:17:33',1,'b78642c8-369d-478b-bda8-debf3014322b'),(30,11,5,39,'2025-06-01 03:17:33',1,'d35b7293-9c24-474c-a9d7-679d3b653631'),(31,12,5,40,'2025-06-01 03:18:02',1,'9442dc66-7924-4f67-a9cb-42c867174ba6');
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +141,7 @@ CREATE TABLE `order_table` (
   CONSTRAINT `order_table_address_id_foreign` FOREIGN KEY (`address_id`) REFERENCES `user_address` (`address_id`),
   CONSTRAINT `order_table_driver_id_foreign` FOREIGN KEY (`driver_id`) REFERENCES `delivery_driver` (`driver_id`),
   CONSTRAINT `order_table_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +150,7 @@ CREATE TABLE `order_table` (
 
 LOCK TABLES `order_table` WRITE;
 /*!40000 ALTER TABLE `order_table` DISABLE KEYS */;
-INSERT INTO `order_table` VALUES (1,5,1,1,'Completed',88.98,'','Credit Card','2025-05-30 11:31:47','2025-05-30 12:14:24','2025-05-30 12:14:24','','52025-05-30 21:31:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(2,5,1,1,'Cancelled',40.00,'Not successful','Credit Card','2025-05-30 11:46:41','2025-05-30 12:43:45','2025-05-30 12:49:06','','52025-05-30 21:46:41','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','delayed',1,0.00,0.00),(23,5,1,1,'Cancelled',37.50,'Not successful','Credit Card','2025-05-30 13:04:15','2025-05-30 13:04:15','2025-05-30 13:04:15','','52025-05-30 23:04:15','standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly','soafer delay kaayo',1,0.00,0.00),(24,5,NULL,1,'Pending',126.48,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(25,5,NULL,1,'In Progress',84.22,'','Debit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','discreet_confidential',NULL,1,5.99,5.99),(26,5,NULL,1,'Pending',48.98,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','standard',NULL,1,5.99,2.99),(27,5,NULL,1,'Pending',45.99,'','Credit Card','2025-05-31 00:28:39',NULL,NULL,'','52025-05-31 10:28:37','express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','eco_friendly',NULL,1,5.99,0.00);
+INSERT INTO `order_table` VALUES (1,5,1,1,'Completed',88.98,'','Credit Card','2025-05-30 11:31:47','2025-05-30 12:14:24','2025-05-30 12:14:24','','52025-05-30 21:31:47','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Standard',NULL,1,5.99,2.99),(2,5,1,1,'Cancelled',40.00,'Not successful','Credit Card','2025-05-30 11:46:41','2025-05-30 12:43:45','2025-05-30 12:49:06','','52025-05-30 21:46:41','Standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Eco-Friendly','delayed',1,0.00,0.00),(23,5,1,1,'Cancelled',37.50,'Not successful','Credit Card','2025-05-30 13:04:15','2025-05-30 13:04:15','2025-05-30 13:04:15','','52025-05-30 23:04:15','Standard','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Eco-Friendly','soafer delay kaayo',1,0.00,0.00),(24,5,NULL,1,'Pending',126.48,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Standard',NULL,1,5.99,2.99),(25,5,NULL,1,'In Progress',84.22,'','Debit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Discreet and Confidential',NULL,1,5.99,5.99),(26,5,NULL,1,'Pending',48.98,'','Credit Card','2025-05-30 13:59:47',NULL,NULL,'','52025-05-30 23:59:47','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Standard',NULL,1,5.99,2.99),(27,5,NULL,1,'Pending',45.99,'','Credit Card','2025-05-31 00:28:39',NULL,NULL,'','52025-05-31 10:28:37','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Eco-Friendly',NULL,1,5.99,0.00),(39,5,NULL,1,'Pending',86.48,'','Credit Card','2025-06-01 03:17:33',NULL,NULL,'','52025-06-01 13:17:00','Express','Iglu, 62 Blamey St., Kelvin Grove, Brisbane, Queensland, 4509, Australia','Standard',NULL,1,5.99,2.99);
 /*!40000 ALTER TABLE `order_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,4 +383,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-31 12:22:15
+-- Dump completed on 2025-06-01 17:30:29
