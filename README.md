@@ -1,52 +1,69 @@
+# Foodah! Food Delivery Web App
 
-# Assignment_2
+![Python](https://img.shields.io/badge/python-3.8%2B-blue?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.1-000000?logo=flask&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-database-4479A1?logo=mysql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-UI-7952B3?logo=bootstrap&logoColor=white)
+![Roles](https://img.shields.io/badge/roles-customer%20%7C%20driver%20%7C%20admin-informational)
+![Last commit](https://img.shields.io/github/last-commit/bajundotdev/Food_Delivery_Webapp)
 
-Foodah!—A Food Delivery Service Web Application
+> A food ordering website with three sides to it: customers order meals, drivers
+> deliver them, and administrators manage the menu and the orders.
 
-The socially aware web app Foodah! revolutionises food delivery by combining technology with morality. The app delivers freshly prepared meals from partner restaurants to clients' doorsteps. The goal is to make food ordering and delivery quick, easy, and culturally sensitive.
+## In plain terms
 
-Students, families, busy professionals, and city and semi-urban residents who need easy dining access were the app's target audience. Restaurants benefit from using the platform to increase client base and order fulfilment. Foodah! follows the AIATSIS Code of Ethics by respecting cultural diversity and welcoming all. This means the site respects and values users' cultural identities and promote the equitable promotion of local companies, particularly Indigenous food enterprises.
+**What it is.** A working model of a food delivery service, like the apps you
+use to order dinner, built as a website. It was designed around a fictional
+brand called *Foodah!*.
 
-Foodah! has several useful features. From the landing page, users can browse personally featured restaurants and culinary items. They can also use advanced search and filter options to find foods they like. They can view ingredients, prices, and customer reviews for each food item. The delivery request summary page lets them see their cart items, while the checkout page lets customers finalise their purchases and choose a delivery option. The interface is dynamic, user-friendly, and built for different technical levels.
+**Who uses it and what they can do:**
 
-Unique, value-driven features set Foodah! apart from other delivery systems. Initially, the platform allows fast delivery of nearby objects. The meals will arrive hot and fresh in 30 minutes, guaranteed. Second, it promotes electric scooters and bicycles for delivery, which minimises carbon emissions and supports green practices. Foodah!'s AI-powered meal recommendations match users' preferences, diets, and seasonal specials to improve their experience. The suggestions are carefully crafted to avoid generalising or misrepresenting cultural dishes.
+| If you are… | You can… |
+|---|---|
+| **A customer** | Browse the menu by category, add meals to a cart, check out, get a receipt, see past orders, update your profile and password |
+| **A delivery driver** | See the deliveries assigned to you, follow an order in progress, confirm when it is delivered, set whether you are available |
+| **An administrator** | Add, edit and remove menu items and categories, manage drivers, users and other admins, update order status, view an orders report, edit restaurant details |
 
-Foodah! goes beyond delivery. Community participation, social responsibility, and innovation were the goals of this platform. It delivers meals and fulfils digital obligations, representation, and respect.
+## How an order flows
 
-## Project Overview
+```mermaid
+flowchart LR
+    C[Customer adds meals<br/>to the cart] --> O[Checks out<br/>and gets a receipt]
+    O --> A[Admin sees the order<br/>and updates its status]
+    A --> D[Driver picks it up<br/>and follows the delivery]
+    D --> F[Driver confirms<br/>delivery]
+```
 
-This Flask application implements a web-based platform for e-commerce or food delivery services, with features for user management, products, orders, stores, and more.
+## The idea behind the brand
 
-## Application Structure
+The assignment brief asked for a socially aware service. The Foodah! concept
+promotes local and Indigenous food businesses, low-emission delivery by bicycle
+and electric scooter, and culturally respectful presentation of dishes, in line
+with the AIATSIS Code of Ethics. These are design goals of the concept; features
+such as personalised meal recommendations are part of the pitch and are **not**
+implemented in this code.
 
-The application follows a modular architecture using Flask blueprints, with clear separation between models, views, and controllers:
+## Technology
 
-```bash
-A2_Group_72_582_A2.zip
+| Layer | What is used |
+|---|---|
+| Web framework | Flask 3 with blueprints (one per area: auth, products, cart, user, driver, admin) |
+| Forms and validation | Flask-WTF |
+| Database | MySQL through Flask-MySQLdb, with a ready-made sample database (`project/database.sql`) |
+| Pages | Jinja2 templates with Bootstrap-Flask |
+
+```plaintext
+Food_Delivery_Webapp/
+├── run.py               # Starts the app
 ├── requirements.txt
-├── run.py
-├── README.txt (brief setup instructions) 
 └── project/
-    ├── forms/
-    ├── models/
-    ├── static/
-    │   ├── css/
-    │   └── img/
-    ├── templates/
-    │   ├── admin/
-    │   ├── auth/
-    │   ├── driver/
-    │   ├── errors/
-    │   ├── products/ 
-    │   ├── user/ 
-    │   ├── base.html
-    │   └── index.html 
-    ├── __init__.py
-    ├── database.sql (pre-populated)
-    ├── db.py
-    ├── decorators.py
-    ├── session.py
-    └── views.py
+    ├── routes/          # One file per area (admin, auth, cart, driver, ...)
+    ├── models/          # Orders, products, carts, users, drivers, restaurants
+    ├── forms/           # Form definitions and validation
+    ├── templates/       # HTML pages
+    ├── static/          # CSS and images
+    ├── db.py            # Database queries
+    └── database.sql     # Sample data to import
 ```
 
 ## System Prerequisites
@@ -103,32 +120,28 @@ Update the MySQL configuration in `project` > `__init__.py` with your MySQL cred
 
    The app will be available at [http://127.0.0.1:8888](http://127.0.0.1:8888).
 
-## User Credentials
+## Sample accounts
 
-   Use the following user accounts to login:
+The sample database comes with a test account for each role (admin, customer and
+driver). These are placeholder accounts for a local demo only:
 
-1. Log in as **System Admin**:
+| Role | Email | Password |
+|---|---|---|
+| System admin | `admin@foodah.com` | `helloworld` |
+| Customer | `jamizan@foodah.com` | `helloworld` |
+| Delivery driver | `tomasen@foodah.com` | `hello` |
 
-```bash
-   Email Address: admin@foodah.com
-   Password: helloworld
-```
+To reset the data, import `project/database.sql` again.
 
-2. Log in as **Customer**:
+## Status
 
-```bash
-   Email Address: jamizan@foodah.com
-   Password: helloworld
-```
+A university group project (QUT, 2025). It runs locally and is not deployed or
+maintained as a product.
 
-3. Log in as **Delivery Driver**:
+## Contributors
 
-```bash
-   Email Address: tomasen@foodah.com
-   Password: hello
-```
-
-## Notes
-
-- The database is pre-populated using `project` > `database.sql`. If you need to reset the database, you can re-import this file into your database system.
-- For any issues, refer to the `README.txt`.
+- [bajundotdev](https://github.com/bajundotdev)
+- [tomsecundo](https://github.com/tomsecundo)
+- [raisenx26](https://github.com/raisenx26)
+- [danchi-nguyen](https://github.com/danchi-nguyen)
+- [JVillanueva08](https://github.com/JVillanueva08)
